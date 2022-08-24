@@ -17,7 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('customer_id');
             $table->integer('price');
-            $table->integer('discount');
+            $table->integer('discount')->nullable();
             $table->integer('branch_id');
             $table->integer('user_id');
             $table->timestamps();

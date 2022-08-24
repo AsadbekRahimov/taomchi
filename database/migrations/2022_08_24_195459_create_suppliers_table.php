@@ -16,9 +16,9 @@ return new class extends Migration
         Schema::create('suppliers', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->string('phone');
-            $table->integer('branch_duty');
-            $table->date('date');
+            $table->string('phone')->nullable();
+            $table->integer('branch_duty')->default(0);
+            $table->date('date')->nullable();
             $table->timestamps();
         });
     }
