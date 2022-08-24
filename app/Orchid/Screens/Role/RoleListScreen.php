@@ -31,7 +31,7 @@ class RoleListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Manage roles';
+        return 'Rollarni boshqarish';
     }
 
     /**
@@ -41,7 +41,7 @@ class RoleListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Access rights';
+        return 'Rollar yaratish va ularga kerakli huqularni biriktish.';
     }
 
     /**
@@ -62,7 +62,7 @@ class RoleListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make(__('Add'))
+            Link::make(__('Qo\'shish'))
                 ->icon('plus')
                 ->href(route('platform.systems.roles.create')),
         ];
