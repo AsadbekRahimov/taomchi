@@ -9,7 +9,7 @@ use App\Orchid\Layouts\User\UserFiltersLayout;
 use App\Orchid\Layouts\User\UserListLayout;
 use Illuminate\Http\Request;
 use Illuminate\Validation\Rule;
-use Orchid\Platform\Models\User;
+use App\Models\User;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -26,7 +26,8 @@ class UserListScreen extends Screen
     {
         return [
             'users' => User::with('roles')
-                ->filters(UserFiltersLayout::class)
+                ->filters()
+                ->filtersApplySelection(UserFiltersLayout::class)
                 ->defaultSort('id', 'desc')
                 ->paginate(),
         ];
@@ -39,7 +40,7 @@ class UserListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'User';
+        return 'Foydalanuvchilar';
     }
 
     /**
@@ -49,7 +50,7 @@ class UserListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'All registered users';
+        return 'Tizimdagi barcha foydalanuvchilar ro`yhati';
     }
 
     /**
@@ -70,7 +71,7 @@ class UserListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make(__('Add'))
+            Link::make('Yangi foydalanuvchi qo`shish')
                 ->icon('plus')
                 ->route('platform.systems.users.create'),
         ];
@@ -88,7 +89,9 @@ class UserListScreen extends Screen
             UserListLayout::class,
 
             Layout::modal('asyncEditUserModal', UserEditLayout::class)
-                ->async('asyncGetUser'),
+                ->async('asyncGetUser')
+                ->applyButton('Saqlash')
+                ->closeButton('Yopish'),
         ];
     }
 
@@ -119,7 +122,7 @@ class UserListScreen extends Screen
 
         $user->fill($request->input('user'))->save();
 
-        Toast::info(__('User was saved.'));
+        Toast::info('Foydalanuvchi saqlandi');
     }
 
     /**
@@ -129,6 +132,6 @@ class UserListScreen extends Screen
     {
         User::findOrFail($request->get('id'))->delete();
 
-        Toast::info(__('User was removed'));
+        Toast::info('Foydalanuvchi o`chirildi');
     }
 }

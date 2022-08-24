@@ -40,7 +40,7 @@ class UserProfileScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'My account';
+        return 'Mening profilim';
     }
 
     /**
@@ -50,7 +50,7 @@ class UserProfileScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Update your account details such as name, email address and password';
+        return 'Ism, elektron pochta manzili va parol kabi ma`lumotlarini yangilash';
     }
 
     /**
@@ -70,20 +70,20 @@ class UserProfileScreen extends Screen
     {
         return [
             Layout::block(UserEditLayout::class)
-                ->title(__('Profile Information'))
-                ->description(__("Update your account's profile information and email address."))
+                ->title('Profil haqida ma`lumot')
+                ->description(__("Shaxsiy profil ma'lumotlari va elektron pochta manzilini yangilash."))
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Saqlash')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('save')
                 ),
 
             Layout::block(ProfilePasswordLayout::class)
-                ->title(__('Update Password'))
-                ->description(__('Ensure your account is using a long, random password to stay secure.'))
+                ->title('Parolni yangilash')
+                ->description('Xavfsizlikni saqlash uchun parolingizni uzun, tasodifiy belgilardan foydalanayotganligingizga ishonch hosil qiling.')
                 ->commands(
-                    Button::make(__('Update password'))
+                    Button::make('Saqlash')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('changePassword')
@@ -108,7 +108,7 @@ class UserProfileScreen extends Screen
             ->fill($request->get('user'))
             ->save();
 
-        Toast::info(__('Profile updated.'));
+        Toast::info('Profil malumotlari yangilandi.');
     }
 
     /**

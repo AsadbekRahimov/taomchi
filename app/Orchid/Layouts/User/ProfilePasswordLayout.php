@@ -19,18 +19,18 @@ class ProfilePasswordLayout extends Rows
     {
         return [
             Password::make('old_password')
-                ->placeholder(__('Enter the current password'))
-                ->title(__('Current password'))
+                ->placeholder(__('Xozirgi ishlatilayotgan parolingiz'))
+                ->title(__('Xozirgi parolingiz'))
                 ->help('This is your password set at the moment.'),
 
             Password::make('password')
-                ->placeholder(__('Enter the password to be set'))
-                ->title(__('New password')),
+                ->placeholder(__('Yangi kiritmoqchi bo`lgan parolingiz'))
+                ->title('Yangi parol'),
 
             Password::make('password_confirmation')
-                ->placeholder(__('Enter the password to be set'))
-                ->title(__('Confirm new password'))
-                ->help('A good password is at least 15 characters or at least 8 characters long, including a number and a lowercase letter.'),
+                ->placeholder('Parolni tasdiqlash uchun qayta kiriting')
+                ->title('Parolni tasdiqlash')
+                ->help('Yaxshi parol kamida kamida 8 ta belgidan iborat bo`lishi kerak, jumladan raqam va kichik harflar qatnashishi maqsadga muoffiq.'),
         ];
     }
 }

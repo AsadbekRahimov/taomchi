@@ -27,7 +27,7 @@ class UserListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('name', __('Name'))
+            TD::make('name', 'Ismi')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
@@ -35,7 +35,7 @@ class UserListLayout extends Table
                     return new Persona($user->presenter());
                 }),
 
-            TD::make('email', __('Email'))
+            TD::make('email', 'Email')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
@@ -49,13 +49,19 @@ class UserListLayout extends Table
                         ]);
                 }),
 
-            TD::make('updated_at', __('Last edit'))
+            TD::make('created_at', 'Kiritilgan sana')
+                ->sort()
+                ->render(function (User $user) {
+                    return $user->created_at->toDateTimeString();
+                }),
+
+            TD::make('updated_at', 'O`zgertirilgan sana')
                 ->sort()
                 ->render(function (User $user) {
                     return $user->updated_at->toDateTimeString();
                 }),
 
-            TD::make(__('Actions'))
+            TD::make('Amallar')
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
                 ->render(function (User $user) {
@@ -63,13 +69,13 @@ class UserListLayout extends Table
                         ->icon('options-vertical')
                         ->list([
 
-                            Link::make(__('Edit'))
+                            Link::make('O`zgartirish')
                                 ->route('platform.systems.users.edit', $user->id)
                                 ->icon('pencil'),
 
-                            Button::make(__('Delete'))
+                            Button::make('O`chirish')
                                 ->icon('trash')
-                                ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
+                                ->confirm('Siz rostdan ham ushbu foydalanuvchini o`chirmoqchimisiz?')
                                 ->method('remove', [
                                     'id' => $user->id,
                                 ]),

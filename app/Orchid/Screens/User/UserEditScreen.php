@@ -13,7 +13,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rule;
 use Orchid\Access\UserSwitch;
-use Orchid\Platform\Models\User;
+use App\Models\User;
 use Orchid\Screen\Action;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Screen;
@@ -52,7 +52,7 @@ class UserEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->user->exists ? 'Edit User' : 'Create User';
+        return $this->user->exists ? 'Foydalanuvchini o`zgartirish' : 'Yangi foydalanuvchi';
     }
 
     /**
@@ -62,7 +62,7 @@ class UserEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Details such as name, email and password';
+        return 'Foydalanuvchining shaxsiy profil malumotlari';
     }
 
     /**
@@ -83,19 +83,19 @@ class UserEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Impersonate user'))
+            Button::make(__('Foydalanuvchi rolidan foydalanish'))
                 ->icon('login')
-                ->confirm(__('You can revert to your original state by logging out.'))
+                ->confirm('Siz o`z profilingizga tizimda chiqish tugmasini bosib qaytishingiz mumkin')
                 ->method('loginAs')
                 ->canSee($this->user->exists && \request()->user()->id !== $this->user->id),
 
-            Button::make(__('Remove'))
+            Button::make('Foydalanuvchini o`chirish')
                 ->icon('trash')
-                ->confirm(__('Once the account is deleted, all of its resources and data will be permanently deleted. Before deleting your account, please download any data or information that you wish to retain.'))
+                ->confirm('Siz rostdan ham ushbu foydalanuvchini o`chiqmoqchimisiz')
                 ->method('remove')
                 ->canSee($this->user->exists),
 
-            Button::make(__('Save'))
+            Button::make('Foydalanuvchini saqlash')
                 ->icon('check')
                 ->method('save'),
         ];
@@ -109,10 +109,10 @@ class UserEditScreen extends Screen
         return [
 
             Layout::block(UserEditLayout::class)
-                ->title(__('Profile Information'))
-                ->description(__('Update your account\'s profile information and email address.'))
+                ->title('Profil haqida ma`lumot')
+                ->description('Shaxsiy profil ma\'lumotlari va elektron pochta manzilini yangilash.')
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Saqlash')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -120,10 +120,10 @@ class UserEditScreen extends Screen
                 ),
 
             Layout::block(UserPasswordLayout::class)
-                ->title(__('Password'))
-                ->description(__('Ensure your account is using a long, random password to stay secure.'))
+                ->title('Parolni yangilash')
+                ->description('Xavfsizlikni saqlash uchun parolingizni uzun, tasodifiy belgilardan foydalanayotganligingizga ishonch hosil qiling.')
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Saqlash')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -131,10 +131,10 @@ class UserEditScreen extends Screen
                 ),
 
             Layout::block(UserRoleLayout::class)
-                ->title(__('Roles'))
-                ->description(__('A Role defines a set of tasks a user assigned the role is allowed to perform.'))
+                ->title('Rollar')
+                ->description('Rollar foydalanuvchilarga ayrim ammalarnibajarish uchun huquq beradi.')
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Saqlash')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -142,10 +142,10 @@ class UserEditScreen extends Screen
                 ),
 
             Layout::block(RolePermissionLayout::class)
-                ->title(__('Permissions'))
-                ->description(__('Allow the user to perform some actions that are not provided for by his roles'))
+                ->title('Huqular')
+                ->description('Huqular foydalanuvchilarga aynan bir amalni bajarish uchun kerak boladi.')
                 ->commands(
-                    Button::make(__('Save'))
+                    Button::make('Saqlash')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -163,6 +163,7 @@ class UserEditScreen extends Screen
      */
     public function save(User $user, Request $request)
     {
+        //dd($request->collect('user'));
         $request->validate([
             'user.email' => [
                 'required',
@@ -184,11 +185,12 @@ class UserEditScreen extends Screen
         $user
             ->fill($request->collect('user')->except(['password', 'permissions', 'roles'])->toArray())
             ->fill(['permissions' => $permissions])
+            //->fill(['branch_id' => $request->user['branch_id']])
             ->save();
 
         $user->replaceRoles($request->input('user.roles'));
 
-        Toast::info(__('User was saved.'));
+        Toast::info('Foydalanuvchi malumotlari saqlandi');
 
         return redirect()->route('platform.systems.users');
     }
@@ -205,7 +207,7 @@ class UserEditScreen extends Screen
     {
         $user->delete();
 
-        Toast::info(__('User was removed'));
+        Toast::info('Foydalanuvchi o`chirildi');
 
         return redirect()->route('platform.systems.users');
     }
@@ -219,7 +221,7 @@ class UserEditScreen extends Screen
     {
         UserSwitch::loginAs($user);
 
-        Toast::info(__('You are now impersonating this user'));
+        Toast::info('Siz rostdan ham ushbu foydalanuvchidan foydalanmoqchimsiz?');
 
         return redirect()->route(config('platform.index'));
     }
