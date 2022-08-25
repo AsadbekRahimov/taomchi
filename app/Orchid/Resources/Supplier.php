@@ -112,7 +112,7 @@ class Supplier extends Resource
 
     public static function icon(): string
     {
-        return 'people';
+        return 'organization';
     }
 
     public static function perPage(): int

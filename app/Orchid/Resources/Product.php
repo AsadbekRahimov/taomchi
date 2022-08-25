@@ -140,7 +140,7 @@ class Product extends Resource
 
     public static function icon(): string
     {
-        return 'people';
+        return 'dropbox';
     }
 
     public static function perPage(): int

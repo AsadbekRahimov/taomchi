@@ -105,7 +105,7 @@ class Measure extends Resource
 
     public static function icon(): string
     {
-        return 'people';
+        return 'config';
     }
 
     public static function perPage(): int
