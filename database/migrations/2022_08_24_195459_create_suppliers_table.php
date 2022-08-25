@@ -17,8 +17,6 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->string('phone')->nullable();
-            $table->integer('branch_duty')->default(0);
-            $table->date('date')->nullable();
             $table->timestamps();
         });
     }

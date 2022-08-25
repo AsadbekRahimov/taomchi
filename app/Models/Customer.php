@@ -13,7 +13,5 @@ class Customer extends Model
         'name',
         'phone',
         'address',
-        'duty',
-        'date',
     ];
 }

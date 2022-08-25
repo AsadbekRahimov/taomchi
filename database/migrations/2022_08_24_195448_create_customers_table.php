@@ -18,8 +18,6 @@ return new class extends Migration
             $table->string('name');
             $table->string('phone')->nullable();
             $table->string('address')->nullable();
-            $table->integer('duty')->default(0);
-            $table->date('date')->nullable();
             $table->timestamps();
         });
     }

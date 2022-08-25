@@ -11,7 +11,6 @@ class PurchaseParty extends Model
 
     protected $fillable = [
         'supplier_id',
-        'price',
         'user_id',
         'branch_id',
     ];

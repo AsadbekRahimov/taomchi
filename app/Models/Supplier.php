@@ -12,7 +12,5 @@ class Supplier extends Model
     protected $fillable = [
         'name',
         'phone',
-        'branch_duty',
-        'date',
     ];
 }

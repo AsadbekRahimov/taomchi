@@ -11,7 +11,6 @@ class SalesParty extends Model
 
     protected $fillable = [
         'customer_id',
-        'price',
         'discount',
         'user_id',
         'branch_id',
