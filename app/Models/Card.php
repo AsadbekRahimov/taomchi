@@ -5,20 +5,20 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class Basket extends Model
+class Card extends Model
 {
     use HasFactory;
 
     protected $fillable = [
-        'supplier_id',
+        'customer_id',
         'product_id',
         'quantity',
         'price',
     ];
 
-    public function supplier()
+    public function customer()
     {
-        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
+        return $this->belongsTo(Customer::class, 'customer_id', 'id');
     }
 
     public function product()
