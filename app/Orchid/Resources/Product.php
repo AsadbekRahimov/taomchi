@@ -54,7 +54,7 @@ class Product extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Ism')->cantHide(),
+            TD::make('name', 'Nomi')->cantHide(),
             TD::make('measure_id', 'O\'lchov birligi')->render(function (Model $model) {
                 return $model->measure->name;
             }),

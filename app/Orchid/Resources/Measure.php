@@ -43,7 +43,7 @@ class Measure extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Ism')->cantHide(),
+            TD::make('name', 'Nomi')->cantHide(),
             TD::make('symbol', 'Belgisi')->cantHide(),
             TD::make('created_at', 'Kiritilgan sana')
                 ->render(function ($model) {
@@ -64,7 +64,7 @@ class Measure extends Resource
     public function legend(): array
     {
         return [
-            Sight::make('name', 'Ism'),
+            Sight::make('name', 'Nomi'),
             Sight::make('symbol', 'Belgisi'),
             Sight::make('created_at', 'Kiritilgan sana')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
