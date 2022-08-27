@@ -28,4 +28,14 @@ class Stock extends Model
     {
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
+
+    public static function addNewItem(int $id, $branch_id)
+    {
+        return self::query()->create([
+            'product_id' => $id,
+            'quantity' => 0,
+            'branch_id' => $branch_id,
+        ]);
+    }
+
 }

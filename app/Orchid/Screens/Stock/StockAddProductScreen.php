@@ -7,12 +7,16 @@ use App\Models\Stock;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class StockAddProductScreen extends Screen
 {
+
+    public $max_count;
     /**
      * Query data.
      *
@@ -20,9 +24,10 @@ class StockAddProductScreen extends Screen
      */
     public function query(): iterable
     {
+        $stock_ids = Stock::query()->where('branch_id', Auth::user()->branch_id)->pluck('product_id')->toArray();
+        $this->max_count = Auth::user()->branch_id ? Product::query()->whereNotIn('id', $stock_ids)->count() : 0;
         return [
-            'products' => Product::query()->limit(10)->get(),
-            'stock' => Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->defaultSort('updated_at', 'desc')->paginate(15),
+            'products' => Product::query()->whereNotIn('id', $stock_ids)->get(),
         ];
     }
 
@@ -59,7 +64,7 @@ class StockAddProductScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('Maxsulotlarni biriktirish')->method('addProduct')->icon('plus'),
+            Button::make('Maxsulotlarni biriktirish')->method('addProduct')->icon('plus')->canSee($this->max_count),
         ];
     }
 
@@ -72,13 +77,40 @@ class StockAddProductScreen extends Screen
     {
         return [
             Layout::rows([
-                Matrix::make('products'),
+                Matrix::make('products')
+                    ->columns([
+                        '' => 'id',
+                        'Maxsulot' => 'name',
+                    ])->fields([
+                        'id' => Input::make('id')->type('number')->hidden(),
+                        'name' => Input::make('name')->disabled(),
+                    ])->maxRows($this->max_count),
             ]),
         ];
     }
 
     public function addProduct(Request $request)
     {
-        dd($request->all());
+        $branch_id = Auth::user()->branch_id;
+        $count = $this->addToStock($request->products, $branch_id);
+
+        Alert::success($count . ' ta maxsulotlar omborga muaffaqiyatli qo\'shildi');
+
+        return redirect()->route('platform.stock_list');
+    }
+
+    private function addToStock($products, $branch_id)
+    {
+        $count = 0;
+
+        foreach ($products as $product) {
+            $id = (int)$product['id'];
+            if(!is_null($id)) {
+                Stock::addNewItem($id, $branch_id);
+                $count++;
+            }
+        }
+
+        return $count;
     }
 }
