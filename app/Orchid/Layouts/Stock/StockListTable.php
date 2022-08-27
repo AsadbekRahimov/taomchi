@@ -4,6 +4,7 @@ namespace App\Orchid\Layouts\Stock;
 
 use App\Models\Stock;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Color;
@@ -31,10 +32,16 @@ class StockListTable extends Table
             TD::make('id', 'ID'),
             TD::make('product_id', 'Qoldiq miqdori')->render(function (Stock $stock) {
                 return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
-            }),
+            })->cantHide(),
             TD::make('quantity', 'Qoldiq miqdori')->render(function (Stock $stock) {
-                return Link::make($stock->quantity)->type($stock->quantity > $stock->product->min ? Color::SUCCESS() : Color::DANGER());
-            }),
+                return ModalToggle::make($stock->quantity)
+                    ->modal('asyncEditQuantityModal')
+                    ->modalTitle($stock->product->name . ': ' . $stock->quantity . ' ' . $stock->product->measure->name)
+                    ->method('saveStock')
+                    ->asyncParameters([
+                        'stock' => $stock->id,
+                    ])->type($stock->quantity > $stock->product->min ? Color::SUCCESS() : Color::DANGER());
+            })->cantHide(),
             TD::make('updated_at', 'So\'ngi o\'zgarish')->render(function (Stock $stock) {
                 return $stock->updated_at->toDateTimeString();
             }),

@@ -3,10 +3,14 @@
 namespace App\Orchid\Screens\Stock;
 
 use App\Models\Stock;
+use App\Orchid\Layouts\Stock\QuantityEditLayout;
 use App\Orchid\Layouts\Stock\StockListTable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Alert;
+use Orchid\Support\Facades\Layout;
 
 class StockListScreen extends Screen
 {
@@ -18,7 +22,7 @@ class StockListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'stock' => Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->defaultSort('updated_at', 'desc')->paginate(15),
+            'stock' => Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->defaultSort('id', 'desc')->paginate(15),
         ];
     }
 
@@ -68,6 +72,23 @@ class StockListScreen extends Screen
     {
         return [
             StockListTable::class,
+            Layout::modal('asyncEditQuantityModal', QuantityEditLayout::class)
+                ->async('addToStock')->applyButton('Saqlash')->closeButton('Yopish'),
         ];
+    }
+
+
+    public function asyncGetStock(Stock $stock)
+    {
+        return [
+            'stock' => $stock,
+        ];
+    }
+
+    public function saveStock(Request $request, Stock $stock)
+    {
+        $stock->quantity = (int)$request->quantity;
+        $stock->save();
+        Alert::success('Maxsulot qoldig\'i muaffaqiyatli yangilandi');
     }
 }

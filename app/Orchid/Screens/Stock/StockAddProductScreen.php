@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Stock;
 
 use App\Models\Product;
 use App\Models\Stock;
+use App\Orchid\Layouts\Stock\QuantityEditLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
