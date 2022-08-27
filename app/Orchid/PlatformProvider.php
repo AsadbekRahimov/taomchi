@@ -83,6 +83,12 @@ class PlatformProvider extends OrchidServiceProvider
                     return Dashboard::version();
                 }, Color::DARK()),*/
 
+            Menu::make('Zaxira maxsulotlar')
+                ->icon('database')
+                ->route('platform.stock.list')
+                ->permission('platform.stock.list')
+                ->title('Ombor'),
+
             Menu::make('Foydalanuvchilar')
                 ->icon('user')
                 ->route('platform.systems.users')
@@ -114,9 +120,12 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerPermissions(): array
     {
         return [
-            ItemPermission::group('Tizim')
+            ItemPermission::group('Tizim (Super Admin uchun)')
                 ->addPermission('platform.systems.roles', 'Rollar')
                 ->addPermission('platform.systems.users', 'Foydalanuvchilar'),
+
+            ItemPermission::group('Ombor (Filial foydalanuvchilari uchun)')
+                ->addPermission('platform.stock.list', 'Zaxira maxsulotlar)'),
         ];
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Orchid\Screens;
 
+use App\Models\Stock;
+use App\Orchid\Layouts\Stock\StockListTable;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 
 class StockListScreen extends Screen
@@ -13,7 +16,9 @@ class StockListScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'stock' => Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->defaultSort('updated_at', 'desc')->paginate(15),
+        ];
     }
 
 
@@ -25,18 +30,18 @@ class StockListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'StockListScreen';
+        return 'Zaxira maxsulotlar';
     }
 
     public function description(): ?string
     {
-        return '';
+        return 'Ombordagi mavjud maxsulotlarinig qoldiq miqdorlari';
     }
 
     public function permission(): ?iterable
     {
         return [
-
+            'platform.stock.list',
         ];
     }
 
@@ -58,6 +63,8 @@ class StockListScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            StockListTable::class,
+        ];
     }
 }

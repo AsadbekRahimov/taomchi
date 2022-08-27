@@ -113,3 +113,12 @@ Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.exampl
 Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
+
+// Ombor
+Route::screen('stock/list', \App\Orchid\Screens\StockListScreen::class)
+    ->name('platform.stock.list')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Zaxira maxsulotlar');
+    });
