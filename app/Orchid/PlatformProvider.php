@@ -85,7 +85,7 @@ class PlatformProvider extends OrchidServiceProvider
 
             Menu::make('Zaxira maxsulotlar')
                 ->icon('database')
-                ->route('platform.stock.list')
+                ->route('platform.stock_list')
                 ->permission('platform.stock.list')
                 ->title('Ombor'),
 
@@ -125,7 +125,8 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.users', 'Foydalanuvchilar'),
 
             ItemPermission::group('Ombor (Filial foydalanuvchilari uchun)')
-                ->addPermission('platform.stock.list', 'Zaxira maxsulotlar)'),
+                ->addPermission('platform.stock.list', 'Zaxira maxsulotlar)')
+                ->addPermission('platform.stock.add_product', 'Zaxira maxsulotni omborga qoshish)'),
         ];
     }
 }

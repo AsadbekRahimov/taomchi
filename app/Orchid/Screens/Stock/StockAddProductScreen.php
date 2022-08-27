@@ -1,13 +1,17 @@
 <?php
 
-namespace App\Orchid\Screens;
+namespace App\Orchid\Screens\Stock;
 
+use App\Models\Product;
 use App\Models\Stock;
-use App\Orchid\Layouts\Stock\StockListTable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
-class StockListScreen extends Screen
+class StockAddProductScreen extends Screen
 {
     /**
      * Query data.
@@ -17,6 +21,7 @@ class StockListScreen extends Screen
     public function query(): iterable
     {
         return [
+            'products' => Product::query()->limit(10)->get(),
             'stock' => Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->defaultSort('updated_at', 'desc')->paginate(15),
         ];
     }
@@ -30,18 +35,18 @@ class StockListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Zaxira maxsulotlar';
+        return 'Zaxira maxsulotlari qo\'shish';
     }
 
     public function description(): ?string
     {
-        return 'Ombordagi mavjud maxsulotlarinig qoldiq miqdorlari';
+        return 'Ombordaga mavjud maxsulot turlarini kiritish';
     }
 
     public function permission(): ?iterable
     {
         return [
-            'platform.stock.list',
+            'platform.stock.add_product',
         ];
     }
 
@@ -53,7 +58,9 @@ class StockListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Button::make('Maxsulotlarni biriktirish')->method('addProduct')->icon('plus'),
+        ];
     }
 
     /**
@@ -64,7 +71,14 @@ class StockListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            StockListTable::class,
+            Layout::rows([
+                Matrix::make('products'),
+            ]),
         ];
+    }
+
+    public function addProduct(Request $request)
+    {
+        dd($request->all());
     }
 }

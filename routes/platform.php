@@ -114,11 +114,20 @@ Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('pla
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');
 
-// Ombor
-Route::screen('stock/list', \App\Orchid\Screens\StockListScreen::class)
-    ->name('platform.stock.list')
+// Ombor maxsulotlari
+Route::screen('stock/list', \App\Orchid\Screens\Stock\StockListScreen::class)
+    ->name('platform.stock_list')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
             ->push('Zaxira maxsulotlar');
+    });
+
+// Omborga maxsulotlarni kiritish
+Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScreen::class)
+    ->name('platform.add_products')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.stock_list')
+            ->push('Maxsulot qo\'shish');
     });
