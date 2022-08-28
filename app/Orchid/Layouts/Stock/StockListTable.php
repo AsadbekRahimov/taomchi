@@ -34,7 +34,8 @@ class StockListTable extends Table
                 return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
             })->cantHide(),
             TD::make('quantity', 'Qoldiq miqdori')->render(function (Stock $stock) {
-                return ModalToggle::make($stock->quantity)
+                return ModalToggle::make($stock->quantity !== 0 ?
+                    round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas')
                     ->modal('asyncEditQuantityModal')
                     ->modalTitle($stock->product->name . ': ' . $stock->quantity . ' ' . $stock->product->measure->name)
                     ->method('saveStock')

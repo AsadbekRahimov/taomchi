@@ -87,7 +87,8 @@ class StockListScreen extends Screen
 
     public function saveStock(Request $request, Stock $stock)
     {
-        $stock->quantity = (int)$request->quantity;
+        $quantity = $request->box === '1' ? $stock->product->box * $request->quantity : $request->quantity;
+        $stock->quantity = $quantity;
         $stock->save();
         Alert::success('Maxsulot qoldig\'i muaffaqiyatli yangilandi');
     }

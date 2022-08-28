@@ -2,17 +2,18 @@
 
 namespace App\Orchid\Resources;
 
-use App\Services\HelperService;
+use App\Models\Branch;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
-use Orchid\Screen\Actions\Link;
-use Orchid\Screen\Fields\CheckBox;
+use Orchid\Crud\ResourceRequest;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
+use Orchid\Support\Facades\Alert;
 
 class Product extends Resource
 {
@@ -131,10 +132,10 @@ class Product extends Resource
         return [
             'name.required' => 'Nomi kiritilishi shart!',
             'measure_id.required' => 'O\'lchov birligi',
-            'box.required' => 'Qadoqdagi soni',
-            'min.required' => 'Ombordagi eng kam miqdori',
-            'more_price.required' => 'Ulgurji narx',
-            'one_price.required' => 'Doimiy narx',
+            'box.required' => 'Qadoqdagi soni kiritilishi shart!',
+            'min.required' => 'Ombordagi eng kam miqdori kiritilishi shart!',
+            'more_price.required' => 'Ulgurji narx kiritilishi shart!',
+            'one_price.required' => 'Doimiy narx kiritilishi shart!',
         ];
     }
 
@@ -227,6 +228,18 @@ class Product extends Resource
     public static function emptyResourceForAction(): string
     {
         return 'Bu amallarni bajarish uchun malumotlar mavjud emas';
+    }
+
+    public function onSave(ResourceRequest $request, Model $model)
+    {
+        if ($request->box == '0') {
+            Alert::error('Qadoqdagi miqdori 0 dan katta bo\'lishi kerak!');
+        } else {
+            $model->forceFill($request->all())->save();
+            foreach (Branch::all() as $branch) {
+                Cache::forget('stock_' . $branch->id);
+            }
+        }
     }
 
     // TODO: add onDelete method

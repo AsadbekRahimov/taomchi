@@ -7,6 +7,7 @@ use App\Models\Stock;
 use App\Orchid\Layouts\Stock\QuantityEditLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
@@ -94,7 +95,7 @@ class StockAddProductScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id;
         $count = $this->addToStock($request->products, $branch_id);
-
+        Cache::forget('stock_' . $branch_id);
         Alert::success($count . ' ta maxsulotlar omborga muaffaqiyatli qo\'shildi');
 
         return redirect()->route('platform.stock_list');

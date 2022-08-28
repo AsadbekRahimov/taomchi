@@ -2,21 +2,21 @@
 
 namespace App\Orchid\Screens\Buy;
 
-use App\Models\Product;
+use App\Models\Basket;
 use App\Models\Stock;
 use App\Models\Supplier;
-use App\Orchid\Layouts\ProductListener;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
-use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
-use Orchid\Screen\Fields\Select;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Screen\TD;
-use Orchid\Support\Color;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class MainBuyScreen extends Screen
@@ -31,10 +31,10 @@ class MainBuyScreen extends Screen
     public function query(Supplier $supplier): iterable
     {
         $this->supplier = $supplier;
-        $branch_id = Auth::user()->branch_id ? Auth::user()->branch_id : 0;
+        $branch_id = Auth::user()->branch_id ?: 0;
         return [
-            'products' => Cache::remember('stock_' . $branch_id, 24 * 60 * 60, function () use ($branch_id) {
-                return Stock::query()->with(['product'])->where('branch_id', $branch_id)->get();
+            'products' => Cache::remember('stock_' . $branch_id, 24 * 60 * 60 * 10, function () use ($branch_id) {
+                return Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get();
             }),
         ];
     }
@@ -90,12 +90,38 @@ class MainBuyScreen extends Screen
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
                 })->cantHide(),
                 TD::make('quantity', 'Mavjud miqdori')->render(function (Stock $stock) {
-                    return $stock->quantity ;
+                    return $stock->quantity !== 0 ? round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas';
                 })->cantHide(),
+                TD::make('add', 'Qo\'shish')->render(function (Stock $stock) {
+                    return ModalToggle::make('')
+                        ->icon('plus')
+                        ->modal('addProductModal')
+                        ->method('addProduct')
+                        ->modalTitle($stock->product->name)
+                        ->parameters([
+                            'id' => $stock->product_id,
+                            'supplier_id' => $this->supplier->id,
+                            'box_count' => $stock->product->box,
+                        ]);
+                })
             ])->title('Omborxona maxsulotlari'),
+            Layout::modal('addProductModal', [
+                Layout::rows([
+                    Group::make([
+                        CheckBox::make('box')->title('Qadoq')->sendTrueOrFalse()->value(true),
+                        Input::make('quantity')->title('Miqdori')->type('number')->required(),
+                        Input::make('price')->title('Narxi (xar bir dona uchun)')->type('number')->required(),
+                    ]),
+                ]),
+            ])->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
         ];
     }
 
+    public function addProduct(Request $request)
+    {
+        Basket::addToBasket($request);
+        Alert::success('Muaffaqiyatli savatga qo\'shildi');
+    }
     /*public function asyncProducts(string $product)
     {
         return [

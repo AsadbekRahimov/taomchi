@@ -3,6 +3,8 @@
 namespace App\Orchid\Layouts\Stock;
 
 use Orchid\Screen\Field;
+use Orchid\Screen\Fields\CheckBox;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Rows;
 
@@ -23,7 +25,10 @@ class QuantityEditLayout extends Rows
     protected function fields(): iterable
     {
         return [
-            Input::make('quantity')->title('Moqdori')->type('number')->required(),
+            Group::make([
+                CheckBox::make('box')->title('Qadoq')->sendTrueOrFalse()->value('true'),
+                Input::make('quantity')->title('Moqdori')->type('number')->required(),
+            ]),
         ];
     }
 }
