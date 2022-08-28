@@ -22,7 +22,7 @@ class StockListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'stock' => Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->defaultSort('id', 'desc')->paginate(15),
+            'stock' => Stock::query()->with(['product.measure'])->where('branch_id', Auth::user()->branch_id)->defaultSort('id', 'desc')->paginate(15),
         ];
     }
 

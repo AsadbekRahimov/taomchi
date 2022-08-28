@@ -89,6 +89,14 @@ class PlatformProvider extends OrchidServiceProvider
                 ->permission('platform.stock.list')
                 ->title('Ombor'),
 
+            Menu::make('Sotish')
+                ->icon('handbag')
+                ->permission('platform.stock.sell'),
+
+            Menu::make('Olish')
+                ->icon('basket-loaded')
+                ->permission('platform.stock.buy'),
+
             Menu::make('Foydalanuvchilar')
                 ->icon('user')
                 ->route('platform.systems.users')
@@ -125,8 +133,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.users', 'Foydalanuvchilar'),
 
             ItemPermission::group('Ombor (Filial foydalanuvchilari uchun)')
-                ->addPermission('platform.stock.list', 'Zaxira maxsulotlar)')
-                ->addPermission('platform.stock.add_product', 'Zaxira maxsulotni omborga qoshish)'),
+                ->addPermission('platform.stock.list', 'Zaxira maxsulotlar')
+                ->addPermission('platform.stock.add_product', 'Zaxira maxsulotni omborga qo\'shish)')
+                ->addPermission('platform.stock.sell', 'Sotish')
+                ->addPermission('platform.stock.buy', 'Sotib olish'),
         ];
     }
 }
