@@ -2,6 +2,9 @@
 
 namespace App\Orchid\Screens\Sell;
 
+use App\Models\Supplier;
+use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
 
 class MainSellScreen extends Screen
@@ -13,8 +16,12 @@ class MainSellScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'suppliers' => Supplier::query()->get(),
+        ];
     }
+
+
 
     /**
      * Display header name.
@@ -23,8 +30,21 @@ class MainSellScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'MainSellScreen';
+        return 'Sotib olish';
     }
+
+    public function description(): ?string
+    {
+        return 'Omborga maxsulotlarni qabul qilish';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.sell',
+        ];
+    }
+
 
     /**
      * Button commands.
@@ -33,7 +53,10 @@ class MainSellScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make('Maxsulot qo\'shish')->route('platform.add_products')->icon('plus')
+                ->canSee(Auth::user()->hasAccess('platform.stock.add_product')),
+        ];
     }
 
     /**

@@ -131,3 +131,22 @@ Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScr
             ->parent('platform.stock_list')
             ->push('Maxsulot qo\'shish');
     });
+
+
+// Omborga maxsulotlarni sotib olish
+Route::screen('stock/buy/{supplier}', \App\Orchid\Screens\Buy\MainBuyScreen::class)
+    ->name('platform.buy_products')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Maxsulot sotib olish');
+    });
+
+// Ombordagi maxsulotlarni sotish
+Route::screen('stock/sell/{customer}', \App\Orchid\Screens\Sell\MainSellScreen::class)
+    ->name('platform.sell_products')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Maxsulot sotib olish');
+    });
