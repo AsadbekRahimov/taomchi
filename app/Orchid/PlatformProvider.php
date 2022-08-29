@@ -91,11 +91,17 @@ class PlatformProvider extends OrchidServiceProvider
 
             Menu::make('Sotish')
                 ->icon('handbag')
-                ->permission('platform.stock.sell'),
+                ->permission('platform.stock.sell')
+                ->list([
+                    Menu::make('Mijozlar')->icon('people')->route('platform.customers'),
+                ]),
 
             Menu::make('Olish')
                 ->icon('basket-loaded')
-                ->permission('platform.stock.buy'),
+                ->permission('platform.stock.buy')
+                ->list([
+                    Menu::make('Taminotchilar')->icon('organization')->route('platform.suppliers'),
+                ]),
 
             Menu::make('Foydalanuvchilar')
                 ->icon('user')

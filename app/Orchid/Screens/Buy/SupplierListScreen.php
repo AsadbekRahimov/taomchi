@@ -1,13 +1,12 @@
 <?php
 
-namespace App\Orchid\Screens\Sell;
+namespace App\Orchid\Screens\Buy;
 
 use App\Models\Supplier;
-use Illuminate\Support\Facades\Auth;
-use Orchid\Screen\Actions\Link;
+use App\Orchid\Layouts\Buy\SuppliersListTable;
 use Orchid\Screen\Screen;
 
-class MainSellScreen extends Screen
+class SupplierListScreen extends Screen
 {
     /**
      * Query data.
@@ -17,11 +16,9 @@ class MainSellScreen extends Screen
     public function query(): iterable
     {
         return [
-            'suppliers' => Supplier::query()->get(),
+            'suppliers' => Supplier::query()->orderByDesc('id')->paginate(15),
         ];
     }
-
-
 
     /**
      * Display header name.
@@ -30,21 +27,20 @@ class MainSellScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotib olish';
+        return 'Taminotchilar';
     }
 
     public function description(): ?string
     {
-        return 'Omborga maxsulotlarni qabul qilish';
+        return 'Omborga maxulot yetkazib beruvchi tamionotchilar ro\'yhati';
     }
 
     public function permission(): ?iterable
     {
         return [
-            'platform.stock.sell',
+            'platform.stock.buy',
         ];
     }
-
 
     /**
      * Button commands.
@@ -53,9 +49,7 @@ class MainSellScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [
-
-        ];
+        return [];
     }
 
     /**
@@ -65,6 +59,8 @@ class MainSellScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            SuppliersListTable::class,
+        ];
     }
 }

@@ -133,6 +133,15 @@ Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScr
     });
 
 
+// Taminotchilar
+Route::screen('stock/suppliers', \App\Orchid\Screens\Buy\SupplierListScreen::class)
+    ->name('platform.suppliers')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Taminotchilar');
+    });
+
 // Omborga maxsulotlarni sotib olish
 Route::screen('stock/buy/{supplier}', \App\Orchid\Screens\Buy\MainBuyScreen::class)
     ->name('platform.buy_products')
@@ -140,6 +149,15 @@ Route::screen('stock/buy/{supplier}', \App\Orchid\Screens\Buy\MainBuyScreen::cla
         return $trail
             ->parent('platform.index')
             ->push('Maxsulot sotib olish');
+    });
+
+// Mijozlar
+Route::screen('stock/customers', \App\Orchid\Screens\Sell\CustomerListScreen::class)
+    ->name('platform.customers')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Mijozlar');
     });
 
 // Ombordagi maxsulotlarni sotish

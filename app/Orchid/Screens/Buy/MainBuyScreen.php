@@ -103,7 +103,7 @@ class MainBuyScreen extends Screen
                             'supplier_id' => $this->supplier->id,
                             'box_count' => $stock->product->box,
                         ]);
-                })
+                })->cantHide(),
             ])->title('Omborxona maxsulotlari'),
             Layout::modal('addProductModal', [
                 Layout::rows([

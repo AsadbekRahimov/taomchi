@@ -2,12 +2,11 @@
 
 namespace App\Orchid\Screens\Sell;
 
-use App\Models\Supplier;
-use Illuminate\Support\Facades\Auth;
-use Orchid\Screen\Actions\Link;
+use App\Models\Customer;
+use App\Orchid\Layouts\Sell\CustomersListTable;
 use Orchid\Screen\Screen;
 
-class MainSellScreen extends Screen
+class CustomerListScreen extends Screen
 {
     /**
      * Query data.
@@ -17,11 +16,9 @@ class MainSellScreen extends Screen
     public function query(): iterable
     {
         return [
-            'suppliers' => Supplier::query()->get(),
+            'customers' => Customer::query()->orderByDesc('id')->paginate(15),
         ];
     }
-
-
 
     /**
      * Display header name.
@@ -30,12 +27,12 @@ class MainSellScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotib olish';
+        return 'Mijozlar ro\'yhati';
     }
 
     public function description(): ?string
     {
-        return 'Omborga maxsulotlarni qabul qilish';
+        return 'Omborxona mijozlari ro\'yhati';
     }
 
     public function permission(): ?iterable
@@ -45,7 +42,6 @@ class MainSellScreen extends Screen
         ];
     }
 
-
     /**
      * Button commands.
      *
@@ -53,9 +49,7 @@ class MainSellScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [
-
-        ];
+        return [];
     }
 
     /**
@@ -65,6 +59,8 @@ class MainSellScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            CustomersListTable::class,
+        ];
     }
 }
