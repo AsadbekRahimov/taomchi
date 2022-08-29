@@ -129,7 +129,9 @@ class MainBuyScreen extends Screen
 
     public function addPurchaseParty(Request $request)
     {
-        PurchaseParty::createParty($request->supplier_id);
+        $party = PurchaseParty::createParty($request->supplier_id);
+        Basket::query()->where('supplier_id', $party->supplier_id)->delete();
+        Purchase::createPurchases($party, $request->baskets);
         Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
     }
 

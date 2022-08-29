@@ -30,7 +30,7 @@ class Basket extends Model
     public static function addToBasket(\Illuminate\Http\Request $request)
     {
         return self::query()->create([
-            'supplier_id' => $request->supplier_id, 
+            'supplier_id' => $request->supplier_id,
             'product_id' => $request->id,
             'quantity' => $request->box === '1' ? $request->quantity * $request->box_count : $request->quantity,
             'price' => $request->price

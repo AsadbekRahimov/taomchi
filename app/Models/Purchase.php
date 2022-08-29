@@ -38,4 +38,32 @@ class Purchase extends Model
     {
         return $this->belongsTo(PurchaseParty::class, 'party_id', 'id');
     }
+
+    public static function createPurchases(PurchaseParty $party, array $basket)
+    {
+        //dd($basket);
+        foreach ($basket as $item)
+        {
+            $product = Product::query()->find((int)$item['product_id']);
+            self::query()->create([
+                'supplier_id' => $party->supplier_id,
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'profit' => self::profit($item['price'], $item['quantity'], $product->more_price),
+                'branch_id' => $party->branch_id,
+                'party_id' => $party->id,
+            ]);
+        }
+    }
+
+
+    private static function profit($price, $quantity, $more_price)
+    {
+        if ($price > $more_price) {
+            return ($price - $more_price) * $quantity;
+        } else {
+            return 0;
+        }
+    }
 }
