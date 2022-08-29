@@ -5,14 +5,12 @@ namespace App\Orchid\Screens\Buy;
 use App\Models\Basket;
 use App\Models\Stock;
 use App\Models\Supplier;
+use App\Orchid\Layouts\Buy\AddProductModal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
-use Orchid\Screen\Fields\CheckBox;
-use Orchid\Screen\Fields\Group;
-use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Screen\TD;
@@ -36,6 +34,7 @@ class MainBuyScreen extends Screen
             'products' => Cache::remember('stock_' . $branch_id, 24 * 60 * 60 * 10, function () use ($branch_id) {
                 return Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get();
             }),
+            'baskets' => Basket::query()->where('supplier_id', $supplier->id)->orderByDesc('id')->get(),
         ];
     }
 
@@ -105,15 +104,7 @@ class MainBuyScreen extends Screen
                         ]);
                 })->cantHide(),
             ])->title('Omborxona maxsulotlari'),
-            Layout::modal('addProductModal', [
-                Layout::rows([
-                    Group::make([
-                        CheckBox::make('box')->title('Qadoq')->sendTrueOrFalse()->value(true),
-                        Input::make('quantity')->title('Miqdori')->type('number')->required(),
-                        Input::make('price')->title('Narxi (xar bir dona uchun)')->type('number')->required(),
-                    ]),
-                ]),
-            ])->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
+            Layout::modal('addProductModal', AddProductModal::class)->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
         ];
     }
 
