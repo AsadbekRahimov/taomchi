@@ -3,9 +3,12 @@
 namespace App\Orchid\Screens\Buy;
 
 use App\Models\Basket;
+use App\Models\Purchase;
+use App\Models\PurchaseParty;
 use App\Models\Stock;
 use App\Models\Supplier;
 use App\Orchid\Layouts\Buy\AddProductModal;
+use App\Orchid\Layouts\Buy\BasketList;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -71,7 +74,14 @@ class MainBuyScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-
+            ModalToggle::make('Maxsulotlar')
+                ->icon('barcode')
+                ->modal('basketListModal')
+                ->method('addPurchaseParty')
+                ->modalTitle('Sotib olinayotgan maxsulotlar ro\'yhati')
+                ->parameters([
+                    'supplier_id' => $this->supplier->id,
+                ]),
         ];
     }
 
@@ -104,7 +114,10 @@ class MainBuyScreen extends Screen
                         ]);
                 })->cantHide(),
             ])->title('Omborxona maxsulotlari'),
-            Layout::modal('addProductModal', AddProductModal::class)->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
+            Layout::modal('addProductModal', AddProductModal::class)
+                ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
+            Layout::modal('basketListModal', BasketList::class)
+                ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
         ];
     }
 
@@ -113,6 +126,13 @@ class MainBuyScreen extends Screen
         Basket::addToBasket($request);
         Alert::success('Muaffaqiyatli savatga qo\'shildi');
     }
+
+    public function addPurchaseParty(Request $request)
+    {
+        PurchaseParty::createParty($request->supplier_id);
+        Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
+    }
+
     /*public function asyncProducts(string $product)
     {
         return [

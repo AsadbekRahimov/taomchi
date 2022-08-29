@@ -239,6 +239,7 @@ class Product extends Resource
             foreach (Branch::all() as $branch) {
                 Cache::forget('stock_' . $branch->id);
             }
+            Cache::forget('products');
         }
     }
 
