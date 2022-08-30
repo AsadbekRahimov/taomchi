@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Purchase;
+use App\Models\Stock;
 
 class PurchaseObserver
 {
@@ -14,50 +15,12 @@ class PurchaseObserver
      */
     public function created(Purchase $purchase)
     {
+        $stock = Stock::query()
+            ->where('branch_id', $purchase->branch_id)
+            ->where('product_id', $purchase->product_id)
+            ->first();
 
-    }
-
-    /**
-     * Handle the Purchase "updated" event.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return void
-     */
-    public function updated(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Handle the Purchase "deleted" event.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return void
-     */
-    public function deleted(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Handle the Purchase "restored" event.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return void
-     */
-    public function restored(Purchase $purchase)
-    {
-        //
-    }
-
-    /**
-     * Handle the Purchase "force deleted" event.
-     *
-     * @param  \App\Models\Purchase  $purchase
-     * @return void
-     */
-    public function forceDeleted(Purchase $purchase)
-    {
-        //
+        $stock->quantity += $purchase->quantity;
+        $stock->save();
     }
 }

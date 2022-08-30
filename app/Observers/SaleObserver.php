@@ -3,6 +3,7 @@
 namespace App\Observers;
 
 use App\Models\Sale;
+use App\Models\Stock;
 
 class SaleObserver
 {
@@ -14,50 +15,12 @@ class SaleObserver
      */
     public function created(Sale $sale)
     {
-        //
-    }
+        $stock = Stock::query()
+            ->where('branch_id', $sale->branch_id)
+            ->where('product_id', $sale->product_id)
+            ->first();
 
-    /**
-     * Handle the Sale "updated" event.
-     *
-     * @param  \App\Models\Sale  $sale
-     * @return void
-     */
-    public function updated(Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Handle the Sale "deleted" event.
-     *
-     * @param  \App\Models\Sale  $sale
-     * @return void
-     */
-    public function deleted(Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Handle the Sale "restored" event.
-     *
-     * @param  \App\Models\Sale  $sale
-     * @return void
-     */
-    public function restored(Sale $sale)
-    {
-        //
-    }
-
-    /**
-     * Handle the Sale "force deleted" event.
-     *
-     * @param  \App\Models\Sale  $sale
-     * @return void
-     */
-    public function forceDeleted(Sale $sale)
-    {
-        //
+        $stock->quantity -= $sale->quantity;
+        $stock->save();
     }
 }
