@@ -41,7 +41,6 @@ class Purchase extends Model
 
     public static function createPurchases(PurchaseParty $party, array $basket)
     {
-        //dd($basket);
         foreach ($basket as $item)
         {
             $product = Product::query()->find((int)$item['product_id']);
@@ -60,8 +59,8 @@ class Purchase extends Model
 
     private static function profit($price, $quantity, $more_price)
     {
-        if ($price > $more_price) {
-            return ($price - $more_price) * $quantity;
+        if ($price < $more_price) {
+            return ($more_price - $price) * $quantity;
         } else {
             return 0;
         }
