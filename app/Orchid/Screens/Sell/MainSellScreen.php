@@ -107,7 +107,7 @@ class MainSellScreen extends Screen
                     return $stock->product->box;
                 })->cantHide(),
                 TD::make('quantity', 'Mavjud miqdori')->render(function (Stock $stock) {
-                    return Link::make($stock->quantity != 0 ? round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas')
+                    return Link::make(HelperService::getStockQuantity($stock))
                         ->type(HelperService::getStockColor($stock));
                 })->cantHide(),
                 TD::make('add', 'Qo\'shish')->render(function (Stock $stock) {

@@ -38,8 +38,7 @@ class StockListTable extends Table
                 return $stock->product->box;
             })->cantHide(),
             TD::make('quantity', 'Qoldiq miqdori')->render(function (Stock $stock) {
-                return ModalToggle::make($stock->quantity !== 0 ?
-                    round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas')
+                return ModalToggle::make(HelperService::getStockQuantity($stock))
                     ->modal('asyncEditQuantityModal')
                     ->modalTitle($stock->product->name . ': ' . $stock->quantity . ' ' . $stock->product->measure->name)
                     ->method('saveStock')

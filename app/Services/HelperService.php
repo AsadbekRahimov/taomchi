@@ -19,4 +19,14 @@ class HelperService
         else
             return Color::SUCCESS();
     }
+
+    public static function getStockQuantity(\App\Models\Stock $stock)
+    {
+        if ($stock->quantity <= 0)
+            return 'Mavjud emas';
+        elseif ($stock->quantity > 0 && $stock->product->box == 1)
+            return $stock->quantity;
+        else
+            return round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')';
+    }
 }
