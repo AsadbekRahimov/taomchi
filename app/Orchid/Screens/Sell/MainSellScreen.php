@@ -9,6 +9,7 @@ use App\Models\Stock;
 use App\Models\Customer;
 use App\Orchid\Layouts\Sell\AddProductModal;
 use App\Orchid\Layouts\Sell\CardList;
+use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -91,6 +92,7 @@ class MainSellScreen extends Screen
     public function layout(): iterable
     {
         return [
+            ColorIndicator::class,
             Layout::table('products', [
                 TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);

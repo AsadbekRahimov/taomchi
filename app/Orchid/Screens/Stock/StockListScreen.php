@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Stock;
 
 use App\Models\Stock;
+use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Orchid\Layouts\Stock\QuantityEditLayout;
 use App\Orchid\Layouts\Stock\StockListTable;
 use Illuminate\Http\Request;
@@ -71,6 +72,7 @@ class StockListScreen extends Screen
     public function layout(): iterable
     {
         return [
+            ColorIndicator::class,
             StockListTable::class,
             Layout::modal('asyncEditQuantityModal', QuantityEditLayout::class)
                 ->async('addToStock')->applyButton('Saqlash')->closeButton('Yopish'),
