@@ -34,9 +34,7 @@ class MainBuyScreen extends Screen
         $this->supplier = $supplier;
         $branch_id = Auth::user()->branch_id ?: 0;
         return [
-            'products' => Cache::remember('stock_' . $branch_id, 24 * 60 * 60 * 10, function () use ($branch_id) {
-                return Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get();
-            }),
+            'products' => Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
             'baskets' => Basket::query()->where('supplier_id', $supplier->id)->orderByDesc('id')->get(),
         ];
     }
@@ -98,8 +96,11 @@ class MainBuyScreen extends Screen
                 TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
                 })->cantHide(),
+                TD::make('box', 'Qadoqdagi soni')->render(function (Stock $stock) {
+                    return $stock->product->box;
+                })->cantHide(),
                 TD::make('quantity', 'Mavjud miqdori')->render(function (Stock $stock) {
-                    return $stock->quantity !== 0 ? round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas';
+                    return $stock->quantity != 0 ? round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas';
                 })->cantHide(),
                 TD::make('add', 'Qo\'shish')->render(function (Stock $stock) {
                     return ModalToggle::make('')
