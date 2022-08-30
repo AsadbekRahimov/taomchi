@@ -27,6 +27,7 @@ class MainBuyScreen extends Screen
 {
 
     public $supplier;
+    public $baskets;
     /**
      * Query data.
      *
@@ -36,9 +37,10 @@ class MainBuyScreen extends Screen
     {
         $this->supplier = $supplier;
         $branch_id = Auth::user()->branch_id ?: 0;
+        $this->baskets = Basket::query()->where('supplier_id', $supplier->id)->orderByDesc('id')->get();
         return [
             'products' => Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
-            'baskets' => Basket::query()->where('supplier_id', $supplier->id)->orderByDesc('id')->get(),
+            'baskets' => $this->baskets,
         ];
     }
 
@@ -82,12 +84,13 @@ class MainBuyScreen extends Screen
                 ->modalTitle('Sotib olinayotgan maxsulotlar ro\'yhati')
                 ->parameters([
                     'supplier_id' => $this->supplier->id,
-                ]),
+                ])->canSee($this->baskets->count()),
             Button::make('O\'chirish')->icon('trash')
                 ->method('deleteBasket')
+                ->confirm('Siz rostdan ro\'yhatni o\'chirmoqchimisiz?')
                 ->parameters([
                     'supplier_id' => $this->supplier->id,
-                ]),
+                ])->canSee($this->baskets->count()),
         ];
     }
 

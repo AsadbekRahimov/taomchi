@@ -26,6 +26,7 @@ use Orchid\Support\Facades\Layout;
 class MainSellScreen extends Screen
 {
     public $customer;
+    public $cards;
     /**
      * Query data.
      *
@@ -35,9 +36,10 @@ class MainSellScreen extends Screen
     {
         $this->customer = $customer;
         $branch_id = Auth::user()->branch_id ?: 0;
+        $this->cards = Card::query()->where('customer_id', $customer->id)->orderByDesc('id')->get();
         return [
             'products' => Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
-            'cards' => Card::query()->where('customer_id', $customer->id)->orderByDesc('id')->get(),
+            'cards' => $this->cards,
         ];
     }
 
@@ -81,12 +83,13 @@ class MainSellScreen extends Screen
                 ->modalTitle('Sotilayotgan maxsulotlar ro\'yhati')
                 ->parameters([
                     'customer_id' => $this->customer->id,
-                ]),
+                ])->canSee($this->cards->count()),
             Button::make('O\'chirish')->icon('trash')
                 ->method('deleteCard')
+                ->confirm('Siz rostdan ro\'yhatni o\'chirmoqchimisiz?')
                 ->parameters([
                     'customer_id' => $this->customer->id,
-                ]),
+                ])->canSee($this->cards->count()),
         ];
     }
 
