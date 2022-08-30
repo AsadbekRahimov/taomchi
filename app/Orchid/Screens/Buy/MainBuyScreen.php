@@ -9,9 +9,12 @@ use App\Models\Stock;
 use App\Models\Supplier;
 use App\Orchid\Layouts\Buy\AddProductModal;
 use App\Orchid\Layouts\Buy\BasketList;
+use App\Orchid\Layouts\Stock\ColorIndicator;
+use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
@@ -80,6 +83,11 @@ class MainBuyScreen extends Screen
                 ->parameters([
                     'supplier_id' => $this->supplier->id,
                 ]),
+            Button::make('O\'chirish')->icon('trash')
+                ->method('deleteBasket')
+                ->parameters([
+                    'supplier_id' => $this->supplier->id,
+                ]),
         ];
     }
 
@@ -92,6 +100,7 @@ class MainBuyScreen extends Screen
     {
         return [
             //ProductListener::class, --> if has many products
+            ColorIndicator::class,
             Layout::table('products', [
                 TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
@@ -100,7 +109,8 @@ class MainBuyScreen extends Screen
                     return $stock->product->box;
                 })->cantHide(),
                 TD::make('quantity', 'Mavjud miqdori')->render(function (Stock $stock) {
-                    return $stock->quantity != 0 ? round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas';
+                    return Link::make($stock->quantity != 0 ? round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')' : 'Mavjud emas')
+                        ->type(HelperService::getStockColor($stock));
                 })->cantHide(),
                 TD::make('add', 'Qo\'shish')->render(function (Stock $stock) {
                     return ModalToggle::make('')
@@ -131,9 +141,15 @@ class MainBuyScreen extends Screen
     public function addPurchaseParty(Request $request)
     {
         $party = PurchaseParty::createParty($request->supplier_id);
-        Basket::query()->where('supplier_id', $party->supplier_id)->delete();
+        $this->deleteBasket($request);
         Purchase::createPurchases($party, $request->baskets);
         Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
+    }
+
+    public function deleteBasket(Request $request)
+    {
+        Basket::query()->where('supplier_id', $request->supplier_id)->delete();
+        Alert::success('Muaffaqiyatli tozalandi');
     }
 
     /*public function asyncProducts(string $product)

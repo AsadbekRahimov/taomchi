@@ -13,6 +13,7 @@ use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
@@ -81,6 +82,11 @@ class MainSellScreen extends Screen
                 ->parameters([
                     'customer_id' => $this->customer->id,
                 ]),
+            Button::make('O\'chirish')->icon('trash')
+                ->method('deleteCard')
+                ->parameters([
+                    'customer_id' => $this->customer->id,
+                ]),
         ];
     }
 
@@ -133,8 +139,14 @@ class MainSellScreen extends Screen
     public function addSalesParty(Request $request)
     {
         $party = SalesParty::createParty($request->customer_id);
-        Card::query()->where('customer_id', $party->customer_id)->delete();
+        $this->deleteCard($request);
         Sale::createSales($party, $request->cards);
         Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
+    }
+
+    public function deleteCard(Request $request)
+    {
+        Card::query()->where('customer_id', $request->customer_id)->delete();
+        Alert::success('Muaffaqiyatli tozalandi');
     }
 }
