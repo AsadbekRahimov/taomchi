@@ -37,4 +37,21 @@ class Sale extends Model
     {
         return $this->belongsTo(SalesParty::class, 'party_id', 'id');
     }
+
+
+    public static function createSales(SalesParty$party, array $cards)
+    {
+        foreach ($cards as $item)
+        {
+            $product = Product::query()->find((int)$item['product_id']);
+            self::query()->create([
+                'customer_id' => $party->customer_id,
+                'product_id' => $item['product_id'],
+                'quantity' => $item['quantity'],
+                'price' => $item['price'],
+                'branch_id' => $party->branch_id,
+                'party_id' => $party->id,
+            ]);
+        }
+    }
 }

@@ -25,4 +25,15 @@ class Card extends Model
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');
     }
+
+    public static function addToCard(\Illuminate\Http\Request $request)
+    {
+        $product = Product::query()->find((int)$request->id);
+        return self::query()->create([
+            'customer_id' => $request->customer_id,
+            'product_id' => $request->id,
+            'quantity' => $request->box === '1' ? $request->quantity * $request->box_count : $request->quantity,
+            'price' => $product->{ $request->price . '_price' },
+        ]);
+    }
 }

@@ -3,6 +3,7 @@
 namespace App\Orchid\Layouts\Stock;
 
 use App\Models\Stock;
+use App\Services\HelperService;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
@@ -30,8 +31,11 @@ class StockListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('product_id', 'Qoldiq miqdori')->render(function (Stock $stock) {
+            TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
                 return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
+            })->cantHide(),
+            TD::make('box', 'Qadoqdagi soni')->render(function (Stock $stock) {
+                return $stock->product->box;
             })->cantHide(),
             TD::make('quantity', 'Qoldiq miqdori')->render(function (Stock $stock) {
                 return ModalToggle::make($stock->quantity !== 0 ?
@@ -41,11 +45,8 @@ class StockListTable extends Table
                     ->method('saveStock')
                     ->asyncParameters([
                         'stock' => $stock->id,
-                    ])->type($stock->quantity > $stock->product->min ? Color::SUCCESS() : Color::DANGER());
+                    ])->type(HelperService::getStockColor($stock));
             })->cantHide(),
-            TD::make('updated_at', 'So\'ngi o\'zgarish')->render(function (Stock $stock) {
-                return $stock->updated_at->toDateTimeString();
-            }),
         ];
     }
 }
