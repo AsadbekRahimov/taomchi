@@ -106,7 +106,7 @@ class MainBuyScreen extends Screen
                         ->icon('plus')
                         ->modal('addProductModal')
                         ->method('addProduct')
-                        ->modalTitle($stock->product->name)
+                        ->modalTitle($stock->product->name . ' | Sotish: ' . number_format($stock->product->more_price) . ' so\'m')
                         ->parameters([
                             'id' => $stock->product_id,
                             'supplier_id' => $this->supplier->id,
