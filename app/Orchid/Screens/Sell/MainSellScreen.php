@@ -156,14 +156,6 @@ class MainSellScreen extends Screen
         Alert::success('Buyurtma muaffaqiyatli yaratildi');
     }
 
-    public function addSalesParty(Request $request)
-    {
-        $party = SalesParty::createParty($request->customer_id);
-        $this->deleteCard($request);
-        Sale::createSales($party, $request->cards);
-        Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
-    }
-
     public function deleteCard(Request $request)
     {
         Card::query()->where('customer_id', $request->customer_id)->delete();

@@ -12,6 +12,7 @@ class Payment extends Model
 {
     use HasFactory;
     use AsSource, Filterable, Attachable;
+
     protected $fillable = [
         'customer_id',
         'price',
@@ -41,4 +42,16 @@ class Payment extends Model
     {
         return $this->belongsTo(SalesParty::class, 'party_id', 'id');
     }
+
+    public static function addPayment($party_id, Order $order, $type)
+    {
+        return self::query()->create([
+            'customer_id' => $order->customer_id,
+            'price' => ($order->cardsSum() - $order->discount),
+            'type' => $type,
+            'branch_id' => $order->branch_id,
+            'party_id' => $party_id,
+        ]);
+    }
+
 }

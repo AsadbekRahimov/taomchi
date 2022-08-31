@@ -4,6 +4,9 @@ namespace App\Orchid\Screens\Order;
 
 use App\Models\Card;
 use App\Models\Order;
+use App\Models\Payment;
+use App\Models\Sale;
+use App\Models\SalesParty;
 use App\Orchid\Layouts\Order\discountModal;
 use App\Orchid\Layouts\Order\fullPaymentModal;
 use App\Orchid\Layouts\Order\OrderListTable;
@@ -77,16 +80,15 @@ class OrderListScreen extends Screen
     }
 
 
-    public function deleteCard(Request $request)
-    {
-        Card::query()->where('customer_id', $request->customer_id)->delete();
-        Order::query()->where('customer_id', $request->customer_id)->delete();
-        Alert::success('Muaffaqiyatli tozalandi');
-    }
 
     public function fullPayment(Request $request)
     {
-
+        $order = Order::query()->find($request->id);
+        $party = SalesParty::createParty($request->customer_id);
+        Payment::addPayment($party->id, $order, $request->type);
+        Sale::createSales($party->id, $request->customer_id, $party->branch_id);
+        $this->deleteCard($request);
+        Alert::success('Maxsulotlar muaffaqiyatli sotildi');
     }
 
     public function partPayment(Request $request)
@@ -100,5 +102,12 @@ class OrderListScreen extends Screen
             'discount' => (int)$request->discount,
         ]);
         Alert::success('Chegirma muaffaqiyatli kiritildi');
+    }
+
+    public function deleteCard(Request $request)
+    {
+        Card::query()->where('customer_id', $request->customer_id)->delete();
+        Order::query()->where('customer_id', $request->customer_id)->delete();
+        Alert::success('Muaffaqiyatli tozalandi');
     }
 }

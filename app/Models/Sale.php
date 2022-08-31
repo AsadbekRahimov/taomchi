@@ -43,18 +43,18 @@ class Sale extends Model
     }
 
 
-    public static function createSales(SalesParty$party, array $cards)
+    public static function createSales($party_id, $customer_id, $branch_id)
     {
+        $cards = Card::query()->where('customer_id', $customer_id)->get();
         foreach ($cards as $item)
         {
-            $product = Product::query()->find((int)$item['product_id']);
             self::query()->create([
-                'customer_id' => $party->customer_id,
-                'product_id' => $item['product_id'],
-                'quantity' => $item['quantity'],
-                'price' => $item['price'],
-                'branch_id' => $party->branch_id,
-                'party_id' => $party->id,
+                'customer_id' => $item->customer_id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->quantity,
+                'price' => $item->price,
+                'branch_id' => $branch_id,
+                'party_id' => $party_id,
             ]);
         }
     }

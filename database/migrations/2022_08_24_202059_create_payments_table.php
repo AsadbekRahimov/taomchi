@@ -18,7 +18,8 @@ return new class extends Migration
             $table->integer('customer_id');
             $table->integer('price');
             $table->integer('type');
-            $table->integer('party_id');
+            $table->integer('party_id')->nullable();
+            $table->integer('branch_id');
             $table->timestamps();
         });
     }
