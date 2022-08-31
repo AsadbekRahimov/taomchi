@@ -17,7 +17,6 @@ class Duty extends Model
        'customer_id',
        'supplier_id',
        'duty',
-       'date',
        'branch_id',
        'party_id',
     ];

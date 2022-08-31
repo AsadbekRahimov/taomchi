@@ -18,7 +18,6 @@ return new class extends Migration
             $table->integer('customer_id')->nullable();
             $table->integer('supplier_id')->nullable();
             $table->integer('duty');
-            $table->integer('date');
             $table->integer('branch_id');
             $table->integer('party_id');
             $table->timestamps();
