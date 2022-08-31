@@ -58,7 +58,14 @@ class OrderListTable extends Table
                         ->parameters([
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
-                        ])->modalTitle('To\'lov summasi: ' . HelperService::getOrderPrice($model)),
+                        ])->modalTitle('To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
+                    ModalToggle::make('Chegirma kiritish')
+                        ->method('addDiscount')
+                        ->modal('discountModal')
+                        ->icon('tag')
+                        ->parameters([
+                            'id' => $model->id,
+                        ])->modalTitle('To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
                     Button::make('Buyurtmani bekor qilish')
                         ->method('deleteCard')
                         ->icon('trash')

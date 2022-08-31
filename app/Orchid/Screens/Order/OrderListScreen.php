@@ -4,6 +4,7 @@ namespace App\Orchid\Screens\Order;
 
 use App\Models\Card;
 use App\Models\Order;
+use App\Orchid\Layouts\Order\discountModal;
 use App\Orchid\Layouts\Order\fullPaymentModal;
 use App\Orchid\Layouts\Order\OrderListTable;
 use Illuminate\Http\Request;
@@ -68,7 +69,8 @@ class OrderListScreen extends Screen
     {
         return [
             OrderListTable::class,
-            Layout::modal('fullPaymentModal', [fullPaymentModal::class]),
+            Layout::modal('fullPaymentModal', [fullPaymentModal::class])->applyButton('To\'lash')->closeButton('Yopish'),
+            Layout::modal('discountModal', [discountModal::class])->applyButton('Chegirma kiritish')->closeButton('Yopish'),
         ];
     }
 
@@ -83,5 +85,13 @@ class OrderListScreen extends Screen
     public function fullPayment(Request $request)
     {
 
+    }
+
+    public function addDiscount(Request $request)
+    {
+        Order::query()->find($request->id)->update([
+            'discount' => (int)$request->discount,
+        ]);
+        Alert::success('Chegirma muaffaqiyatli kiritildi');
     }
 }
