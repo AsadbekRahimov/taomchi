@@ -2,6 +2,9 @@
 
 namespace App\Orchid\Layouts\Order;
 
+use App\Services\HelperService;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -32,13 +35,20 @@ class OrderListTable extends Table
             TD::make('user_id', 'Foydalanuvchi')->render(function ($model) {
                 return $model->user->name;
             }),
-            TD::make('discount', 'Chegirma'),
+            TD::make('discount', 'Chegirma')->render(function ($model) {
+                return number_format($model->discount);
+            }),
             TD::make('total_price', 'Umumiy summasi')->render(function ($model) {
-                return $model->cardsSum();
+                return HelperService::getOrderPrice($model);
             }),
             TD::make('created_at', 'Sana')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
+            TD::make('action', 'Amallar')->render(function ($model) {
+                return DropDown::make('')->icon('list')->list([
+                    Button::make('Bekor qilish')->method('deleteCard')->icon('trash')
+                ]);
+            })
         ];
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Order;
 use Orchid\Support\Color;
 
 class HelperService
@@ -30,5 +31,13 @@ class HelperService
             return $stock->quantity;
         else
             return round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')';
+    }
+
+    public static function getOrderPrice(Order $order)
+    {
+        if ($order->discount)
+            return number_format($order->cardsSum() - $order->discount) . ' (<strike>' . number_format($order->cardsSum()) . '</strike>)';
+        else
+            return number_format($order->cardsSum());
     }
 }
