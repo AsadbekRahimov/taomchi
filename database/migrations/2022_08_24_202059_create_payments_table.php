@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('customer_id');
             $table->integer('price');
             $table->integer('type');
+            $table->integer('party_id');
             $table->timestamps();
         });
     }

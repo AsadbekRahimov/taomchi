@@ -17,6 +17,7 @@ class Payment extends Model
         'price',
         'type',
         'branch_id',
+        'party_id'
     ];
 
     public  const TYPE = [
@@ -34,5 +35,10 @@ class Payment extends Model
     public function branch()
     {
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
+    }
+
+    public function party()
+    {
+        return $this->belongsTo(SalesParty::class, 'party_id', 'id');
     }
 }
