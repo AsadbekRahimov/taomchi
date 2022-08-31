@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Sell;
 
 use App\Models\Card;
+use App\Models\Order;
 use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Models\Stock;
@@ -27,6 +28,7 @@ class MainSellScreen extends Screen
 {
     public $customer;
     public $cards;
+    public $ordered;
     /**
      * Query data.
      *
@@ -37,6 +39,9 @@ class MainSellScreen extends Screen
         $this->customer = $customer;
         $branch_id = Auth::user()->branch_id ?: 0;
         $this->cards = Card::query()->where('customer_id', $customer->id)->orderByDesc('id')->get();
+        //dd($this->cards->count());
+        $this->ordered = $this->cards->count() ? $this->cards->first()->ordered : 0;
+
         return [
             'products' => Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
             'cards' => $this->cards,
@@ -52,7 +57,12 @@ class MainSellScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotish | ' . $this->customer->name;
+        if ($this->ordered)
+        {
+            return 'Sotish | ' . $this->customer->name . ' | Buyurtma qabul qilingan';
+        } else {
+            return 'Sotish | ' . $this->customer->name;
+        }
     }
 
     public function description(): ?string
@@ -79,7 +89,7 @@ class MainSellScreen extends Screen
             ModalToggle::make('Maxsulotlar')
                 ->icon('barcode')
                 ->modal('cardListModal')
-                ->method('addSalesParty')
+                ->method('addSalesOrder')
                 ->modalTitle('Sotilayotgan maxsulotlar ro\'yhati')
                 ->parameters([
                     'customer_id' => $this->customer->id,
@@ -89,7 +99,7 @@ class MainSellScreen extends Screen
                 ->confirm('Siz rostdan ro\'yhatni o\'chirmoqchimisiz?')
                 ->parameters([
                     'customer_id' => $this->customer->id,
-                ])->canSee($this->cards->count()),
+                ])->canSee($this->cards->count() && !$this->ordered),
         ];
     }
 
@@ -129,7 +139,7 @@ class MainSellScreen extends Screen
             Layout::modal('addProductModal', AddProductModal::class)
                 ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
             Layout::modal('cardListModal', CardList::class)
-                ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
+                ->size(Modal::SIZE_LG)->applyButton('Buyurtma qilish')->closeButton('Bekor qilish')->withoutApplyButton($this->ordered),
         ];
     }
 
@@ -137,6 +147,13 @@ class MainSellScreen extends Screen
     {
         Card::addToCard($request);
         Alert::success('Muaffaqiyatli savatga qo\'shildi');
+    }
+
+    public function addSalesOrder(Request $request)
+    {
+        Order::createOrder($request->customer_id);
+        Card::createOrder($request->customer_id);
+        Alert::success('Buyurtma muaffaqiyatli yaratildi');
     }
 
     public function addSalesParty(Request $request)
@@ -150,6 +167,7 @@ class MainSellScreen extends Screen
     public function deleteCard(Request $request)
     {
         Card::query()->where('customer_id', $request->customer_id)->delete();
+        Order::query()->where('customer_id', $request->customer_id)->delete();
         Alert::success('Muaffaqiyatli tozalandi');
     }
 }

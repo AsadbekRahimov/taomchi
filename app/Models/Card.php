@@ -14,6 +14,7 @@ class Card extends Model
         'product_id',
         'quantity',
         'price',
+        'ordered'
     ];
 
     public function customer()
@@ -34,6 +35,13 @@ class Card extends Model
             'product_id' => $request->id,
             'quantity' => $request->box === '1' ? $request->quantity * $request->box_count : $request->quantity,
             'price' => $product->{ $request->price . '_price' },
+        ]);
+    }
+
+    public static function createOrder($customer_id)
+    {
+        return self::query()->where('customer_id', $customer_id)->update([
+            'ordered' => 1,
         ]);
     }
 }

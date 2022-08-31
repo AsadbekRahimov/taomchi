@@ -22,8 +22,10 @@ class HelperService
 
     public static function getStockQuantity(\App\Models\Stock $stock)
     {
-        if ($stock->quantity <= 0)
+        if ($stock->quantity == 0)
             return 'Mavjud emas';
+        elseif ($stock->quantity < 0)
+            return $stock->quantity;
         elseif ($stock->quantity > 0 && $stock->product->box == 1)
             return $stock->quantity;
         else
