@@ -14,7 +14,6 @@ class Order extends Model
     use AsSource, Filterable, Attachable;
     protected $fillable = [
        'customer_id',
-       'price',
        'discount',
        'branch_id',
        'user_id',
