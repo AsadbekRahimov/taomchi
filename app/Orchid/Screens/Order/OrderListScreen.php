@@ -7,6 +7,7 @@ use App\Models\Order;
 use App\Orchid\Layouts\Order\discountModal;
 use App\Orchid\Layouts\Order\fullPaymentModal;
 use App\Orchid\Layouts\Order\OrderListTable;
+use App\Orchid\Layouts\Order\partPaymentModal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
@@ -70,6 +71,7 @@ class OrderListScreen extends Screen
         return [
             OrderListTable::class,
             Layout::modal('fullPaymentModal', [fullPaymentModal::class])->applyButton('To\'lash')->closeButton('Yopish'),
+            Layout::modal('partPaymentModal', [partPaymentModal::class])->applyButton('To\'lash')->closeButton('Yopish'),
             Layout::modal('discountModal', [discountModal::class])->applyButton('Chegirma kiritish')->closeButton('Yopish'),
         ];
     }
@@ -83,6 +85,11 @@ class OrderListScreen extends Screen
     }
 
     public function fullPayment(Request $request)
+    {
+
+    }
+
+    public function partPayment(Request $request)
     {
 
     }

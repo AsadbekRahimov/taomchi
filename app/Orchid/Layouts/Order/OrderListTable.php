@@ -59,6 +59,14 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->modalTitle('To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
+                    ModalToggle::make('Qisman to\'lov qilish')
+                        ->method('partPayment')
+                        ->modal('partPaymentModal')
+                        ->icon('book-open')
+                        ->parameters([
+                            'id' => $model->id,
+                            'customer_id' => $model->customer_id,
+                        ])->modalTitle('To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
                     ModalToggle::make('Chegirma kiritish')
                         ->method('addDiscount')
                         ->modal('discountModal')
