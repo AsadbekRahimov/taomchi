@@ -204,3 +204,12 @@ Route::screen('sales', \App\Orchid\Screens\Sell\SalesScreen::class)
             ->parent('platform.index')
             ->push('Sotilgan partiyalar');
     });
+
+// Buyurtmalar
+Route::screen('orders', \App\Orchid\Screens\Order\OrderListScreen::class)
+    ->name('platform.orders')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Buyurtmalar');
+    });

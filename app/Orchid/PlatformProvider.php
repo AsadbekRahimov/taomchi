@@ -111,6 +111,12 @@ class PlatformProvider extends OrchidServiceProvider
                         ->route('platform.purchases')->permission('platform.stock.purchases'),
                 ]),
 
+            Menu::make('Buyurtmalar')
+                ->icon('history')
+                ->route('platform.orders')
+                ->permission('platform.stock.orders')
+                ->title('Sotuv'),
+
             Menu::make('Foydalanuvchilar')
                 ->icon('user')
                 ->route('platform.systems.users')
@@ -154,7 +160,8 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.stock.buy_parties', 'Olingan partiyalar')
                 ->addPermission('platform.stock.sell_parties', 'Sotilgan partiyalar')
                 ->addPermission('platform.stock.purchases', 'Olingan maxsulotlar')
-                ->addPermission('platform.stock.sales', 'Sotilgan maxsulotlar'),
+                ->addPermission('platform.stock.sales', 'Sotilgan maxsulotlar')
+                ->addPermission('platform.stock.orders', 'Buyurtmalar'),
         ];
     }
 }

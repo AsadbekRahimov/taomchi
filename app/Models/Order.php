@@ -35,6 +35,21 @@ class Order extends Model
         return $this->belongsTo(User::class, 'branch_id', 'id');
     }
 
+    public function cards()
+    {
+        return $this->hasMany(Card::class, 'customer_id', 'customer_id');
+    }
+
+
+    public function cardsSum()
+    {
+        $sum = 0;
+        foreach ($this->cards as $card) {
+            $sum += ($card->price * $card->quantity);
+        }
+        return $sum;
+    }
+
     public static function createOrder(mixed $customer_id)
     {
         $user = Auth::user();
