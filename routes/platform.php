@@ -170,7 +170,7 @@ Route::screen('stock/sell/{customer}', \App\Orchid\Screens\Sell\MainSellScreen::
     });
 
 // Sotib olingan partiyalar
-Route::screen('stock/buy/parties', \App\Orchid\Screens\Buy\PurchasesPartyScreen::class)
+Route::screen('buy/parties', \App\Orchid\Screens\Buy\PurchasesPartyScreen::class)
     ->name('platform.buy_parties')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
@@ -179,7 +179,7 @@ Route::screen('stock/buy/parties', \App\Orchid\Screens\Buy\PurchasesPartyScreen:
     });
 
 // Sotilgan  partiyalar
-Route::screen('stock/sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::class)
+Route::screen('sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::class)
     ->name('platform.sell_parties')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
@@ -188,19 +188,19 @@ Route::screen('stock/sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::c
     });
 
 // Sotib olingan maxsulotlar
-Route::screen('stock/buy/parties/{party}', \App\Orchid\Screens\Buy\PurchasesScreen::class)
-    ->name('platform.buy_party')
+Route::screen('purchases', \App\Orchid\Screens\Buy\PurchasesScreen::class)
+    ->name('platform.purchases')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
-            ->parent('platform.buy_parties')
+            ->parent('platform.index')
             ->push('Sotib olingan maxsulotlar');
     });
 
 // Sotilgan  maxsulotlar
-Route::screen('stock/sell/parties/{party}', \App\Orchid\Screens\Sell\SalesScreen::class)
-    ->name('platform.sell_party')
+Route::screen('sales', \App\Orchid\Screens\Sell\SalesScreen::class)
+    ->name('platform.sales')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
-            ->parent('platform.sell_parties')
+            ->parent('platform.index')
             ->push('Sotilgan partiyalar');
     });

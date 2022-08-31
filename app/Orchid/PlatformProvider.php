@@ -91,16 +91,24 @@ class PlatformProvider extends OrchidServiceProvider
 
             Menu::make('Sotish')
                 ->icon('handbag')
-                ->permission('platform.stock.sell')
                 ->list([
-                    Menu::make('Mijozlar')->icon('people')->route('platform.customers'),
+                    Menu::make('Mijozlar')->icon('people')
+                        ->route('platform.customers')->permission('platform.stock.sell'),
+                    Menu::make('Sotilgan partiyalar')->icon('call-out')
+                        ->route('platform.sell_parties')->permission('platform.stock.sell_parties'),
+                    Menu::make('Sotilgan maxsulotlar')->icon('action-redo')
+                        ->route('platform.sales')->permission('platform.stock.sales'),
                 ]),
 
             Menu::make('Olish')
                 ->icon('basket-loaded')
-                ->permission('platform.stock.buy')
                 ->list([
-                    Menu::make('Taminotchilar')->icon('organization')->route('platform.suppliers'),
+                    Menu::make('Taminotchilar')->icon('organization')
+                        ->route('platform.suppliers')->permission('platform.stock.buy'),
+                    Menu::make('Olingan partiyalar')->icon('call-in')
+                        ->route('platform.buy_parties')->permission('platform.stock.buy_parties'),
+                    Menu::make('Olingan maxsulotlar')->icon('action-undo')
+                        ->route('platform.purchases')->permission('platform.stock.purchases'),
                 ]),
 
             Menu::make('Foydalanuvchilar')
@@ -142,7 +150,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.stock.list', 'Zaxira maxsulotlar')
                 ->addPermission('platform.stock.add_product', 'Zaxira maxsulotni omborga qo\'shish)')
                 ->addPermission('platform.stock.sell', 'Sotish')
-                ->addPermission('platform.stock.buy', 'Sotib olish'),
+                ->addPermission('platform.stock.buy', 'Sotib olish')
+                ->addPermission('platform.stock.buy_parties', 'Olingan partiyalar')
+                ->addPermission('platform.stock.sell_parties', 'Sotilgan partiyalar')
+                ->addPermission('platform.stock.purchases', 'Olingan maxsulotlar')
+                ->addPermission('platform.stock.sales', 'Sotilgan maxsulotlar'),
         ];
     }
 }
