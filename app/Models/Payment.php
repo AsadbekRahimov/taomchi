@@ -54,4 +54,15 @@ class Payment extends Model
         ]);
     }
 
+    public static function addPartPayment($party_id, Order $order, $type)
+    {
+        return self::query()->create([
+            'customer_id' => $order->customer_id,
+            'price' => ($order->cardsSum() - $order->discount),
+            'type' => $type,
+            'branch_id' => $order->branch_id,
+            'party_id' => $party_id,
+        ]);
+    }
+
 }
