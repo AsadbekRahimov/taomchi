@@ -2,11 +2,15 @@
 
 namespace App\Orchid\Layouts\Order;
 
+use App\Models\Card;
+use App\Models\Order;
 use App\Services\HelperService;
+use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
+use Orchid\Support\Facades\Alert;
 
 class OrderListTable extends Table
 {
@@ -46,7 +50,12 @@ class OrderListTable extends Table
             })->cantHide(),
             TD::make('action', 'Amallar')->render(function ($model) {
                 return DropDown::make('')->icon('list')->list([
-                    Button::make('Bekor qilish')->method('deleteCard')->icon('trash')
+                    Button::make('Buyurtmani bekor qilish')
+                        ->method('deleteCard')
+                        ->icon('trash')
+                        ->parameters([
+                            'customer_id' => $model->customer_id,
+                        ])->confirm('Siz rostdan ham ushbu buyurtmani o\'chirmoqchimisiz?')
                 ]);
             })
         ];

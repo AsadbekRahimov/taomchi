@@ -2,10 +2,13 @@
 
 namespace App\Orchid\Screens\Order;
 
+use App\Models\Card;
 use App\Models\Order;
 use App\Orchid\Layouts\Order\OrderListTable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Alert;
 
 class OrderListScreen extends Screen
 {
@@ -64,5 +67,13 @@ class OrderListScreen extends Screen
         return [
             OrderListTable::class,
         ];
+    }
+
+
+    public function deleteCard(Request $request)
+    {
+        Card::query()->where('customer_id', $request->customer_id)->delete();
+        Order::query()->where('customer_id', $request->customer_id)->delete();
+        Alert::success('Muaffaqiyatli tozalandi');
     }
 }
