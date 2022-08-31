@@ -5,10 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
 
 class PurchaseParty extends Model
 {
     use HasFactory;
+    use AsSource, Filterable, Attachable;
 
     protected $fillable = [
         'supplier_id',
@@ -18,17 +22,17 @@ class PurchaseParty extends Model
 
     public function supplier()
     {
-        return $this->belongsTo(Customer::class, 'supplier_id', 'id');
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
 
     public function user()
     {
-        return $this->belongsTo(Customer::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function branch()
     {
-        return $this->belongsTo(Customer::class, 'branch_id', 'id');
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
     public static function createParty($supplier_id)

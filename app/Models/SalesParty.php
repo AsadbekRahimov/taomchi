@@ -5,11 +5,14 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Attachment\Attachable;
+use Orchid\Filters\Filterable;
+use Orchid\Screen\AsSource;
 
 class SalesParty extends Model
 {
     use HasFactory;
-
+    use AsSource, Filterable, Attachable;
     protected $fillable = [
         'customer_id',
         'discount',
