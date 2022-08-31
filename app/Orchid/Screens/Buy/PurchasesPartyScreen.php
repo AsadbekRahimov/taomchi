@@ -2,6 +2,10 @@
 
 namespace App\Orchid\Screens\Buy;
 
+use App\Models\PurchaseParty;
+use App\Orchid\Layouts\Buy\PurchasePartyTable;
+use Dflydev\DotAccessData\Data;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 
 class PurchasesPartyScreen extends Screen
@@ -13,7 +17,11 @@ class PurchasesPartyScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        $branch_id = Auth::user()->branch_id ?: 0;
+        return [
+            'parties' => PurchaseParty::query()->with(['supplier', 'user'])
+                ->where('branch_id', $branch_id)->paginate(15),
+        ];
     }
 
     /**
@@ -23,7 +31,19 @@ class PurchasesPartyScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'PurchasesPartyScreen';
+        return 'Sotib olingan partiyalar';
+    }
+
+    public function description(): ?string
+    {
+        return 'Omborga sotib olingan maxsulot partiyalari';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.buy_parties',
+        ];
     }
 
     /**
@@ -43,6 +63,8 @@ class PurchasesPartyScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            PurchasePartyTable::class,
+        ];
     }
 }
