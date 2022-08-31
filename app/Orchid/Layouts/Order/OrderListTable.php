@@ -8,6 +8,7 @@ use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Alert;
@@ -50,6 +51,14 @@ class OrderListTable extends Table
             })->cantHide(),
             TD::make('action', 'Amallar')->render(function ($model) {
                 return DropDown::make('')->icon('list')->list([
+                    ModalToggle::make('To\'liq to\'lov qilish')
+                        ->method('fullPayment')
+                        ->modal('fullPaymentModal')
+                        ->icon('dollar')
+                        ->parameters([
+                            'id' => $model->id,
+                            'customer_id' => $model->customer_id,
+                        ])->modalTitle('To\'lov summasi: ' . HelperService::getOrderPrice($model)),
                     Button::make('Buyurtmani bekor qilish')
                         ->method('deleteCard')
                         ->icon('trash')
