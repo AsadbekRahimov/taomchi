@@ -25,17 +25,17 @@ class Purchase extends Model
 
     public function supplier()
     {
-        return $this->belongsTo(Customer::class, 'supplier_id', 'id');
+        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
 
     public function product()
     {
-        return $this->belongsTo(Customer::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
     public function branch()
     {
-        return $this->belongsTo(Customer::class, 'branch_id', 'id');
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
     public function party()

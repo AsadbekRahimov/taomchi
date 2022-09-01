@@ -15,7 +15,7 @@ class PurchasesTable extends Table
      *
      * @var string
      */
-    protected $target = '';
+    protected $target = 'purchases';
 
     /**
      * Get the table cells to be displayed.
@@ -24,6 +24,21 @@ class PurchasesTable extends Table
      */
     protected function columns(): iterable
     {
-        return [];
+        return [
+            TD::make('id', 'ID'),
+            TD::make('product_id', 'Maxsulot')->render(function ($model){
+                return $model->product->name;
+            }),
+            TD::make('quantity', 'Miqdori'),
+            TD::make('price', 'Sotilgan narxi')->render(function ($model){
+                return number_format($model->price);
+            }),
+            TD::make('profit', 'Qoladigan foyda')->render(function ($model){
+                return number_format($model->profit);
+            }),
+            TD::make('supplier_id', 'Taminotchi')->render(function ($model){
+                return $model->supplier->name;
+            }),
+        ];
     }
 }

@@ -2,6 +2,9 @@
 
 namespace App\Orchid\Screens\Buy;
 
+use App\Models\Purchase;
+use App\Orchid\Layouts\Buy\PurchasesTable;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 
 class PurchasesScreen extends Screen
@@ -13,7 +16,11 @@ class PurchasesScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        $branch_id = Auth::user()->branch_id?: 0;
+        return [
+            'purchases' => Purchase::query()->with(['supplier', 'product'])
+                ->where('branch_id', $branch_id)->paginate(15),
+        ];
     }
 
     /**
@@ -23,7 +30,19 @@ class PurchasesScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'PurchasesScreen';
+        return 'Sotib olingan maxsulotlar';
+    }
+
+    public function description(): ?string
+    {
+        return 'Omborga sotib olingan maxsulotlar';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.purchases',
+        ];
     }
 
     /**
@@ -43,6 +62,8 @@ class PurchasesScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            PurchasesTable::class,
+        ];
     }
 }
