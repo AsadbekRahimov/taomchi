@@ -2,6 +2,9 @@
 
 namespace App\Orchid\Screens\Sell;
 
+use App\Models\SalesParty;
+use App\Orchid\Layouts\Sell\SalePartyTable;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 
 class SalesPartyScreen extends Screen
@@ -13,7 +16,11 @@ class SalesPartyScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        $branch_id = Auth::user()->branch_id ?: 0;
+        return [
+            'parties' => SalesParty::query()->with(['customer', 'user'])
+                ->where('branch_id', $branch_id)->paginate(15),
+        ];
     }
 
     /**
@@ -23,7 +30,19 @@ class SalesPartyScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'SalesPartyScreen';
+        return 'Sotilgan partiyalar';
+    }
+
+    public function description(): ?string
+    {
+        return 'Ombordan sotilgan maxsulot partiyalari';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.sell_parties',
+        ];
     }
 
     /**
@@ -43,6 +62,8 @@ class SalesPartyScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            SalePartyTable::class,
+        ];
     }
 }
