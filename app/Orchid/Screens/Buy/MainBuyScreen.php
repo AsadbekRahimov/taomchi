@@ -147,6 +147,7 @@ class MainBuyScreen extends Screen
         $this->deleteBasket($request);
         Purchase::createPurchases($party, $request->baskets);
         Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
+        return redirect()->route('platform.buy_parties');
     }
 
     public function deleteBasket(Request $request)

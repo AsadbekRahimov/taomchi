@@ -154,6 +154,7 @@ class MainSellScreen extends Screen
         Order::createOrder($request->customer_id);
         Card::createOrder($request->customer_id);
         Alert::success('Buyurtma muaffaqiyatli yaratildi');
+        return redirect()->route('platform.orders');
     }
 
     public function deleteCard(Request $request)
