@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Orchid\Layouts\Payment;
+
+use App\Models\Payment;
+use Orchid\Screen\Layouts\Table;
+use Orchid\Screen\TD;
+
+class PaymentListTable extends Table
+{
+    /**
+     * Data source.
+     *
+     * The name of the key to fetch it from the query.
+     * The results of which will be elements of the table.
+     *
+     * @var string
+     */
+    protected $target = 'payments';
+
+    /**
+     * Get the table cells to be displayed.
+     *
+     * @return TD[]
+     */
+    protected function columns(): iterable
+    {
+        return [
+            TD::make('id', 'ID'),
+            TD::make('customer_id')->render(function ($model) {
+                return $model->customer->name;
+            })->cantHide(),
+            TD::make('price', 'Miqdori')->render(function ($model) {
+                return number_format($model->price);
+            })->cantHide(),
+            TD::make('type', 'To\'lov turi')->render(function ($model) {
+                return Payment::TYPE[$model->type];
+            })->cantHide(),
+            TD::make('created_at', 'Sana')->render(function ($model) {
+                return $model->created_at->toDateTimeString();
+            }),
+        ];
+    }
+}

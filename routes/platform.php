@@ -105,15 +105,6 @@ Route::screen('example', ExampleScreen::class)
             ->push('Example screen');
     });
 
-Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
-Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
-
-//Route::screen('idea', Idea::class, 'platform.screens.idea');
-
 // Ombor maxsulotlari
 Route::screen('stock/list', \App\Orchid\Screens\Stock\StockListScreen::class)
     ->name('platform.stock_list')
@@ -213,3 +204,24 @@ Route::screen('orders', \App\Orchid\Screens\Order\OrderListScreen::class)
             ->parent('platform.index')
             ->push('Buyurtmalar');
     });
+
+// Buyurtmalar
+Route::screen('payments', \App\Orchid\Screens\Payment\PaymentListScreen::class)
+    ->name('platform.payments')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('To\'lovlar');
+    });
+
+
+
+//Example screen routes
+Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
+Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
+Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
+Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
+Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
+Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
+
+//Route::screen('idea', Idea::class, 'platform.screens.idea');
