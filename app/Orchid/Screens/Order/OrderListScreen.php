@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Order;
 
 use App\Models\Card;
+use App\Models\Duty;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Sale;
@@ -94,13 +95,13 @@ class OrderListScreen extends Screen
     public function partPayment(Request $request)
     {
         $order = Order::query()->find($request->id);
-        if ($request->price > ($order->cardsSum() - $order->discount))
+        if ($request->price >= ($order->cardsSum() - $order->discount))
         {
             Alert::error('Qisman to\'lash uchun to\'lov summasi maxsulot summasidan kam bolishi kerak!');
         } else {
             $party = SalesParty::createParty($request->customer_id);
-            Payment::addPayment($party->id, $order, $request->type);
             Payment::addPartPayment($party->id, $order, $request->type, $request->price);
+            Duty::paymentDuty($party->id, $order, $request->price);
             Sale::createSales($party->id, $request->customer_id, $party->branch_id);
             $this->deleteCard($request);
             Alert::success('Maxsulotlar muaffaqiyatli sotildi');

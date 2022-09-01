@@ -45,4 +45,16 @@ class Duty extends Model
     {
         return $this->belongsTo(PurchaseParty::class, 'party_id', 'id');
     }
+
+    public static function paymentDuty($party_id, Order $order,  $price)
+    {
+        return self::query()->create([
+            'customer_id' => $order->customer_id,
+            'duty' => $order->cardsSum() - $order->discount - $price,
+            'branch_id' => $order->branch_id,
+            'party_id' => $party_id,
+        ]);
+    }
+
+
 }

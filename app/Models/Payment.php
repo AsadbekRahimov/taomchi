@@ -54,11 +54,11 @@ class Payment extends Model
         ]);
     }
 
-    public static function addPartPayment($party_id, Order $order, $type)
+    public static function addPartPayment($party_id, Order $order, $type, $price)
     {
         return self::query()->create([
             'customer_id' => $order->customer_id,
-            'price' => ($order->cardsSum() - $order->discount),
+            'price' => $price,
             'type' => $type,
             'branch_id' => $order->branch_id,
             'party_id' => $party_id,
