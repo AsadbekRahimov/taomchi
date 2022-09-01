@@ -35,6 +35,20 @@ class PurchaseParty extends Model
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'party_id', 'id');
+    }
+
+    public function purchasesSum()
+    {
+        $sum = 0;
+        foreach ($this->purchases as $purchase) {
+            $sum += ($purchase->price * $purchase->quantity);
+        }
+        return $sum;
+    }
+
     public static function createParty($supplier_id)
     {
         $user = Auth::user();
