@@ -85,7 +85,7 @@ class OrderListScreen extends Screen
     public function fullPayment(Request $request)
     {
         $order = Order::query()->find($request->id);
-        $party = SalesParty::createParty($request->customer_id);
+        $party = SalesParty::createParty($request->customer_id, $order->discount);
         Payment::addPayment($party->id, $order, $request->type);
         Sale::createSales($party->id, $request->customer_id, $party->branch_id);
         $this->deleteCard($request);
@@ -99,7 +99,7 @@ class OrderListScreen extends Screen
         {
             Alert::error('Qisman to\'lash uchun to\'lov summasi maxsulot summasidan kam bolishi kerak!');
         } else {
-            $party = SalesParty::createParty($request->customer_id);
+            $party = SalesParty::createParty($request->customer_id, $order->discount);
             Payment::addPartPayment($party->id, $order, $request->type, $request->price);
             Duty::paymentDuty($party->id, $order, $request->price);
             Sale::createSales($party->id, $request->customer_id, $party->branch_id);

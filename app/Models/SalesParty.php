@@ -35,14 +35,14 @@ class SalesParty extends Model
         return $this->belongsTo(Customer::class, 'branch_id', 'id');
     }
 
-    public static function createParty(mixed $customer_id)
+    public static function createParty($customer_id, $discount)
     {
         $user = Auth::user();
         return self::query()->create([
             'customer_id' => $customer_id,
             'user_id' => $user->id,
             'branch_id' => $user->branch_id,
-            'discount' => 0,
+            'discount' => $discount,
         ]);
     }
 }
