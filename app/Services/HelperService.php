@@ -30,7 +30,7 @@ class HelperService
         elseif ($stock->quantity > 0 && $stock->product->box == 1)
             return $stock->quantity;
         else
-            return round($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')';
+            return floor($stock->quantity / $stock->product->box) . ' (' . $stock->quantity . ')';
     }
 
     public static function getOrderPrice(Order $order)
