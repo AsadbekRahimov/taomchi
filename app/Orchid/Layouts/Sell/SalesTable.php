@@ -15,7 +15,7 @@ class SalesTable extends Table
      *
      * @var string
      */
-    protected $target = '';
+    protected $target = 'sales';
 
     /**
      * Get the table cells to be displayed.
@@ -24,6 +24,18 @@ class SalesTable extends Table
      */
     protected function columns(): iterable
     {
-        return [];
+        return [
+            TD::make('id', 'ID'),
+            TD::make('product_id', 'Maxsulot')->render(function ($model){
+                return $model->product->name;
+            }),
+            TD::make('quantity', 'Miqdori'),
+            TD::make('price', 'Sotilgan narxi')->render(function ($model){
+                return number_format($model->price);
+            }),
+            TD::make('customer_id', 'Mijoz')->render(function ($model){
+                return $model->customer->name;
+            }),
+        ];
     }
 }

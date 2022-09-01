@@ -29,12 +29,12 @@ class Sale extends Model
 
     public function product()
     {
-        return $this->belongsTo(Customer::class, 'product_id', 'id');
+        return $this->belongsTo(Product::class, 'product_id', 'id');
     }
 
     public function branch()
     {
-        return $this->belongsTo(Customer::class, 'branch_id', 'id');
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
     public function party()

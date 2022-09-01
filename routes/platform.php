@@ -193,7 +193,7 @@ Route::screen('sales', \App\Orchid\Screens\Sell\SalesScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Sotilgan partiyalar');
+            ->push('Sotilgan maxsulotlar');
     });
 
 // Buyurtmalar

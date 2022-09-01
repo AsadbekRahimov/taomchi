@@ -2,6 +2,9 @@
 
 namespace App\Orchid\Screens\Sell;
 
+use App\Models\Sale;
+use App\Orchid\Layouts\Sell\SalesTable;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 
 class SalesScreen extends Screen
@@ -13,7 +16,11 @@ class SalesScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        $branch_id = Auth::user()->branch_id?: 0;
+        return [
+            'sales' => Sale::query()->with(['customer', 'product'])
+                ->where('branch_id', $branch_id)->paginate(15),
+        ];
     }
 
     /**
@@ -23,7 +30,19 @@ class SalesScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'SalesScreen';
+        return 'Sotilgan maxsulotlar';
+    }
+
+    public function description(): ?string
+    {
+        return 'Ombordan sotilgan maxsulotlar';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.sales',
+        ];
     }
 
     /**
@@ -43,6 +62,8 @@ class SalesScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            SalesTable::class
+        ];
     }
 }
