@@ -40,4 +40,12 @@ class HelperService
         else
             return number_format($order->cardsSum());
     }
+
+    public static function getQuantity($quantity, $box)
+    {
+        if ($box == 1)
+            return $quantity;
+        else
+            return floor($quantity / $box) . ' (' . $quantity . ')';
+    }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Layouts\Buy;
 
+use App\Services\HelperService;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -29,7 +30,9 @@ class PurchasesTable extends Table
             TD::make('product_id', 'Maxsulot')->render(function ($model){
                 return $model->product->name;
             }),
-            TD::make('quantity', 'Miqdori'),
+            TD::make('quantity', 'Miqdori')->render(function ($model){
+                return HelperService::getQuantity($model->quantity, $model->product->box);
+            }),
             TD::make('price', 'Sotilgan narxi')->render(function ($model){
                 return number_format($model->price);
             }),
