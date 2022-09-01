@@ -15,7 +15,7 @@ class SalePartyTable extends Table
      *
      * @var string
      */
-    protected $target = '';
+    protected $target = 'parties';
 
     /**
      * Get the table cells to be displayed.
@@ -24,6 +24,20 @@ class SalePartyTable extends Table
      */
     protected function columns(): iterable
     {
-        return [];
+        return [
+            TD::make('id', 'ID')->cantHide(),
+            TD::make('user_id', 'Kirituvchi')->render(function ($model){
+                return $model->user->name;
+            })->cantHide(),
+            TD::make('supplier_id', 'Mijoz')->render(function ($model) {
+                return $model->customer->name;
+            })->cantHide(),
+            TD::make('total_price', 'Umumiy summasi')->render(function ($model){
+                return number_format($model->salesSum());
+            }),
+            TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
+                return $model->created_at->toDateTimeString();
+            })->cantHide(),
+        ];
     }
 }
