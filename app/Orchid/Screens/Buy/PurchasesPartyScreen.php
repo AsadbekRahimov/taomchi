@@ -4,7 +4,6 @@ namespace App\Orchid\Screens\Buy;
 
 use App\Models\PurchaseParty;
 use App\Orchid\Layouts\Buy\PurchasePartyTable;
-use Dflydev\DotAccessData\Data;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Screen;
 
@@ -20,7 +19,7 @@ class PurchasesPartyScreen extends Screen
         $branch_id = Auth::user()->branch_id ?: 0;
         return [
             'parties' => PurchaseParty::query()->with(['supplier', 'user'])
-                ->where('branch_id', $branch_id)->paginate(15),
+                ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];
     }
 

@@ -13,7 +13,6 @@ use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;

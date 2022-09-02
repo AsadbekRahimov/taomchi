@@ -26,10 +26,12 @@ class StockAddProductScreen extends Screen
      */
     public function query(): iterable
     {
-        $stock_ids = Stock::query()->where('branch_id', Auth::user()->branch_id)->pluck('product_id')->toArray();
+        $stock_ids = Stock::query()->where('branch_id', Auth::user()->branch_id)
+            ->pluck('product_id')->toArray();
         $this->max_count = Auth::user()->branch_id ? Product::query()->whereNotIn('id', $stock_ids)->count() : 0;
         return [
-            'products' => Product::query()->whereNotIn('id', $stock_ids)->get(),
+            'products' => Product::query()
+                ->whereNotIn('id', $stock_ids)->orderByDesc('id')->get(),
         ];
     }
 

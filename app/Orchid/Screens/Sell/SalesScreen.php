@@ -19,7 +19,7 @@ class SalesScreen extends Screen
         $branch_id = Auth::user()->branch_id?: 0;
         return [
             'sales' => Sale::query()->with(['customer', 'product'])
-                ->where('branch_id', $branch_id)->paginate(15),
+                ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];
     }
 

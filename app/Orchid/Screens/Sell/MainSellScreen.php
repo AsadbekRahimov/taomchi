@@ -4,8 +4,6 @@ namespace App\Orchid\Screens\Sell;
 
 use App\Models\Card;
 use App\Models\Order;
-use App\Models\Sale;
-use App\Models\SalesParty;
 use App\Models\Stock;
 use App\Models\Customer;
 use App\Orchid\Layouts\Sell\AddProductModal;
@@ -20,7 +18,6 @@ use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Screen\TD;
-use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 

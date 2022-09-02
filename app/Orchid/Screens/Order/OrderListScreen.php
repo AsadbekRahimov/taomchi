@@ -29,7 +29,9 @@ class OrderListScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id ? : 0;
         return [
-            'orders' => Order::query()->with(['customer', 'user', 'cards'])->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
+            'orders' => Order::query()->with(['customer', 'user', 'cards'])
+                ->where('branch_id', $branch_id)
+                ->orderByDesc('id')->paginate(15),
         ];
     }
 
