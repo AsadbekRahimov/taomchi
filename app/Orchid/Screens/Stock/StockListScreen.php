@@ -96,4 +96,10 @@ class StockListScreen extends Screen
         $stock->save();
         Alert::success('Maxsulot qoldig\'i muaffaqiyatli yangilandi');
     }
+
+    public function deleteStock(Request $request)
+    {
+        Stock::destroy($request->id);
+        Alert::success('Omborxona maxsuloti muaffaqiyatli o\'chirildi');
+    }
 }

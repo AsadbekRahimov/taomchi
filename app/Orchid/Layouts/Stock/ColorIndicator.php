@@ -27,7 +27,7 @@ class ColorIndicator extends Rows
         return [
             Group::make([
                 Link::make()->type(Color::SUCCESS())->title('Maxsulot mavjud')->vertical(),
-                Link::make()->type(Color::WARNING())->title('Kam qolgan')->vertical(),
+                Link::make()->type(Color::WARNING())->title('Kam miqdorda')->vertical(),
                 Link::make()->type(Color::DANGER())->title('Tugagan')->vertical(),
             ]),
         ];

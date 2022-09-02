@@ -4,11 +4,11 @@ namespace App\Orchid\Layouts\Stock;
 
 use App\Models\Stock;
 use App\Services\HelperService;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
-use Orchid\Support\Color;
 
 class StockListTable extends Table
 {
@@ -46,6 +46,15 @@ class StockListTable extends Table
                         'stock' => $stock->id,
                     ])->type(HelperService::getStockColor($stock));
             })->cantHide(),
+            TD::make('delete', '')->render(function (Stock $stock){
+                return Button::make('O\'chirish')
+                    ->icon('trash')
+                    ->method('deleteStock')
+                    ->confirm('Siz rostdan xam bu maxsulotni ombordan o\'chirmoqchimisiz?')
+                    ->parameters([
+                        'id' => $stock->id,
+                    ]);
+            }),
         ];
     }
 }
