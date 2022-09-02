@@ -19,6 +19,23 @@ class Stock extends Model
        'branch_id',
     ];
 
+    protected $allowedFilters = [
+        'quantity'
+    ];
+
+    /**
+     * @var array
+     */
+    protected $allowedSorts = [
+        'quantity'
+    ];
+
+    public  const TYPE = [
+        'Maxsulot mavjud' => 'Maxsulot mavjud',
+        'Kam miqdorda' => 'Kam miqdorda',
+        'Mavjud emas' => 'Mavjud emas',
+    ];
+
     public function product()
     {
         return $this->belongsTo(Product::class, 'product_id', 'id');

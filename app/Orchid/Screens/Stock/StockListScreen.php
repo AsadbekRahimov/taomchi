@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Stock;
 
 use App\Models\Stock;
+use App\Orchid\Layouts\FilterSelections\StockSelection;
 use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Orchid\Layouts\Stock\QuantityEditLayout;
 use App\Orchid\Layouts\Stock\StockListTable;
@@ -23,7 +24,7 @@ class StockListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'stock' => Stock::query()->with(['product.measure'])
+            'stock' => Stock::query()->filters(StockSelection::class)->with(['product.measure'])
                 ->where('branch_id', Auth::user()->branch_id)
                 ->orderByDesc('id')->paginate(15),
         ];
@@ -74,6 +75,7 @@ class StockListScreen extends Screen
     public function layout(): iterable
     {
         return [
+            StockSelection::class,
             ColorIndicator::class,
             StockListTable::class,
             Layout::modal('asyncEditQuantityModal', QuantityEditLayout::class)
