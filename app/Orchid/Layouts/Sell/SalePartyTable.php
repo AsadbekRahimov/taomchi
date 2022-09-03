@@ -36,6 +36,9 @@ class SalePartyTable extends Table
             TD::make('total_price', 'Umumiy summasi')->render(function ($model){
                 return number_format($model->salesSum());
             }),
+            TD::make('discount', 'Chegirma')->render(function ($model){
+                return number_format($model->discount);
+            }),
             TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
