@@ -20,8 +20,8 @@ class TelegramNotify
 
         $message = $text . "\r\n";
 
-        if (!is_null(Auth::user()->branch_id))
-            $message .= '#' . Str::slug(Auth::user()->branch->name, '_');
+        /*if (!is_null(Auth::user()->branch_id))
+            $message .= '#' . Str::slug(Auth::user()->branch->name, '_');*/
 
         if (!is_null($caption))
             $message .= "\r\n" . '#' . $caption;

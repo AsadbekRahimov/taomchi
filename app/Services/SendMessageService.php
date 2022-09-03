@@ -21,9 +21,9 @@ class SendMessageService
             foreach ($cards as $card) {
                 $message .=  'Махсулот: ' . $card->product->name . "\r\n"
                          . 'Микдори: ' . HelperService::getQuantity($card->quantity, $card->product->box) . "\r\n"
-                         . 'Суммаси: ' . number_format($card->price * $card->quantity) . "\r\n\r\n";
+                         . 'Суммаси: ' . number_format($card->price) . ' | ' . number_format($card->price * $card->quantity) . "\r\n\r\n";
             }
-            $message .= '—————————————————' . "\r\n" . 'Умумий суммаси: ' . number_format($cards->sum('price')) . "\r\n"
+            $message .= '—————————————————' . "\r\n" . 'Умумий суммаси: ' . number_format($order->cardsSum()) . "\r\n"
                      . 'Сана: ' . $order->created_at->toDateTimeString();
         }
 
