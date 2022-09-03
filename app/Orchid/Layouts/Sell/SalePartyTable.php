@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Layouts\Sell;
 
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -37,6 +38,15 @@ class SalePartyTable extends Table
             }),
             TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
                 return $model->created_at->toDateTimeString();
+            })->cantHide(),
+            TD::make('')->render(function ($model){
+                return ModalToggle::make('')
+                    ->icon('eye')
+                    ->modal('asyncGetPartyModal')
+                    ->modalTitle('Partiya: №' . $model->id . ' | Mijoz: ' . $model->customer->name)
+                    ->asyncParameters([
+                        'salesParty' => $model->id,
+                    ]);
             })->cantHide(),
         ];
     }

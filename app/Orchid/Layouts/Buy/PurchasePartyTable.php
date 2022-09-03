@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Layouts\Buy;
 
+use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -40,6 +42,15 @@ class PurchasePartyTable extends Table
             }),
             TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
                 return $model->created_at->toDateTimeString();
+            })->cantHide(),
+            TD::make('')->render(function ($model){
+                return ModalToggle::make('')
+                    ->icon('eye')
+                    ->modal('asyncGetPartyModal')
+                    ->modalTitle('Partiya: №' . $model->id . ' | Taminotchi: ' . $model->supplier->name)
+                    ->asyncParameters([
+                        'purchaseParty' => $model->id,
+                    ]);
             })->cantHide(),
         ];
     }

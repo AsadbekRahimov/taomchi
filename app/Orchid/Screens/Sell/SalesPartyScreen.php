@@ -3,9 +3,12 @@
 namespace App\Orchid\Screens\Sell;
 
 use App\Models\SalesParty;
+use App\Orchid\Layouts\Sell\PartyList;
 use App\Orchid\Layouts\Sell\SalePartyTable;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class SalesPartyScreen extends Screen
 {
@@ -64,6 +67,16 @@ class SalesPartyScreen extends Screen
     {
         return [
             SalePartyTable::class,
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Yopish'),
+        ];
+    }
+
+    public function asyncGetParty(SalesParty $salesParty)
+    {
+        return [
+            'sales' => $salesParty->sales,
         ];
     }
 }

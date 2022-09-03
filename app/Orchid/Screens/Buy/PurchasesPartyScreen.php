@@ -3,9 +3,13 @@
 namespace App\Orchid\Screens\Buy;
 
 use App\Models\PurchaseParty;
+use App\Models\Sale;
+use App\Orchid\Layouts\Buy\PartyList;
 use App\Orchid\Layouts\Buy\PurchasePartyTable;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class PurchasesPartyScreen extends Screen
 {
@@ -18,7 +22,7 @@ class PurchasesPartyScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id ?: 0;
         return [
-            'parties' => PurchaseParty::query()->with(['supplier', 'user'])
+            'parties' => PurchaseParty::query()->with(['supplier', 'user', 'purchases'])
                 ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];
     }
@@ -64,6 +68,16 @@ class PurchasesPartyScreen extends Screen
     {
         return [
             PurchasePartyTable::class,
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Yopish'),
+        ];
+    }
+
+    public function asyncGetParty(PurchaseParty $purchaseParty)
+    {
+        return [
+           'purchases' => $purchaseParty->purchases,
         ];
     }
 }
