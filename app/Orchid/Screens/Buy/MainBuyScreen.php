@@ -9,6 +9,7 @@ use App\Models\Stock;
 use App\Models\Supplier;
 use App\Orchid\Layouts\Buy\AddProductModal;
 use App\Orchid\Layouts\Buy\BasketList;
+use App\Orchid\Layouts\FilterSelections\StockSelection;
 use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
@@ -38,7 +39,7 @@ class MainBuyScreen extends Screen
         $branch_id = Auth::user()->branch_id ?: 0;
         $this->baskets = Basket::query()->where('supplier_id', $supplier->id)->orderByDesc('id')->get();
         return [
-            'products' => Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
+            'products' => Stock::query()->filters(StockSelection::class)->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
             'baskets' => $this->baskets,
         ];
     }
@@ -103,6 +104,7 @@ class MainBuyScreen extends Screen
         return [
             //ProductListener::class, --> if has many products
             ColorIndicator::class,
+            StockSelection::class,
             Layout::table('products', [
                 TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);

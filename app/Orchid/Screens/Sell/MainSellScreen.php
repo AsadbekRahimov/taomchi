@@ -6,6 +6,7 @@ use App\Models\Card;
 use App\Models\Order;
 use App\Models\Stock;
 use App\Models\Customer;
+use App\Orchid\Layouts\FilterSelections\StockSelection;
 use App\Orchid\Layouts\Sell\AddProductModal;
 use App\Orchid\Layouts\Sell\CardList;
 use App\Orchid\Layouts\Stock\ColorIndicator;
@@ -37,11 +38,10 @@ class MainSellScreen extends Screen
         $this->customer = $customer;
         $branch_id = Auth::user()->branch_id ?: 0;
         $this->cards = Card::query()->where('customer_id', $customer->id)->orderByDesc('id')->get();
-        //dd($this->cards->count());
         $this->ordered = $this->cards->count() ? $this->cards->first()->ordered : 0;
 
         return [
-            'products' => Stock::query()->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
+            'products' => Stock::query()->filters(StockSelection::class)->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
             'cards' => $this->cards,
         ];
     }
@@ -110,6 +110,7 @@ class MainSellScreen extends Screen
     {
         return [
             ColorIndicator::class,
+            StockSelection::class,
             Layout::table('products', [
                 TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
