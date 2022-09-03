@@ -10,6 +10,7 @@ use App\Orchid\Layouts\Sell\AddProductModal;
 use App\Orchid\Layouts\Sell\CardList;
 use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Services\HelperService;
+use App\Services\SendMessageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
@@ -148,8 +149,9 @@ class MainSellScreen extends Screen
 
     public function addSalesOrder(Request $request)
     {
-        Order::createOrder($request->customer_id);
-        Card::createOrder($request->customer_id);
+        $order = Order::createOrder($request->customer_id);
+        $cards = Card::createOrder($request->customer_id);
+        SendMessageService::sendOrder($order, $cards);
         Alert::success('Buyurtma muaffaqiyatli yaratildi');
         return redirect()->route('platform.orders');
     }

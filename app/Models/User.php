@@ -64,4 +64,9 @@ class User extends Authenticatable
         'updated_at',
         'created_at',
     ];
+
+    public function branch()
+    {
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
+    }
 }

@@ -40,8 +40,10 @@ class Card extends Model
 
     public static function createOrder($customer_id)
     {
-        return self::query()->where('customer_id', $customer_id)->update([
+        self::query()->where('customer_id', $customer_id)->update([
             'ordered' => 1,
         ]);
+
+        return self::query()->where('customer_id', $customer_id)->get();
     }
 }

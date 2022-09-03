@@ -32,7 +32,7 @@ class Order extends Model
 
     public function user()
     {
-        return $this->belongsTo(User::class, 'branch_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function cards()
