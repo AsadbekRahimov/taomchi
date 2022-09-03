@@ -132,7 +132,7 @@ class MainSellScreen extends Screen
                             'customer_id' => $this->customer->id,
                             'box_count' => $stock->product->box,
                         ]);
-                })->cantHide(),
+                })->canSee(!$this->ordered)->cantHide(),
             ])->title('Omborxona maxsulotlari'),
             Layout::modal('addProductModal', AddProductModal::class)
                 ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),

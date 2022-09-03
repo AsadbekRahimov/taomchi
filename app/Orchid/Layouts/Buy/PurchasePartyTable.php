@@ -26,7 +26,7 @@ class PurchasePartyTable extends Table
     {
         return [
             TD::make('id', 'ID')->cantHide(),
-            TD::make('user_id', 'Kirituvchi')->render(function ($model){
+            TD::make('user_id', 'Sotuvchi')->render(function ($model){
                 return $model->user->name;
             })->cantHide(),
             TD::make('supplier_id', 'Taminotchi')->render(function ($model) {

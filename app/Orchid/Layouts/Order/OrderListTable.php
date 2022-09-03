@@ -37,7 +37,7 @@ class OrderListTable extends Table
             TD::make('customer_id', 'Mijoz')->render(function ($model) {
                return $model->customer->name;
             })->cantHide(),
-            TD::make('user_id', 'Foydalanuvchi')->render(function ($model) {
+            TD::make('user_id', 'Sotuvchi')->render(function ($model) {
                 return $model->user->name;
             }),
             TD::make('discount', 'Chegirma')->render(function ($model) {

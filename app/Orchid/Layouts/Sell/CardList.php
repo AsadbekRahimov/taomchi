@@ -42,7 +42,7 @@ class CardList extends Rows
                     'product_id' => Select::make('product_id')->options($products),
                     'quantity' => Input::make('quantity')->type('number')->required(),
                     'price' => Input::make('price')->type('number')->required(),
-                ]),
+                ])->removableRows(false),
         ];
     }
 }
