@@ -4,6 +4,7 @@ namespace App\Observers;
 
 use App\Models\Sale;
 use App\Models\Stock;
+use App\Services\SendMessageService;
 
 class SaleObserver
 {
