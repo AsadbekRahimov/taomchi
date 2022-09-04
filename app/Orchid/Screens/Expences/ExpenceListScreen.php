@@ -2,7 +2,14 @@
 
 namespace App\Orchid\Screens\Expences;
 
+use App\Models\Expence;
+use App\Orchid\Layouts\Expences\ExpenceListTable;
+use App\Orchid\Layouts\Expences\OtherExpenceListTable;
+use App\Orchid\Layouts\Expences\PartyList;
+use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class ExpenceListScreen extends Screen
 {
@@ -13,7 +20,13 @@ class ExpenceListScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        $branch_id = Auth::user()->branch_id?: 0;
+        return [
+            'expences' => Expence::query()->with(['party.supplier'])
+                ->where('branch_id', $branch_id)->whereNull('description')->paginate(15),
+            'other_expences' => Expence::query()->with(['party.supplier'])
+                ->where('branch_id', $branch_id)->whereNull('party_id')->paginate(15),
+        ];
     }
 
     /**
@@ -23,7 +36,19 @@ class ExpenceListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'ExpenceListScreen';
+        return 'Chiqimlar';
+    }
+
+    public function description(): ?string
+    {
+        return 'Amalga oshirilgan chiqimlar ro\'yhati';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.expences',
+        ];
     }
 
     /**
@@ -43,6 +68,21 @@ class ExpenceListScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Layout::tabs([
+                'Taminotchilarga to\'langan to\'lovlar' => ExpenceListTable::class,
+                'Boshqa chiqimlar' => OtherExpenceListTable::class,
+            ]),
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Yopish'),
+        ];
+    }
+
+    public function asyncGetParty(Expence $expence)
+    {
+        return [
+            'purchases' => $expence->party->purchases,
+        ];
     }
 }

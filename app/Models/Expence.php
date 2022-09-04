@@ -40,4 +40,13 @@ class Expence extends Model
             'branch_id' => $branch_id,
         ]);
     }
+
+    public static function otherExpence($price, $description)
+    {
+        return self::query()->create([
+            'price' => $price,
+            'description' => $description,
+            'branch_id' => Auth::user()->branch_id,
+        ]);
+    }
 }

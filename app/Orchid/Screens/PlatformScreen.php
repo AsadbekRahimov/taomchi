@@ -4,8 +4,13 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
-use Orchid\Screen\Actions\Link;
+use App\Models\Expence;
+use App\Orchid\Layouts\Main\ExpenceModal;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class PlatformScreen extends Screen
@@ -27,7 +32,7 @@ class PlatformScreen extends Screen
      */
     public function name(): ?string
     {
-        return '';
+        return 'E-do\'kon - WMS';
     }
 
     /**
@@ -37,7 +42,7 @@ class PlatformScreen extends Screen
      */
     public function description(): ?string
     {
-        return '';
+        return 'Eletron obmorxona avtomatlashtirish tizimi';
     }
 
     /**
@@ -48,7 +53,12 @@ class PlatformScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-
+            ModalToggle::make('Chiqim')
+                ->icon('calculator')
+                ->modal('addExpenceModal')
+                ->modalTitle('Chiqim kiritish')
+                ->method('addExpence')
+                ->canSee(Auth::user()->hasAccess('platform.stock.expences')),
         ];
     }
 
@@ -60,7 +70,14 @@ class PlatformScreen extends Screen
     public function layout(): iterable
     {
         return [
-
+            Layout::modal('addExpenceModal', [ExpenceModal::class])
+                ->applyButton('Kiritish')->closeButton('Yopish'),
         ];
+    }
+
+    public function addExpence(Request $request)
+    {
+        Expence::otherExpence($request->price, $request->description);
+        Alert::success('Chiqim muaffaqiyatli kiritildi');
     }
 }
