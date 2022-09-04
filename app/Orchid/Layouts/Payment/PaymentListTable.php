@@ -3,9 +3,11 @@
 namespace App\Orchid\Layouts\Payment;
 
 use App\Models\Payment;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
+use Orchid\Support\Color;
 
 class PaymentListTable extends Table
 {
@@ -32,7 +34,7 @@ class PaymentListTable extends Table
                 return $model->customer->name;
             })->cantHide(),
             TD::make('price', 'Miqdori')->render(function ($model) {
-                return number_format($model->price);
+                return Link::make(number_format($model->price))->type(Color::SUCCESS());
             })->cantHide(),
             TD::make('type', 'To\'lov turi')->render(function ($model) {
                 return Payment::TYPE[$model->type];

@@ -214,7 +214,32 @@ Route::screen('payments', \App\Orchid\Screens\Payment\PaymentListScreen::class)
             ->push('To\'lovlar');
     });
 
+// Chiqimlar
+Route::screen('expences', \App\Orchid\Screens\Expences\ExpenceListScreen::class)
+    ->name('platform.expences')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Chiqimlar');
+    });
 
+// Qarzdorlar
+Route::screen('customer_duties', \App\Orchid\Screens\Duties\CustomerDutiesListScreen::class)
+    ->name('platform.customer_duties')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Qarzdorlar');
+    });
+
+// Qarzlarim
+Route::screen('my_duties', \App\Orchid\Screens\Duties\MyDutiesListScreen::class)
+    ->name('platform.my_duties')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Qarzlarim');
+    });
 
 //Example screen routes
 Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');

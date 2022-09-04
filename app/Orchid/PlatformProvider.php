@@ -122,6 +122,21 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.payments')
                 ->permission('platform.stock.payments'),
 
+            Menu::make('Chiqimlar')
+                ->icon('calculator')
+                ->route('platform.expences')
+                ->permission('platform.stock.expences'),
+
+            Menu::make('Qarzdorlar')
+                ->icon('book-open')
+                ->route('platform.customer_duties')
+                ->permission('platform.stock.customer_duties'),
+
+            Menu::make('Qarzlar')
+                ->icon('pie-chart')
+                ->route('platform.my_duties')
+                ->permission('platform.stock.my_duties'),
+
             Menu::make('Foydalanuvchilar')
                 ->icon('user')
                 ->route('platform.systems.users')
@@ -167,7 +182,10 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.stock.purchases', 'Olingan maxsulotlar')
                 ->addPermission('platform.stock.sales', 'Sotilgan maxsulotlar')
                 ->addPermission('platform.stock.orders', 'Buyurtmalar')
-                ->addPermission('platform.stock.payments', 'To\'lovlar'),
+                ->addPermission('platform.stock.payments', 'To\'lovlar')
+                ->addPermission('platform.stock.expences', 'Chiqimlar')
+                ->addPermission('platform.stock.customer_duties', 'Qarzdorlar')
+                ->addPermission('platform.stock.my_duties', 'Qarzlar')
         ];
     }
 }
