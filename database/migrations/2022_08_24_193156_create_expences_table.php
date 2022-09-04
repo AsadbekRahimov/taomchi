@@ -16,7 +16,8 @@ return new class extends Migration
         Schema::create('expences', function (Blueprint $table) {
             $table->id();
             $table->integer('price');
-            $table->string('description');
+            $table->string('description')->nullable();
+            $table->string('party_id')->nullable();
             $table->integer('branch_id');
             $table->timestamps();
         });

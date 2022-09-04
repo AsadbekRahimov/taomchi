@@ -3,6 +3,8 @@
 namespace App\Orchid\Screens\Buy;
 
 use App\Models\Basket;
+use App\Models\Duty;
+use App\Models\Expence;
 use App\Models\Purchase;
 use App\Models\PurchaseParty;
 use App\Models\Stock;
@@ -41,6 +43,7 @@ class MainBuyScreen extends Screen
         return [
             'products' => Stock::query()->filters(StockSelection::class)->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
             'baskets' => $this->baskets,
+            'total_price' => Basket::getTotalPrice($supplier->id),
         ];
     }
 
@@ -144,11 +147,23 @@ class MainBuyScreen extends Screen
 
     public function addPurchaseParty(Request $request)
     {
-        $party = PurchaseParty::createParty($request->supplier_id);
-        $this->deleteBasket($request);
-        Purchase::createPurchases($party, $request->baskets);
-        Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
-        return redirect()->route('platform.buy_parties');
+        $all_price = Basket::getTotalPrice($request->supplier_id);
+        if ((int)$request->total_price > $all_price){
+            Alert::error('Umumiy to\'lov summasi maxsulotlar summasidan ko\'p bo\'lmasligi kerak!');
+        } else {
+            $party = PurchaseParty::createParty($request->supplier_id);
+            $this->deleteBasket($request);
+            Purchase::createPurchases($party, $request->baskets);
+            if ((int)$request->total_price < $all_price)
+            {
+                Expence::purchaseExpence($party->id, $request->total_price, $party->branch_id);
+                Duty::purchaseDuty($request->supplier_id, $party->id, $all_price - $request->total_price, $party->branch_id);
+            } else { // when total_price = all_price
+                Expence::purchaseExpence($party->id, $all_price, $party->branch_id);
+            }
+            Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
+            return redirect()->route('platform.buy_parties');
+        }
     }
 
     public function deleteBasket(Request $request)

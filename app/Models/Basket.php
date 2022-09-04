@@ -36,4 +36,14 @@ class Basket extends Model
             'price' => $request->price
         ]);
     }
+
+    public static function getTotalPrice(mixed $id)
+    {
+        $price = 0;
+        foreach (self::query()->where('supplier_id', $id)->get() as $basket)
+        {
+            $price += $basket->quantity * $basket->price;
+        }
+        return $price;
+    }
 }

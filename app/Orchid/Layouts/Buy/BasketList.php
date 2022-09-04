@@ -43,6 +43,8 @@ class BasketList extends Rows
                    'quantity' => Input::make('quantity')->type('number')->required(),
                    'price' => Input::make('price')->type('number')->required(),
                ]),
+            Input::make('total_price')->title('Umumiy to\'lov summasi')->type('number')
+                ->help('Agar tolov miqdori umumiy summadan kam bolsa bu qarz sifatida yoziladi!')->required(),
         ];
     }
 }

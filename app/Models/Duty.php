@@ -56,5 +56,15 @@ class Duty extends Model
         ]);
     }
 
+    public static function purchaseDuty($supplier_id, $party_id, $duty, $branch_id)
+    {
+        return self::query()->create([
+            'supplier_id' => $supplier_id,
+            'duty' => $duty,
+            'branch_id' => $branch_id,
+            'party_id' => $party_id,
+        ]);
+    }
+
 
 }
