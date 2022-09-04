@@ -40,6 +40,16 @@ class PurchaseParty extends Model
         return $this->hasMany(Purchase::class, 'party_id', 'id');
     }
 
+    public function expences()
+    {
+        return $this->hasMany(Expence::class, 'party_id', 'id');
+    }
+
+    public function duties()
+    {
+        return $this->hasMany(Duty::class, 'party_id', 'id');
+    }
+
     public function purchasesSum()
     {
         $sum = 0;

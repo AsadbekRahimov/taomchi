@@ -40,6 +40,17 @@ class SalesParty extends Model
         return $this->hasMany(Sale::class, 'party_id', 'id');
     }
 
+    public function payments()
+    {
+        return $this->hasMany(Payment::class, 'party_id', 'id');
+    }
+
+    public function duties()
+    {
+        return $this->hasMany(Duty::class, 'party_id', 'id');
+    }
+
+
     public function salesSum()
     {
         $sum = 0;

@@ -6,6 +6,7 @@ use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
+use Orchid\Support\Color;
 
 class PurchasePartyTable extends Table
 {
@@ -35,10 +36,22 @@ class PurchasePartyTable extends Table
                 return $model->supplier->name;
             })->cantHide(),
             TD::make('total_price', 'Umumiy summasi')->render(function ($model){
-                return number_format($model->purchasesSum());
+                return Link::make(number_format($model->purchasesSum()))->type(Color::INFO());
             }),
             TD::make('total_profit', 'Umumiy foydasi')->render(function ($model){
-                return number_format($model->purchases->sum('profit'));
+                if ($model->purchases->sum('profit') > 0)
+                {
+                    return Link::make(number_format($model->purchases->sum('profit')))->type(Color::WARNING());
+                }
+            }),
+            TD::make('expense', 'To\'langan')->render(function ($model){
+                if ($model->expences->sum('price') > 0)
+                    return Link::make(number_format($model->expences->sum('price')))->type(Color::SUCCESS());
+            }),
+            TD::make('duty', 'Qarz qolgan')->render(function ($model){
+                if ($model->duties->where('supplier_id', $model->supplier_id)->sum('duty') > 0)
+                    return Link::make(number_format($model->duties
+                        ->where('supplier_id', $model->supplier_id)->sum('duty')))->type(Color::DANGER());
             }),
             TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
                 return $model->created_at->toDateTimeString();

@@ -2,9 +2,11 @@
 
 namespace App\Orchid\Layouts\Sell;
 
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
+use Orchid\Support\Color;
 
 class SalePartyTable extends Table
 {
@@ -34,10 +36,20 @@ class SalePartyTable extends Table
                 return $model->customer->name;
             })->cantHide(),
             TD::make('total_price', 'Umumiy summasi')->render(function ($model){
-                return number_format($model->salesSum());
+                return Link::make(number_format($model->salesSum()))->type(Color::INFO());
             }),
             TD::make('discount', 'Chegirma')->render(function ($model){
-                return number_format($model->discount);
+                if ($model->discount > 0)
+                    return Link::make(number_format($model->discount))->type(Color::WARNING());
+            }),
+            TD::make('payments', 'To\'lagan')->render(function ($model){
+                if ($model->payments->sum('price') > 0)
+                    return Link::make(number_format($model->payments->sum('price')))->type(Color::SUCCESS());
+            }),
+            TD::make('duty', 'Qarz bo\'lgan')->render(function ($model){
+                if ($model->duties->where('customer_id', $model->customer_id)->sum('duty') > 0)
+                    return Link::make(number_format($model->duties
+                        ->where('supplier_id', $model->supplier_id)->sum('duty')))->type(Color::DANGER());
             }),
             TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
                 return $model->created_at->toDateTimeString();
