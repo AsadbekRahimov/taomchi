@@ -32,7 +32,7 @@ class SendMessageService
 
     }
 
-    public static function sendPurchase(PurchaseParty $purchaseParty)
+    public static function sendPurchase(PurchaseParty $purchaseParty, $expence, $duty)
     {
         $profit = 0;
         $user = Auth::user()->name;
@@ -51,6 +51,8 @@ class SendMessageService
         }
         $message .= '—————————————————' . "\r\n" . 'Умумий суммаси: ' . number_format($purchaseParty->purchasesSum()) . "\r\n"
                 . 'Умумий фойдаси: ' . number_format($profit) . "\r\n"
+                . 'Туланди: ' . number_format($expence) . "\r\n"
+                . 'Карз булди: ' . number_format($duty) . "\r\n"
                 . 'Сана: ' . $purchaseParty->created_at->toDateTimeString();
 
         TelegramNotify::sendMessage($message, 'order');

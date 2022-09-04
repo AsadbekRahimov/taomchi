@@ -157,12 +157,14 @@ class MainBuyScreen extends Screen
             Purchase::createPurchases($party, $request->baskets);
             if ((int)$request->total_price < $all_price)
             {
-                Expence::purchaseExpence($party->id, $request->total_price, $party->branch_id);
-                Duty::purchaseDuty($request->supplier_id, $party->id, $all_price - $request->total_price, $party->branch_id);
+                $expence = Expence::purchaseExpence($party->id, $request->total_price, $party->branch_id);
+                $duty = Duty::purchaseDuty($request->supplier_id, $party->id, $all_price - $request->total_price, $party->branch_id);
+                SendMessageService::sendPurchase($party, $expence->price, $duty->duty);
             } else { // when total_price = all_price
-                Expence::purchaseExpence($party->id, $all_price, $party->branch_id);
+                $expence = Expence::purchaseExpence($party->id, $all_price, $party->branch_id);
+                SendMessageService::sendPurchase($party, $expence->price, 0);
             }
-            SendMessageService::sendPurchase($party);
+
             Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
             return redirect()->route('platform.buy_parties');
         }
