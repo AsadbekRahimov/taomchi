@@ -23,9 +23,11 @@ class ExpenceListScreen extends Screen
         $branch_id = Auth::user()->branch_id?: 0;
         return [
             'expences' => Expence::query()->with(['party.supplier'])
-                ->where('branch_id', $branch_id)->whereNull('description')->paginate(15),
+                ->where('branch_id', $branch_id)->whereNull('description')
+                ->orderByDesc('id')->paginate(15),
             'other_expences' => Expence::query()->with(['party.supplier'])
-                ->where('branch_id', $branch_id)->whereNull('party_id')->paginate(15),
+                ->where('branch_id', $branch_id)->whereNull('party_id')
+                ->orderByDesc('id')->paginate(15),
         ];
     }
 

@@ -42,7 +42,7 @@ class ExpenceListTable extends Table
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->id . ' | Taminotchi: ' . $model->party->supplier->name)
+                    ->modalTitle('Partiya: №' . $model->party_id . ' | Taminotchi: ' . $model->party->supplier->name)
                     ->asyncParameters([
                         'purchaseParty' => $model->id,
                     ]);

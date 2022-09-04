@@ -46,7 +46,7 @@ class PaymentListTable extends Table
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->id . ' | Mijoz: ' . $model->customer->name)
+                    ->modalTitle('Partiya: №' . $model->party_id . ' | Mijoz: ' . $model->customer->name)
                     ->asyncParameters([
                         'purchaseParty' => $model->id,
                     ]);
