@@ -16,3 +16,8 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return view('welcome');
 });
+
+Route::get('/checkPrint/{id}', function ($id){
+    $order = \App\Models\Order::query()->with(['cards.product.measure'])->find($id);
+    return view('printCheck', compact('order'));
+})->name('printCheck');

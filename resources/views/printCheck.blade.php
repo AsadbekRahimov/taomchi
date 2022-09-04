@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Saxovat talim</title>
+    <title>Kokand productivity MCHJ</title>
 </head>
 <style>
     * {
@@ -13,6 +13,27 @@
         font-family: 'Times New Roman';
     }
 
+    td,
+    th,
+    tr,
+    table {
+        border-top: 1px solid black;
+        border-collapse: collapse;
+    }
+
+    td.description,
+    th.description {
+        width: 190px;
+        max-width: 190px;
+    }
+
+
+    td.price,
+    th.price {
+        width: 100px;
+        max-width: 100px;
+        word-break: break-all;
+    }
 
     .centered {
         text-align: center;
@@ -20,13 +41,13 @@
     }
 
     .ticket {
-        width: 200px;
-        max-width: 200px;
+        width: 300px;
+        max-width: 300px;
     }
 
     img {
-        max-width: 120px;
-        width: 120px;
+        max-width: inherit;
+        width: inherit;
     }
 
 
@@ -56,7 +77,7 @@
         top:1px;
     }
 
-    @media  print {
+    @media    print {
         .hidden-print,
         .hidden-print * {
             display: none !important;
@@ -66,16 +87,57 @@
 
 <body>
 <div class="ticket">
-    <img class="centered" src="{{ asset('logo1.png') }}">
-    <p><b>Tolov raqami: </b> № {{ $receipt->id }} </p>
-    <p><b>O'quvchi: </b> {{ $receipt->student->fio_name }} </p>
-    <p><b>Gurux: </b> {{ $receipt->group->name }} </p>
-    <p><b>To'lov turi: </b> {{ \App\Models\Payment::TYPES[$receipt->type] }} </p>
-    <p><b>To'lov miqdori: </b> {{ number_format($receipt->sum) }} </p>
-    <p><b>To'langan vaqt: </b> {{ $receipt->created_at }} </p>
+    <!--   <img  src="https://rtmedlineuz.com/site/img/logo.png" alt="">-->
+    <p class="centered"><b>Kokand productivity MCHJ <br>+998 90 308 84 14  Нодирхон</b>
+    <table class="table table-bordered" >
+        <thead>
+        <tr>
+            <th style="border: 1px solid black;">№</th>
+            <th style="border: 1px solid black;"  class="description">Махсулот</th>
+            <th style="border: 1px solid black;">Нарх</th>
+            <th style="border: 1px solid black;" class="price">Жами</th>
+        </tr>
+        </thead>
+        <tbody>
+
+        @foreach($order->cards as $card)
+            <tr>
+                <td style="border: 1px solid black;" >1</td>
+                <td style="border: 1px solid black;" class="description"> {{ $card->product->name }} </td>
+
+                <td style="border: 1px solid black;  white-space: nowrap; padding: 0 2px;">{{ number_format($card->price) }}
+                    <b>x</b> {{ $card->quantity . ' ' . $card->product->measure->symbol }}</td>
+                <td style="border: 1px solid black;" class="price"> {{ number_format($card->price * $card->quantity) }}</td>
+            </tr>
+        @endforeach
+
+        @if($order->discount)
+            <tr>
+                <td style="border: 1px solid black;"></td>
+                <td style="border: 1px solid black;" colspan="2" class="description"><b>Чегирма</b></td>
+                <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->discount) }}</b></td>
+            </tr>
+        @endif
+
+        <tr>
+            <td style="border: 1px solid black;"></td>
+            <td style="border: 1px solid black;" colspan="2" class="description"><b>Умумий махсулотар</b></td>
+            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum() - $order->discount) }}</b></td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black;"></td>
+            <td style="border: 1px solid black;" colspan="2" class="description"><b>Умумий суммаси</b></td>
+            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum()  + $order->customer->duties->sum('price')) }}</b></td>
+        </tr>
+
+        </tbody>
+    </table>
+    <p>Сана: {{ $order->created_at->toDateTimeString() }}</p>
 
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>
+<a href="http://metal.edokon.ru/admin/orders"><button class="hidden-print">Back</button></a>
 <script>
     window.onload = function() { window.print(); }
     const $btnPrint = document.querySelector("#btnPrint");

@@ -18,4 +18,9 @@ class Customer extends Model
         'phone',
         'address',
     ];
+
+    public function duties()
+    {
+        return $this->hasMany(Duty::class, 'customer_id', 'id');
+    }
 }

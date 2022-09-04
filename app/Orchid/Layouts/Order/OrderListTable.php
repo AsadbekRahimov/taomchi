@@ -2,16 +2,13 @@
 
 namespace App\Orchid\Layouts\Order;
 
-use App\Models\Card;
-use App\Models\Order;
 use App\Services\HelperService;
-use Illuminate\Http\Request;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
-use Orchid\Support\Facades\Alert;
 
 class OrderListTable extends Table
 {
@@ -51,6 +48,8 @@ class OrderListTable extends Table
             })->cantHide(),
             TD::make('action', 'Amallar')->render(function ($model) {
                 return DropDown::make('')->icon('list')->list([
+                    Link::make('To\'lov cheki')->icon('printer')
+                        ->route('printCheck', ['id' => $model->id])->target('blank'),
                     ModalToggle::make('To\'liq to\'lov qilish')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
