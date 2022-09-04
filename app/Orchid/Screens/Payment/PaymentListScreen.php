@@ -3,9 +3,13 @@
 namespace App\Orchid\Screens\Payment;
 
 use App\Models\Payment;
+use App\Models\PurchaseParty;
+use App\Orchid\Layouts\Payment\PartyList;
 use App\Orchid\Layouts\Payment\PaymentListTable;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class PaymentListScreen extends Screen
 {
@@ -64,6 +68,16 @@ class PaymentListScreen extends Screen
     {
         return [
             PaymentListTable::class,
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Yopish'),
+        ];
+    }
+
+    public function asyncGetParty(Payment $payment)
+    {
+        return [
+            'sales' => $payment->sales,
         ];
     }
 }

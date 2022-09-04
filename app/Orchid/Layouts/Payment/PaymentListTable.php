@@ -3,6 +3,7 @@
 namespace App\Orchid\Layouts\Payment;
 
 use App\Models\Payment;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -27,7 +28,7 @@ class PaymentListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('customer_id')->render(function ($model) {
+            TD::make('customer_id', 'Mijoz')->render(function ($model) {
                 return $model->customer->name;
             })->cantHide(),
             TD::make('price', 'Miqdori')->render(function ($model) {
@@ -39,6 +40,15 @@ class PaymentListTable extends Table
             TD::make('created_at', 'Sana')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
+            TD::make('')->render(function ($model){
+                return ModalToggle::make('')
+                    ->icon('eye')
+                    ->modal('asyncGetPartyModal')
+                    ->modalTitle('Partiya: №' . $model->id . ' | Mijoz: ' . $model->customer->name)
+                    ->asyncParameters([
+                        'purchaseParty' => $model->id,
+                    ]);
+            })->cantHide(),
         ];
     }
 }

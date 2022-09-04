@@ -43,6 +43,11 @@ class Payment extends Model
         return $this->belongsTo(SalesParty::class, 'party_id', 'id');
     }
 
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'party_id', 'id');
+    }
+
     public static function addPayment($party_id, Order $order, $type)
     {
         return self::query()->create([
