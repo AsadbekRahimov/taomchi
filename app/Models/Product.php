@@ -20,6 +20,7 @@ class Product extends Model
         'min',
         'one_price',
         'more_price',
+        'real_price',
     ];
 
     public function measure()
