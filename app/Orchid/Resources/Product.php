@@ -37,9 +37,10 @@ class Product extends Resource
                 Select::make('measure_id')->title('O\'lchov birligi')
                     ->fromModel(\App\Models\Measure::class, 'name')->required(),
                 Input::make('box')->type('number')->title('Qadoqdagi miqdori')->required(),
+                Input::make('min')->type('number')->title('Ombordagi eng kam miqdori')->required(),
             ]),
             Group::make([
-                Input::make('min')->type('number')->title('Ombordagi eng kam miqdori')->required(),
+                Input::make('real_price')->type('number')->title('Tan narxi')->required(),
                 Input::make('more_price')->type('number')->title('Ulgurji narx')->required(),
                 Input::make('one_price')->type('number')->title('Doimiy narx')->required(),
             ]),
@@ -61,6 +62,7 @@ class Product extends Resource
             }),
             TD::make('box', 'Qadoqdagi soni'),
             TD::make('min', 'Ombordagi eng kam miqdori'),
+            TD::make('real_price', 'Tan narx'),
             TD::make('more_price', 'Ulgurji narx'),
             TD::make('one_price', 'Doimiy narx'),
             TD::make('created_at', 'Kiritilgan sana')
@@ -88,6 +90,7 @@ class Product extends Resource
             }),
             Sight::make('box', 'Qadoqdagi soni'),
             Sight::make('min', 'Ombordagi eng kam miqdori'),
+            Sight::make('real_price', 'Tan narx'),
             Sight::make('more_price', 'Ulgurji narx'),
             Sight::make('one_price', 'Doimiy narx'),
             Sight::make('created_at', 'Kiritilgan sana')->render(function ($model) {
@@ -123,7 +126,8 @@ class Product extends Resource
             'box' => ['required'],
             'min' => ['required'],
             'one_price' => ['required'],
-            'more_price' => ['required']
+            'more_price' => ['required'],
+            'real_price' => ['required']
         ];
     }
 
@@ -134,6 +138,7 @@ class Product extends Resource
             'measure_id.required' => 'O\'lchov birligi',
             'box.required' => 'Qadoqdagi soni kiritilishi shart!',
             'min.required' => 'Ombordagi eng kam miqdori kiritilishi shart!',
+            'real_price.required' => 'Tan narx kiritilishi shart!',
             'more_price.required' => 'Ulgurji narx kiritilishi shart!',
             'one_price.required' => 'Doimiy narx kiritilishi shart!',
         ];
