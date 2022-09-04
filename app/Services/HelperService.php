@@ -3,6 +3,7 @@
 namespace App\Services;
 
 use App\Models\Order;
+use Carbon\Carbon;
 use Orchid\Support\Color;
 
 class HelperService
@@ -55,5 +56,20 @@ class HelperService
         foreach ($products as $product)
             $sum += $product->quantity * $product->price;
         return $sum;
+    }
+
+    public static function getDutyColor($updated_at)
+    {
+        $current_date = Carbon::now()->toDateTimeString();
+
+        //NUMBER DAYS BETWEEN TWO DATES CALCULATOR
+        $start_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $updated_at);
+        $end_date = \Carbon\Carbon::createFromFormat('Y-m-d H:i:s', $current_date);
+        $days = $start_date->diffInDays($end_date);
+
+        if ($days <= 5)
+            return Color::WARNING();
+        elseif ($days > 5)
+            return Color::DANGER();
     }
 }

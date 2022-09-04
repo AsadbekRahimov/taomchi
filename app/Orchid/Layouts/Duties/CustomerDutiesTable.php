@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Layouts\Duties;
 
+use App\Services\HelperService;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
@@ -35,7 +36,7 @@ class CustomerDutiesTable extends Table
                return $model->customer->name;
             })->cantHide(),
             TD::make('duty', 'Miqdori')->render(function ($model){
-               return Link::make(number_format($model->duty))->type(Color::DANGER());
+               return Link::make(number_format($model->duty))->type(HelperService::getDutyColor($model->updated_at));
             })->cantHide(),
             TD::make('updated_at', 'Sanasi')->render(function ($model){
                return $model->updated_at->toDateTimeString();
