@@ -2,7 +2,13 @@
 
 namespace App\Orchid\Screens\Duties;
 
+use App\Models\Duty;
+use App\Orchid\Layouts\Duties\CustomerDutiesTable;
+use App\Orchid\Layouts\Duties\PartyList;
+use App\Services\HelperService;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class CustomerDutiesListScreen extends Screen
 {
@@ -13,7 +19,10 @@ class CustomerDutiesListScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'customer_duties' => Duty::query()->with(['customer'])
+                ->whereNotNull('customer_id')->orderByDesc('id')->paginate(15),
+        ];
     }
 
     /**
@@ -23,7 +32,19 @@ class CustomerDutiesListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'CustomerDutiesListScreen';
+        return 'Mijozlar qarzi';
+    }
+
+    public function description(): ?string
+    {
+        return 'Omborxona mijozlarinig qarzlari';
+    }
+
+    public function permission(): ?iterable
+    {
+        return [
+            'platform.stock.customer_duties',
+        ];
     }
 
     /**
@@ -43,6 +64,22 @@ class CustomerDutiesListScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            CustomerDutiesTable::class,
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Yopish'),
+        ];
+    }
+
+    public function asyncGetParty(Duty $duty)
+    {
+        $products = $duty->sales->sales;
+        $total = HelperService::getTotalPrice($products);
+        return [
+            'products' => $products,
+            'total_price' => $total,
+            'duty' => $duty->duty,
+        ];
     }
 }

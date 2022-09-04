@@ -48,4 +48,12 @@ class HelperService
         else
             return floor($quantity / $box) . ' (' . $quantity . ')';
     }
+
+    public static function getTotalPrice($products)
+    {
+        $sum = 0;
+        foreach ($products as $product)
+            $sum += $product->quantity * $product->price;
+        return $sum;
+    }
 }
