@@ -49,4 +49,22 @@ class Expence extends Model
             'branch_id' => Auth::user()->branch_id,
         ]);
     }
+
+    public static function addFullDutyPayment($duty)
+    {
+        return self::query()->create([
+            'price' => $duty->duty,
+            'party_id' => $duty->party_id,
+            'branch_id' => $duty->branch_id,
+        ]);
+    }
+
+    public static function addPartDutyPayment($price, $duty)
+    {
+        return self::query()->create([
+            'price' => $price,
+            'party_id' => $duty->party_id,
+            'branch_id' => $duty->branch_id,
+        ]);
+    }
 }

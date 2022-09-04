@@ -2,6 +2,8 @@
 
 namespace App\Orchid\Layouts\Duties;
 
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
@@ -35,8 +37,8 @@ class CustomerDutiesTable extends Table
             TD::make('duty', 'Miqdori')->render(function ($model){
                return Link::make(number_format($model->duty))->type(Color::DANGER());
             })->cantHide(),
-            TD::make('created_at', 'Sanasi')->render(function ($model){
-               return $model->created_at->toDateTimeString();
+            TD::make('updated_at', 'Sanasi')->render(function ($model){
+               return $model->updated_at->toDateTimeString();
             })->cantHide(),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
@@ -46,6 +48,24 @@ class CustomerDutiesTable extends Table
                     ->asyncParameters([
                         'duty' => $model->id,
                     ]);
+            })->cantHide(),
+            TD::make('action', 'To\'lov')->render(function ($model) {
+                return DropDown::make('')->icon('wallet')->list([
+                    ModalToggle::make('To\'liq to\'lov qilish')
+                        ->method('fullPayment')
+                        ->modal('fullPaymentModal')
+                        ->icon('dollar')
+                        ->parameters([
+                            'id' => $model->id,
+                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->duty)),
+                    ModalToggle::make('Qisman to\'lov qilish')
+                        ->method('partPayment')
+                        ->modal('partPaymentModal')
+                        ->icon('book-open')
+                        ->parameters([
+                            'id' => $model->id,
+                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->duty)),
+                ]);
             })->cantHide(),
         ];
     }

@@ -73,4 +73,26 @@ class Payment extends Model
         }
     }
 
+    public static function addFullDutyPayment($duty, $type)
+    {
+        return self::query()->create([
+            'customer_id' => $duty->customer_id,
+            'price' => $duty->duty,
+            'type' => $type,
+            'branch_id' => $duty->branch_id,
+            'party_id' => $duty->party_id,
+        ]);
+    }
+
+    public static function addPartDutyPayment($price, $duty, $type)
+    {
+        return self::query()->create([
+            'customer_id' => $duty->customer_id,
+            'price' => $price,
+            'type' => $type,
+            'branch_id' => $duty->branch_id,
+            'party_id' => $duty->party_id,
+        ]);
+    }
+
 }
