@@ -34,6 +34,9 @@ class MyDutiesTable extends Table
             TD::make('supplier_id', 'Taminotchi')->render(function ($model) {
                 return $model->supplier->name;
             })->cantHide(),
+            TD::make('supplier_id', 'Telefon raqami')->render(function ($model) {
+                return Link::make($model->supplier->phone)->href('tel:' . HelperService::telephone($model->supplier->phone));
+            })->cantHide(),
             TD::make('duty', 'Miqdori')->render(function ($model){
                 return Link::make(number_format($model->duty))->type(HelperService::getDutyColor($model->updated_at));
             })->cantHide(),

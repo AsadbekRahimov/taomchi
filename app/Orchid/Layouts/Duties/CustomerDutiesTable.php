@@ -35,6 +35,9 @@ class CustomerDutiesTable extends Table
             TD::make('customer_id', 'Mijoz')->render(function ($model) {
                return $model->customer->name;
             })->cantHide(),
+            TD::make('customer_id', 'Telefon raqami')->render(function ($model) {
+                return Link::make($model->customer->phone)->href('tel:' . HelperService::telephone($model->customer->phone));
+            })->cantHide(),
             TD::make('duty', 'Miqdori')->render(function ($model){
                return Link::make(number_format($model->duty))->type(HelperService::getDutyColor($model->updated_at));
             })->cantHide(),
