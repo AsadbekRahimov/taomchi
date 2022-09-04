@@ -9,8 +9,8 @@ class TelegramNotify
 {
     public const CHAT_TYPE = [
         'all' => '1678836162',
-        'sale' => '1587673814',
-        'order' => '1784671982',
+        'order' => '1587673814',
+        'sale' => '1784671982',
     ];
 
     public static function sendMessage($text, $chat_type, $caption = null)

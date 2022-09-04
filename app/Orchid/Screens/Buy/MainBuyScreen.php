@@ -14,6 +14,7 @@ use App\Orchid\Layouts\Buy\BasketList;
 use App\Orchid\Layouts\FilterSelections\StockSelection;
 use App\Orchid\Layouts\Stock\ColorIndicator;
 use App\Services\HelperService;
+use App\Services\SendMessageService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
@@ -161,6 +162,7 @@ class MainBuyScreen extends Screen
             } else { // when total_price = all_price
                 Expence::purchaseExpence($party->id, $all_price, $party->branch_id);
             }
+            SendMessageService::sendPurchase($party);
             Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
             return redirect()->route('platform.buy_parties');
         }
