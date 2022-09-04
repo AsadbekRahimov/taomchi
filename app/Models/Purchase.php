@@ -48,6 +48,7 @@ class Purchase extends Model
         foreach ($basket as $item)
         {
             $product = Product::query()->find((int)$item['product_id']);
+            $product->real_price = $item['price'];
             self::query()->create([
                 'supplier_id' => $party->supplier_id,
                 'product_id' => $item['product_id'],
@@ -57,6 +58,7 @@ class Purchase extends Model
                 'branch_id' => $party->branch_id,
                 'party_id' => $party->id,
             ]);
+            $product->save();
         }
     }
 
