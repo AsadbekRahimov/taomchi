@@ -4,8 +4,12 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
+use App\Models\Duty;
 use App\Models\Expence;
+use App\Models\Payment;
+use App\Models\Sale;
 use App\Orchid\Layouts\Main\ExpenceModal;
+use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\ModalToggle;
@@ -22,7 +26,16 @@ class PlatformScreen extends Screen
      */
     public function query(): iterable
     {
-        return [];
+        return [
+            'statistic' => [
+               'sell_price' => number_format(HelperService::statTotalPrice(Sale::query()->whereDay('updated_at', date('d'))->pluck('price', 'quantity')->toArray())),
+               'real_price' => number_format(HelperService::statTotalPrice(Sale::query()->with('product')->whereDay('updated_at', date('d'))->get()->pluck('product.real_price', 'quantity')->toArray())),
+               'payments' => number_format((int)Payment::query()->whereDay('updated_at', date('d'))->sum('price')),
+               'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->sum('duty')),
+               'expences' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))
+                   ->sum('price')),
+            ],
+        ];
     }
 
     /**
@@ -70,6 +83,13 @@ class PlatformScreen extends Screen
     public function layout(): iterable
     {
         return [
+            Layout::metrics([
+                'Sotilgan narx' => 'statistic.sell_price',
+                'Tan narxi' => 'statistic.real_price',
+                'To\'lovlar' => 'statistic.payments',
+                'Qarzorlik' => 'statistic.duties',
+                'Chiqimlar' => 'statistic.expences',
+            ]),
             Layout::modal('addExpenceModal', [ExpenceModal::class])
                 ->applyButton('Kiritish')->closeButton('Yopish'),
         ];

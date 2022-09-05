@@ -72,4 +72,14 @@ class HelperService
         elseif ($days > 5)
             return Color::DANGER();
     }
+
+    public static function statTotalPrice($sales)
+    {
+        $sum = 0;
+        foreach ($sales as $qnt => $price)
+        {
+            $sum += $qnt * $price;
+        }
+        return $sum;
+    }
 }
