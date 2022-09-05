@@ -55,7 +55,7 @@ class PlatformScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Eletron obmorxona avtomatlashtirish tizimi';
+        return 'Елетрон обморхона автоматлаштириш тизими';
     }
 
     /**
@@ -66,10 +66,10 @@ class PlatformScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            ModalToggle::make('Chiqim')
+            ModalToggle::make('Чиқим')
                 ->icon('calculator')
                 ->modal('addExpenceModal')
-                ->modalTitle('Chiqim kiritish')
+                ->modalTitle('Чиқим киритиш')
                 ->method('addExpence')
                 ->canSee(Auth::user()->hasAccess('platform.stock.expences')),
         ];
@@ -84,20 +84,20 @@ class PlatformScreen extends Screen
     {
         return [
             Layout::metrics([
-                'Sotilgan narx' => 'statistic.sell_price',
-                'Tan narxi' => 'statistic.real_price',
-                'To\'lovlar' => 'statistic.payments',
-                'Qarzorlik' => 'statistic.duties',
-                'Chiqimlar' => 'statistic.expences',
+                'Сотилган нарх' => 'statistic.sell_price',
+                'Тан нархи' => 'statistic.real_price',
+                'Тўловлар' => 'statistic.payments',
+                'Қарзорлик' => 'statistic.duties',
+                'Чиқимлар' => 'statistic.expences',
             ]),
             Layout::modal('addExpenceModal', [ExpenceModal::class])
-                ->applyButton('Kiritish')->closeButton('Yopish'),
+                ->applyButton('Киритиш')->closeButton('Ёпиш'),
         ];
     }
 
     public function addExpence(Request $request)
     {
         Expence::otherExpence($request->price, $request->description);
-        Alert::success('Chiqim muaffaqiyatli kiritildi');
+        Alert::success('Чиқим муаффақиятли киритилди');
     }
 }

@@ -39,12 +39,12 @@ class StockListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Zaxira maxsulotlar';
+        return 'Захира махсулотлар';
     }
 
     public function description(): ?string
     {
-        return 'Ombordagi mavjud maxsulotlarinig qoldiq miqdorlari';
+        return 'Омбордаги мавжуд махсулотлариниг қолдиқ миқдорлари';
     }
 
     public function permission(): ?iterable
@@ -63,7 +63,7 @@ class StockListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make('Maxsulot qo\'shish')->route('platform.add_products')->icon('plus')->canSee(Auth::user()->hasAccess('platform.stock.add_product')),
+            Link::make('Махсулот қўшиш')->route('platform.add_products')->icon('plus')->canSee(Auth::user()->hasAccess('platform.stock.add_product')),
         ];
     }
 
@@ -79,7 +79,7 @@ class StockListScreen extends Screen
             ColorIndicator::class,
             StockListTable::class,
             Layout::modal('asyncEditQuantityModal', QuantityEditLayout::class)
-                ->async('addToStock')->applyButton('Saqlash')->closeButton('Yopish'),
+                ->async('addToStock')->applyButton('Сақлаш')->closeButton('Ёпиш'),
         ];
     }
 
@@ -96,12 +96,12 @@ class StockListScreen extends Screen
         $quantity = $request->box === '1' ? $stock->product->box * $request->quantity : $request->quantity;
         $stock->quantity = $quantity;
         $stock->save();
-        Alert::success('Maxsulot qoldig\'i muaffaqiyatli yangilandi');
+        Alert::success('Махсулот қолдиғи муаффақиятли янгиланди');
     }
 
     public function deleteStock(Request $request)
     {
         Stock::destroy($request->id);
-        Alert::success('Omborxona maxsuloti muaffaqiyatli o\'chirildi');
+        Alert::success('Омборхона махсулоти муаффақиятли ўчирилди');
     }
 }

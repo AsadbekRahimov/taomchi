@@ -33,12 +33,12 @@ class SalesPartyScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotilgan partiyalar';
+        return 'Сотилган партиялар';
     }
 
     public function description(): ?string
     {
-        return 'Ombordan sotilgan maxsulot partiyalari';
+        return 'Омбордан сотилган махсулот партиялари';
     }
 
     public function permission(): ?iterable
@@ -69,7 +69,7 @@ class SalesPartyScreen extends Screen
             SalePartyTable::class,
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
-                ->withoutApplyButton(true)->closeButton('Yopish'),
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
         ];
     }
 

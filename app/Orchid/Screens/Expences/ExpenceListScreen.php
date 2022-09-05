@@ -38,12 +38,12 @@ class ExpenceListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Chiqimlar';
+        return 'Чиқимлар';
     }
 
     public function description(): ?string
     {
-        return 'Amalga oshirilgan chiqimlar ro\'yhati';
+        return 'Aмалга оширилган чиқимлар рўйҳати';
     }
 
     public function permission(): ?iterable
@@ -72,12 +72,12 @@ class ExpenceListScreen extends Screen
     {
         return [
             Layout::tabs([
-                'Taminotchilarga to\'langan to\'lovlar' => ExpenceListTable::class,
-                'Boshqa chiqimlar' => OtherExpenceListTable::class,
+                'Таминотчиларга тўланган тўловлар' => ExpenceListTable::class,
+                'Бошқа чиқимлар' => OtherExpenceListTable::class,
             ]),
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
-                ->withoutApplyButton(true)->closeButton('Yopish'),
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
         ];
     }
 

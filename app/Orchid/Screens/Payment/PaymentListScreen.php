@@ -34,12 +34,12 @@ class PaymentListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'To\'lovlar';
+        return 'Тўловлар';
     }
 
     public function description(): ?string
     {
-        return 'Qabul qilingan barcha to\'lovlar';
+        return 'Қабул қилинган барча тўловлар';
     }
 
     public function permission(): ?iterable
@@ -70,7 +70,7 @@ class PaymentListScreen extends Screen
             PaymentListTable::class,
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
-                ->withoutApplyButton(true)->closeButton('Yopish'),
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
         ];
     }
 

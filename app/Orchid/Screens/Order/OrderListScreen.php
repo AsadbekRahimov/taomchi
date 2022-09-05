@@ -42,12 +42,12 @@ class OrderListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Buyurtmalar';
+        return 'Буюртмалар';
     }
 
     public function description(): ?string
     {
-        return 'Omborga tushgan buyurtmalar ro\'yhati';
+        return 'Омборга тушган буюртмалар рўйҳати';
     }
 
     public function permission(): ?iterable
@@ -76,9 +76,9 @@ class OrderListScreen extends Screen
     {
         return [
             OrderListTable::class,
-            Layout::modal('fullPaymentModal', [fullPaymentModal::class])->applyButton('To\'lash')->closeButton('Yopish'),
-            Layout::modal('partPaymentModal', [partPaymentModal::class])->applyButton('To\'lash')->closeButton('Yopish'),
-            Layout::modal('discountModal', [discountModal::class])->applyButton('Chegirma kiritish')->closeButton('Yopish'),
+            Layout::modal('fullPaymentModal', [fullPaymentModal::class])->applyButton('Тўлаш')->closeButton('Ёпиш'),
+            Layout::modal('partPaymentModal', [partPaymentModal::class])->applyButton('Тўлаш')->closeButton('Ёпиш'),
+            Layout::modal('discountModal', [discountModal::class])->applyButton('Чегирма киритиш')->closeButton('Ёпиш'),
         ];
     }
 
@@ -91,7 +91,7 @@ class OrderListScreen extends Screen
         Payment::addPayment($party->id, $order, $request->type);
         Sale::createSales($party->id, $request->customer_id, $party->branch_id);
         $this->deleteCard($request);
-        Alert::success('Maxsulotlar muaffaqiyatli sotildi');
+        Alert::success('Махсулотлар муаффақиятли сотилди');
     }
 
     public function partPayment(Request $request)
@@ -99,14 +99,14 @@ class OrderListScreen extends Screen
         $order = Order::query()->find($request->id);
         if ($request->price >= ($order->cardsSum() - $order->discount))
         {
-            Alert::error('Qisman to\'lash uchun to\'lov summasi maxsulot summasidan kam bolishi kerak!');
+            Alert::error('Қисман тўлаш учун тўлов суммаси махсулот суммасидан кам болиши керак!');
         } else {
             $party = SalesParty::createParty($request->customer_id, $order->discount);
             Payment::addPartPayment($party->id, $order, $request->type, $request->price);
             Duty::paymentDuty($party->id, $order, $request->price);
             Sale::createSales($party->id, $request->customer_id, $party->branch_id);
             $this->deleteCard($request);
-            Alert::success('Maxsulotlar muaffaqiyatli sotildi');
+            Alert::success('Махсулотлар муаффақиятли сотилди');
         }
     }
 
@@ -115,13 +115,13 @@ class OrderListScreen extends Screen
         Order::query()->find($request->id)->update([
             'discount' => (int)$request->discount,
         ]);
-        Alert::success('Chegirma muaffaqiyatli kiritildi');
+        Alert::success('Чегирма муаффақиятли киритилди');
     }
 
     public function deleteCard(Request $request)
     {
         Card::query()->where('customer_id', $request->customer_id)->delete();
         Order::query()->where('customer_id', $request->customer_id)->delete();
-        Alert::success('Muaffaqiyatli tozalandi');
+        Alert::success('Муаффақиятли тозаланди');
     }
 }

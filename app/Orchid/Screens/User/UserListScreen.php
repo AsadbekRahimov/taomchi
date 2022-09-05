@@ -40,7 +40,7 @@ class UserListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Foydalanuvchilar';
+        return 'Фойдаланувчилар';
     }
 
     /**
@@ -50,7 +50,7 @@ class UserListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Tizimdagi barcha foydalanuvchilar ro`yhati';
+        return 'Тизимдаги барча фойдаланувчилар рўйҳати';
     }
 
     /**
@@ -71,7 +71,7 @@ class UserListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make('Yangi foydalanuvchi qo`shish')
+            Link::make('Янги фойдаланувчи қўшиш')
                 ->icon('plus')
                 ->route('platform.systems.users.create'),
         ];
@@ -90,8 +90,8 @@ class UserListScreen extends Screen
 
             Layout::modal('asyncEditUserModal', UserEditLayout::class)
                 ->async('asyncGetUser')
-                ->applyButton('Saqlash')
-                ->closeButton('Yopish'),
+                ->applyButton('Сақлаш')
+                ->closeButton('Ёпиш'),
         ];
     }
 
@@ -122,7 +122,7 @@ class UserListScreen extends Screen
 
         $user->fill($request->input('user'))->save();
 
-        Toast::info('Foydalanuvchi saqlandi');
+        Toast::info('Фойдаланувчи сақланди');
     }
 
     /**
@@ -132,6 +132,6 @@ class UserListScreen extends Screen
     {
         User::findOrFail($request->get('id'))->delete();
 
-        Toast::info('Foydalanuvchi o`chirildi');
+        Toast::info('Фойдаланувчи ўчирилди');
     }
 }

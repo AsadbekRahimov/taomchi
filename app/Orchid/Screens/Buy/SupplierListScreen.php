@@ -27,12 +27,12 @@ class SupplierListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Taminotchilar';
+        return 'Таминотчилар';
     }
 
     public function description(): ?string
     {
-        return 'Omborga maxulot yetkazib beruvchi tamionotchilar ro\'yhati';
+        return 'Омборга махулот етказиб берувчи тамионотчилар рўйҳати';
     }
 
     public function permission(): ?iterable

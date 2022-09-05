@@ -37,12 +37,12 @@ class MyDutiesListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Taminotchilardan qarz';
+        return 'Таминотчилардан қарз';
     }
 
     public function description(): ?string
     {
-        return 'Omborga taminotchilaridan olgan maxsulot uchun tolanmagan qarzlar';
+        return 'Омборга таминотчиларидан олган махсулот учун толанмаган қарзлар';
     }
 
     public function permission(): ?iterable
@@ -73,11 +73,11 @@ class MyDutiesListScreen extends Screen
             MyDutiesTable::class,
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
-                ->withoutApplyButton(true)->closeButton('Yopish'),
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
             Layout::modal('fullPaymentModal', [fullPaymentModal::class])
-                ->applyButton('To\'lash')->closeButton('Yopish'),
+                ->applyButton('To\'lash')->closeButton('Ёпиш'),
             Layout::modal('partPaymentModal', [partPaymentModal::class])
-                ->applyButton('To\'lash')->closeButton('Yopish'),
+                ->applyButton('To\'lash')->closeButton('Ёпиш'),
         ];
     }
 
@@ -97,7 +97,7 @@ class MyDutiesListScreen extends Screen
         $duty = Duty::find($request->id);
         Expence::addFullDutyPayment($duty);
         $duty->delete();
-        Alert::success('Qarz muaffaqiyatli to\'landi');
+        Alert::success('Қарз муаффақиятли тўланди');
     }
 
     public function partPayment(Request $request)
@@ -106,12 +106,12 @@ class MyDutiesListScreen extends Screen
         $price = (int) $request->price;
         if ($price >= $duty->duty)
         {
-            Alert::error('Tolanayotgan pul miqdori qarz miqdoridan kam bo\'lishi kerak!');
+            Alert::error('Толанаётган пул миқдори қарз миқдоридан кам бўлиши керак!');
         } else {
             Expence::addPartDutyPayment($price, $duty);
             $duty->duty -= $price;
             $duty->save();
-            Alert::success('Qarzning bir miqdori muaffaqiyatli to\'landi');
+            Alert::success('Қарзнинг бир миқдори муаффақиятли тўланди');
         }
     }
 }

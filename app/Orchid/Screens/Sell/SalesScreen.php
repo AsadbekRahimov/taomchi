@@ -30,12 +30,12 @@ class SalesScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotilgan maxsulotlar';
+        return 'Сотилган махсулотлар';
     }
 
     public function description(): ?string
     {
-        return 'Ombordan sotilgan maxsulotlar';
+        return 'Омбордан сотилган махсулотлар';
     }
 
     public function permission(): ?iterable

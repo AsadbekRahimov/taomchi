@@ -52,7 +52,7 @@ class UserEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return $this->user->exists ? 'Foydalanuvchini o`zgartirish' : 'Yangi foydalanuvchi';
+        return $this->user->exists ? 'Фойдаланувчини ўзгартириш' : 'Янги фойдаланувчи';
     }
 
     /**
@@ -62,7 +62,7 @@ class UserEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Foydalanuvchining shaxsiy profil malumotlari';
+        return 'Фойдаланувчининг шахсий профил малумотлари';
     }
 
     /**
@@ -83,19 +83,19 @@ class UserEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Foydalanuvchi rolidan foydalanish'))
+            Button::make('Фойдаланувчи ролидан фойдаланиш')
                 ->icon('login')
-                ->confirm('Siz o`z profilingizga tizimda chiqish tugmasini bosib qaytishingiz mumkin')
+                ->confirm('Сиз ўз профилингизга тизимда чиқиш тугмасини босиб қайтишингиз мумкин')
                 ->method('loginAs')
                 ->canSee($this->user->exists && \request()->user()->id !== $this->user->id),
 
-            Button::make('Foydalanuvchini o`chirish')
+            Button::make('Фойдаланувчини ўчириш')
                 ->icon('trash')
-                ->confirm('Siz rostdan ham ushbu foydalanuvchini o`chiqmoqchimisiz')
+                ->confirm('Сиз ростдан ҳам ушбу фойдаланувчини ўчиқмоқчимисиз')
                 ->method('remove')
                 ->canSee($this->user->exists),
 
-            Button::make('Foydalanuvchini saqlash')
+            Button::make('Фойдаланувчини сақлаш')
                 ->icon('check')
                 ->method('save'),
         ];
@@ -109,10 +109,10 @@ class UserEditScreen extends Screen
         return [
 
             Layout::block(UserEditLayout::class)
-                ->title('Profil haqida ma`lumot')
-                ->description('Shaxsiy profil ma\'lumotlari va elektron pochta manzilini yangilash.')
+                ->title('Профил ҳақида маълумот')
+                ->description('Шахсий профил маълумотлари ва електрон почта манзилини янгилаш.')
                 ->commands(
-                    Button::make('Saqlash')
+                    Button::make('Сақлаш')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -120,10 +120,10 @@ class UserEditScreen extends Screen
                 ),
 
             Layout::block(UserPasswordLayout::class)
-                ->title('Parolni yangilash')
-                ->description('Xavfsizlikni saqlash uchun parolingizni uzun, tasodifiy belgilardan foydalanayotganligingizga ishonch hosil qiling.')
+                ->title('Паролни янгилаш')
+                ->description('Хавфсизликни сақлаш учун паролингизни узун, тасодифий белгилардан фойдаланаётганлигингизга ишонч ҳосил қилинг.')
                 ->commands(
-                    Button::make('Saqlash')
+                    Button::make('Сақлаш')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -132,9 +132,9 @@ class UserEditScreen extends Screen
 
             Layout::block(UserRoleLayout::class)
                 ->title('Rollar')
-                ->description('Rollar foydalanuvchilarga ayrim ammalarnibajarish uchun huquq beradi.')
+                ->description('Роллар фойдаланувчиларга айрим аммаларни бажариш учун ҳуқуқ беради.')
                 ->commands(
-                    Button::make('Saqlash')
+                    Button::make('Сақлаш')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -142,10 +142,10 @@ class UserEditScreen extends Screen
                 ),
 
             Layout::block(RolePermissionLayout::class)
-                ->title('Huqular')
-                ->description('Huqular foydalanuvchilarga aynan bir amalni bajarish uchun kerak boladi.')
+                ->title('Ҳуқулар')
+                ->description('Ҳуқулар фойдаланувчиларга айнан бир амални бажариш учун керак болади.')
                 ->commands(
-                    Button::make('Saqlash')
+                    Button::make('Сақлаш')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->canSee($this->user->exists)
@@ -190,7 +190,7 @@ class UserEditScreen extends Screen
 
         $user->replaceRoles($request->input('user.roles'));
 
-        Toast::info('Foydalanuvchi malumotlari saqlandi');
+        Toast::info('Фойдаланувчи малумотлари сақланди');
 
         return redirect()->route('platform.systems.users');
     }
@@ -207,7 +207,7 @@ class UserEditScreen extends Screen
     {
         $user->delete();
 
-        Toast::info('Foydalanuvchi o`chirildi');
+        Toast::info('Фойдаланувчи ўчирилди');
 
         return redirect()->route('platform.systems.users');
     }
@@ -221,7 +221,7 @@ class UserEditScreen extends Screen
     {
         UserSwitch::loginAs($user);
 
-        Toast::info('Siz rostdan ham ushbu foydalanuvchidan foydalanmoqchimsiz?');
+        Toast::info('Сиз ростдан ҳам ушбу фойдаланувчидан фойдаланмоқчимсиз?');
 
         return redirect()->route(config('platform.index'));
     }

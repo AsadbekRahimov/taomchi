@@ -27,12 +27,12 @@ class CustomerListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Mijozlar ro\'yhati';
+        return 'Мижозлар рўйҳати';
     }
 
     public function description(): ?string
     {
-        return 'Omborxona mijozlari ro\'yhati';
+        return 'Омборхона мижозлари рўйҳати';
     }
 
     public function permission(): ?iterable

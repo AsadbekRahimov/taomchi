@@ -57,12 +57,12 @@ class MainBuyScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotib olish | ' . $this->supplier->name;
+        return 'Сотиб олиш | ' . $this->supplier->name;
     }
 
     public function description(): ?string
     {
-        return 'Omborga maxsulotlarni qabul qilish';
+        return 'Омборга махсулотларни қабул қилиш';
     }
 
     public function permission(): ?iterable
@@ -81,17 +81,17 @@ class MainBuyScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            ModalToggle::make('Maxsulotlar')
+            ModalToggle::make('Махсулотлар')
                 ->icon('barcode')
                 ->modal('basketListModal')
                 ->method('addPurchaseParty')
-                ->modalTitle('Sotib olinayotgan maxsulotlar ro\'yhati')
+                ->modalTitle('Сотиб олинаётган махсулотлар рўйҳати')
                 ->parameters([
                     'supplier_id' => $this->supplier->id,
                 ])->canSee($this->baskets->count()),
-            Button::make('O\'chirish')->icon('trash')
+            Button::make('Ўчириш')->icon('trash')
                 ->method('deleteBasket')
-                ->confirm('Siz rostdan ro\'yhatni o\'chirmoqchimisiz?')
+                ->confirm('Сиз ростдан рўйҳатни ўчирмоқчимисиз?')
                 ->parameters([
                     'supplier_id' => $this->supplier->id,
                 ])->canSee($this->baskets->count()),
@@ -110,47 +110,47 @@ class MainBuyScreen extends Screen
             ColorIndicator::class,
             StockSelection::class,
             Layout::table('products', [
-                TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
+                TD::make('product_id', 'Махсулот')->render(function (Stock $stock) {
                     return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
                 })->cantHide(),
-                TD::make('box', 'Qadoqdagi soni')->render(function (Stock $stock) {
+                TD::make('box', 'Қадоқдаги сони')->render(function (Stock $stock) {
                     return $stock->product->box;
                 })->cantHide(),
-                TD::make('quantity', 'Mavjud miqdori')->render(function (Stock $stock) {
+                TD::make('quantity', 'Мавжуд миқдори')->render(function (Stock $stock) {
                     return Link::make(HelperService::getStockQuantity($stock))
                         ->type(HelperService::getStockColor($stock));
                 })->cantHide(),
-                TD::make('add', 'Qo\'shish')->render(function (Stock $stock) {
+                TD::make('add', 'Қўшиш')->render(function (Stock $stock) {
                     return ModalToggle::make('')
                         ->icon('plus')
                         ->modal('addProductModal')
                         ->method('addProduct')
-                        ->modalTitle($stock->product->name . ' | Sotish: ' . number_format($stock->product->more_price) . ' so\'m')
+                        ->modalTitle($stock->product->name . ' | Сотиш: ' . number_format($stock->product->more_price) . ' сўм')
                         ->parameters([
                             'id' => $stock->product_id,
                             'supplier_id' => $this->supplier->id,
                             'box_count' => $stock->product->box,
                         ]);
                 })->cantHide(),
-            ])->title('Omborxona maxsulotlari'),
+            ])->title('Омборхона махсулотлари'),
             Layout::modal('addProductModal', AddProductModal::class)
-                ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
+                ->size(Modal::SIZE_LG)->applyButton('Сақлаш')->closeButton('Бекор қилиш'),
             Layout::modal('basketListModal', BasketList::class)
-                ->size(Modal::SIZE_LG)->applyButton('Saqlash')->closeButton('Bekor qilish'),
+                ->size(Modal::SIZE_LG)->applyButton('Сақлаш')->closeButton('Бекор қилиш'),
         ];
     }
 
     public function addProduct(Request $request)
     {
         Basket::addToBasket($request);
-        Alert::success('Muaffaqiyatli savatga qo\'shildi');
+        Alert::success('Муаффақиятли саватга қўшилди');
     }
 
     public function addPurchaseParty(Request $request)
     {
         $all_price = Basket::getTotalPrice($request->supplier_id);
         if ((int)$request->total_price > $all_price){
-            Alert::error('Umumiy to\'lov summasi maxsulotlar summasidan ko\'p bo\'lmasligi kerak!');
+            Alert::error('Умумий тўлов суммаси махсулотлар суммасидан кўп бо\ълмаслиги керак!');
         } else {
             $party = PurchaseParty::createParty($request->supplier_id);
             $this->deleteBasket($request);
@@ -165,7 +165,7 @@ class MainBuyScreen extends Screen
                 SendMessageService::sendPurchase($party, $expence->price, 0);
             }
 
-            Alert::success('Maxsulotlar muaffaqiyatli omborga qo\'shildi');
+            Alert::success('Махсулотлар муаффақиятли омборга қўшилди');
             return redirect()->route('platform.buy_parties');
         }
     }
@@ -173,7 +173,7 @@ class MainBuyScreen extends Screen
     public function deleteBasket(Request $request)
     {
         Basket::query()->where('supplier_id', $request->supplier_id)->delete();
-        Alert::success('Muaffaqiyatli tozalandi');
+        Alert::success('Муаффақиятли тозаланди');
     }
 
     /*public function asyncProducts(string $product)

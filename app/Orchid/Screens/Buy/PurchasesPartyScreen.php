@@ -35,12 +35,12 @@ class PurchasesPartyScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotib olingan partiyalar';
+        return 'Сотиб олинган партиялар';
     }
 
     public function description(): ?string
     {
-        return 'Omborga sotib olingan maxsulot partiyalari';
+        return 'Омборга сотиб олинган махсулот партиялари';
     }
 
     public function permission(): ?iterable
@@ -71,7 +71,7 @@ class PurchasesPartyScreen extends Screen
             PurchasePartyTable::class,
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
-                ->withoutApplyButton(true)->closeButton('Yopish'),
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
         ];
     }
 

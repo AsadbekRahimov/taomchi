@@ -4,7 +4,6 @@ namespace App\Orchid\Screens\Stock;
 
 use App\Models\Product;
 use App\Models\Stock;
-use App\Orchid\Layouts\Stock\QuantityEditLayout;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -44,12 +43,12 @@ class StockAddProductScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Zaxira maxsulotlari qo\'shish';
+        return 'Захира махсулотлари қўшиш';
     }
 
     public function description(): ?string
     {
-        return 'Ombordaga mavjud maxsulot turlarini kiritish';
+        return 'Омбордага мавжуд махсулот турларини киритиш';
     }
 
     public function permission(): ?iterable
@@ -68,7 +67,7 @@ class StockAddProductScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make('Maxsulotlarni biriktirish')->method('addProduct')->icon('plus')->canSee($this->max_count),
+            Button::make('Махсулотларни бириктириш')->method('addProduct')->icon('plus')->canSee($this->max_count),
         ];
     }
 
@@ -84,7 +83,7 @@ class StockAddProductScreen extends Screen
                 Matrix::make('products')
                     ->columns([
                         '' => 'id',
-                        'Maxsulot' => 'name',
+                        'Махсулот' => 'name',
                     ])->fields([
                         'id' => Input::make('id')->type('number')->hidden(),
                         'name' => Input::make('name')->disabled(),
@@ -98,7 +97,7 @@ class StockAddProductScreen extends Screen
         $branch_id = Auth::user()->branch_id;
         $count = $this->addToStock($request->products, $branch_id);
         Cache::forget('stock_' . $branch_id);
-        Alert::success($count . ' ta maxsulotlar omborga muaffaqiyatli qo\'shildi');
+        Alert::success($count . ' та махсулотлар омборга муаффақиятли қўшилди');
 
         return redirect()->route('platform.stock_list');
     }

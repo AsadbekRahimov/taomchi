@@ -40,7 +40,7 @@ class UserProfileScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Mening profilim';
+        return 'Менинг профилим';
     }
 
     /**
@@ -50,7 +50,7 @@ class UserProfileScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Ism, elektron pochta manzili va parol kabi ma`lumotlarini yangilash';
+        return 'Исм, электрон почта манзили ва парол каби маълумотларини янгилаш';
     }
 
     /**
@@ -70,20 +70,20 @@ class UserProfileScreen extends Screen
     {
         return [
             Layout::block(UserEditLayout::class)
-                ->title('Profil haqida ma`lumot')
-                ->description(__("Shaxsiy profil ma'lumotlari va elektron pochta manzilini yangilash."))
+                ->title('Профил ҳақида маълумот')
+                ->description("Шахсий профил маълумотлари ва електрон почта манзилини янгилаш.")
                 ->commands(
-                    Button::make('Saqlash')
+                    Button::make('Сақлаш')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('save')
                 ),
 
             Layout::block(ProfilePasswordLayout::class)
-                ->title('Parolni yangilash')
-                ->description('Xavfsizlikni saqlash uchun parolingizni uzun, tasodifiy belgilardan foydalanayotganligingizga ishonch hosil qiling.')
+                ->title('Паролни янгилаш')
+                ->description('Хавфсизликни сақлаш учун паролингизни узун, тасодифий белгилардан фойдаланаётганлигингизга ишонч ҳосил қилинг.')
                 ->commands(
-                    Button::make('Saqlash')
+                    Button::make('Сақлаш')
                         ->type(Color::DEFAULT())
                         ->icon('check')
                         ->method('changePassword')
@@ -108,7 +108,7 @@ class UserProfileScreen extends Screen
             ->fill($request->get('user'))
             ->save();
 
-        Toast::info('Profil malumotlari yangilandi.');
+        Toast::info('Профил малумотлари янгиланди. ');
     }
 
     /**
@@ -126,6 +126,6 @@ class UserProfileScreen extends Screen
             $user->password = Hash::make($request->get('password'));
         })->save();
 
-        Toast::info(__('Password changed.'));
+        Toast::info('Профил малумотлари янгиланди.');
     }
 }

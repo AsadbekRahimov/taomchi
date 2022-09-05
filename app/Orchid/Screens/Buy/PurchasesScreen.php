@@ -30,12 +30,12 @@ class PurchasesScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Sotib olingan maxsulotlar';
+        return 'Сотиб олинган махсулотлар';
     }
 
     public function description(): ?string
     {
-        return 'Omborga sotib olingan maxsulotlar';
+        return 'Омборга сотиб олинган махсулотлар';
     }
 
     public function permission(): ?iterable
