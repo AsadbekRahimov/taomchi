@@ -12,8 +12,10 @@ use App\Orchid\Layouts\Main\ExpenceModal;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
@@ -24,16 +26,25 @@ class PlatformScreen extends Screen
      *
      * @return array
      */
+    public $sell_price;
+    public $real_price;
+    public $expenses;
+    public $day_profit;
     public function query(): iterable
     {
+        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDay('updated_at', date('d'))->pluck('price', 'quantity')->toArray());
+        $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDay('updated_at', date('d'))->get()->pluck('product.real_price', 'quantity')->toArray());
+        $this->expenses = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNull('party_id')->sum('price');
+        $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
         return [
             'statistic' => [
-               'sell_price' => number_format(HelperService::statTotalPrice(Sale::query()->whereDay('updated_at', date('d'))->pluck('price', 'quantity')->toArray())),
-               'real_price' => number_format(HelperService::statTotalPrice(Sale::query()->with('product')->whereDay('updated_at', date('d'))->get()->pluck('product.real_price', 'quantity')->toArray())),
+               'sell_price' => number_format($this->sell_price),
+               'real_price' => number_format($this->real_price),
                'payments' => number_format((int)Payment::query()->whereDay('updated_at', date('d'))->sum('price')),
                'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->sum('duty')),
-               'expences' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))
-                   ->sum('price')),
+               'supplier_payments' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))->whereNotNull('party_id')
+                    ->sum('price')),
+                'expenses' => number_format($this->expenses),
             ],
         ];
     }
@@ -66,6 +77,8 @@ class PlatformScreen extends Screen
     public function commandBar(): iterable
     {
         return [
+            Link::make( 'Бугунги фойда: ' . number_format($this->day_profit))->type(Color::SUCCESS())->canSee($this->day_profit >= 0),
+            Link::make( 'Бугунги зарар: ' . number_format(-1 *$this->day_profit) . ' сўм')->type(Color::DANGER())->canSee($this->day_profit < 0),
             ModalToggle::make('Чиқим')
                 ->icon('calculator')
                 ->modal('addExpenceModal')
@@ -86,9 +99,13 @@ class PlatformScreen extends Screen
             Layout::metrics([
                 'Сотилган нарх' => 'statistic.sell_price',
                 'Тан нархи' => 'statistic.real_price',
+                'Чиқимлар' => 'statistic.expenses',
+
+            ]),
+            Layout::metrics([
                 'Тўловлар' => 'statistic.payments',
                 'Қарзорлик' => 'statistic.duties',
-                'Чиқимлар' => 'statistic.expences',
+                'Махсулот учун тўловлар' => 'statistic.supplier_payments',
             ]),
             Layout::modal('addExpenceModal', [ExpenceModal::class])
                 ->applyButton('Киритиш')->closeButton('Ёпиш'),
