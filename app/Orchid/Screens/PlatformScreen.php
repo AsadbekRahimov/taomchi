@@ -64,6 +64,7 @@ class PlatformScreen extends Screen
             'payments' => [ (request()->has('begin')) ? ChartService::paymentChart($begin, $end) : ChartService::paymentChart()],
             'duties' => [ (request()->has('begin')) ? ChartService::dutiesChart($begin, $end) : ChartService::dutiesChart()],
             'sell_products' => [ (request()->has('begin')) ? ChartService::SellChart($begin, $end) : ChartService::SellChart()],
+            'courier' => [ (request()->has('begin')) ? ChartService::CourierChart($begin, $end) : ChartService::CourierChart()],
         ];
     }
 

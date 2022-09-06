@@ -11,7 +11,7 @@ class CourierChart extends Chart
      *
      * @var string
      */
-    protected $title = 'Super Chart';
+    protected $title = 'Бугунги сотувчилар статистикаси';
 
     /**
      * Available options:
@@ -20,7 +20,7 @@ class CourierChart extends Chart
      *
      * @var string
      */
-    protected $type = 'percentage';
+    protected $type = 'pie';
 
     /**
      * Data source.
@@ -30,7 +30,7 @@ class CourierChart extends Chart
      *
      * @var string
      */
-    protected $target = 'charts';
+    protected $target = 'courier';
 
     /**
      * Determines whether to display the export button.

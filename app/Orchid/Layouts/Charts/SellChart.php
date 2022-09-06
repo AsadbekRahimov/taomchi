@@ -11,7 +11,7 @@ class SellChart extends Chart
      *
      * @var string
      */
-    protected $title = 'Шу ойдаги сотилган махсулотлар';
+    protected $title = 'Бугунги сотилган махсулотлар';
 
     /**
      * Available options:

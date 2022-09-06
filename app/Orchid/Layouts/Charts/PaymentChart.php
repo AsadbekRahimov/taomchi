@@ -11,7 +11,7 @@ class PaymentChart extends Chart
      *
      * @var string
      */
-    protected $title = 'Шу ойдаги тўловлар';
+    protected $title = 'Бугунги тўловлар';
 
     /**
      * Available options:

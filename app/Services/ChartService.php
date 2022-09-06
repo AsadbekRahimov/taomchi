@@ -7,6 +7,9 @@ use App\Models\Duty;
 use App\Models\Payment;
 use App\Models\Product;
 use App\Models\Sale;
+use App\Models\SalesParty;
+use App\Models\User;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
@@ -19,7 +22,7 @@ class ChartService
             ->when(Auth::user()->branch_id, function ($query){
                 return $query->where('branch_id', Auth::user()->branch_id);
             })->when(is_null($begin) && is_null($end), function ($query) {
-                $query->whereYear('created_at', date('Y'))->whereMonth('created_at', date('m'));
+                $query->whereDate('created_at', Carbon::today());
             })->when(!is_null($begin) && !is_null($end), function ($query) use ($begin, $end) {
                 $query->whereBetween('created_at', [$begin, $end]);
             })->groupBy('type')->get()->toArray();
@@ -62,10 +65,6 @@ class ChartService
 
     public static function SellChart($begin = null, $end = null)
     {
-        $customers = Cache::rememberForever('customers', function () {
-            return Customer::query()->pluck('name', 'id');
-        });
-
         $product_names = Cache::rememberForever('products', function () {
             return Product::query()->pluck('name', 'id');
         });
@@ -73,6 +72,10 @@ class ChartService
         $products = Sale::select('product_id', 'quantity', 'price')
             ->when(Auth::user()->branch_id, function ($query){
                 return $query->where('branch_id', Auth::user()->branch_id);
+            })->when(is_null($begin) && is_null($end), function ($query) {
+                $query->whereDate('created_at', Carbon::today());
+            })->when(!is_null($begin) && !is_null($end), function ($query) use ($begin, $end) {
+                $query->whereBetween('created_at', [$begin, $end]);
             })->get()->toArray();
 
         $sell[] = array();
@@ -96,4 +99,41 @@ class ChartService
         }
         return $result;
     }
+
+    public static function CourierChart($begin = null, $end = null)
+    {
+        $salesUsers = SalesParty::select('user_id', DB::raw('GROUP_CONCAT(id) as ids'))
+            ->when(Auth::user()->branch_id, function ($query){
+                return $query->where('branch_id', Auth::user()->branch_id);
+            })->when(is_null($begin) && is_null($end), function ($query) {
+                $query->whereDate('created_at', Carbon::today());
+            })->when(!is_null($begin) && !is_null($end), function ($query) use ($begin, $end) {
+                $query->whereBetween('created_at', [$begin, $end]);
+            })->groupBy('user_id')->get()->toArray();
+
+        $users = User::query()->pluck('name', 'id')->toArray();
+
+        $result = [
+            'values' => [],
+            'labels' => [],
+        ];
+
+        foreach ($salesUsers as $user) {
+            $result['values'][] = (int)Payment::query()->whereIn('party_id', self::getIds(explode(',', $user['ids'])))->sum('price');
+            $result['labels'][] = $users[$user['user_id']];
+        }
+
+        return $result;
+    }
+
+    private static function getIds(mixed $ids)
+    {
+        $result = [];
+        foreach ($ids as $id)
+        {
+            $result[] = (int)$id;
+        }
+        return $result;
+    }
+
 }
