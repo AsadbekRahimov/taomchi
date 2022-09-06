@@ -28,67 +28,67 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            Menu::make('Zaxira maxsulotlar')
+            Menu::make('Захира махсулотлар')
                 ->icon('database')
                 ->route('platform.stock_list')
                 ->permission('platform.stock.list')
-                ->title('Ombor'),
+                ->title('Омбор'),
 
-            Menu::make('Sotish')
+            Menu::make('Сотиш')
                 ->icon('handbag')
                 ->list([
                     Menu::make('Мижозлар')->icon('people')
                         ->route('platform.customers')->permission('platform.stock.sell'),
-                    Menu::make('Sotilgan partiyalar')->icon('call-out')
+                    Menu::make('Сотилган партиялар')->icon('call-out')
                         ->route('platform.sell_parties')->permission('platform.stock.sell_parties'),
-                    Menu::make('Sotilgan maxsulotlar')->icon('action-redo')
+                    Menu::make('Сотилган махсулотлар')->icon('action-redo')
                         ->route('platform.sales')->permission('platform.stock.sales'),
                 ]),
 
-            Menu::make('Olish')
+            Menu::make('Олиш')
                 ->icon('basket-loaded')
                 ->list([
                     Menu::make('Таминотчилар')->icon('organization')
                         ->route('platform.suppliers')->permission('platform.stock.buy'),
-                    Menu::make('Olingan partiyalar')->icon('call-in')
+                    Menu::make('Олинган партиялар')->icon('call-in')
                         ->route('platform.buy_parties')->permission('platform.stock.buy_parties'),
-                    Menu::make('Olingan maxsulotlar')->icon('action-undo')
+                    Menu::make('Олинган махсулотлар')->icon('action-undo')
                         ->route('platform.purchases')->permission('platform.stock.purchases'),
                 ]),
 
-            Menu::make('Buyurtmalar')
+            Menu::make('Буюртмалар')
                 ->icon('history')
                 ->route('platform.orders')
                 ->permission('platform.stock.orders')
-                ->title('Sotuv'),
+                ->title('Сотув'),
 
-            Menu::make('To\'lovlar')
+            Menu::make('Тўловлар')
                 ->icon('dollar')
                 ->route('platform.payments')
                 ->permission('platform.stock.payments'),
 
-            Menu::make('Chiqimlar')
+            Menu::make('Чиқимлар')
                 ->icon('calculator')
                 ->route('platform.expences')
                 ->permission('platform.stock.expences'),
 
-            Menu::make('Qarzdorlar')
+            Menu::make('Қарздорлар')
                 ->icon('book-open')
                 ->route('platform.customer_duties')
                 ->permission('platform.stock.customer_duties'),
 
-            Menu::make('Qarzlar')
+            Menu::make('Қарзлар')
                 ->icon('pie-chart')
                 ->route('platform.my_duties')
                 ->permission('platform.stock.my_duties'),
 
-            Menu::make('Foydalanuvchilar')
+            Menu::make('Фойдаланувчилар')
                 ->icon('user')
                 ->route('platform.systems.users')
                 ->permission('platform.systems.users')
-                ->title('Tizim'),
+                ->title('Тизим'),
 
-            Menu::make('Rollar')
+            Menu::make('Роллар')
                 ->icon('lock')
                 ->route('platform.systems.roles')
                 ->permission('platform.systems.roles'),
@@ -113,24 +113,24 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerPermissions(): array
     {
         return [
-            ItemPermission::group('Tizim (Super Admin uchun)')
-                ->addPermission('platform.systems.roles', 'Rollar')
-                ->addPermission('platform.systems.users', 'Foydalanuvchilar'),
+            ItemPermission::group('Тизим (Супер Aдмин учун)')
+                ->addPermission('platform.systems.roles', 'Роллар')
+                ->addPermission('platform.systems.users', 'Фойдаланувчилар'),
 
-            ItemPermission::group('Ombor (Filial foydalanuvchilari uchun)')
-                ->addPermission('platform.stock.list', 'Zaxira maxsulotlar')
-                ->addPermission('platform.stock.add_product', 'Zaxira maxsulotni omborga qo\'shish)')
-                ->addPermission('platform.stock.sell', 'Sotish')
-                ->addPermission('platform.stock.buy', 'Sotib olish')
-                ->addPermission('platform.stock.buy_parties', 'Olingan partiyalar')
-                ->addPermission('platform.stock.sell_parties', 'Sotilgan partiyalar')
-                ->addPermission('platform.stock.purchases', 'Olingan maxsulotlar')
-                ->addPermission('platform.stock.sales', 'Sotilgan maxsulotlar')
-                ->addPermission('platform.stock.orders', 'Buyurtmalar')
-                ->addPermission('platform.stock.payments', 'To\'lovlar')
-                ->addPermission('platform.stock.expences', 'Chiqimlar')
-                ->addPermission('platform.stock.customer_duties', 'Qarzdorlar')
-                ->addPermission('platform.stock.my_duties', 'Qarzlar')
+            ItemPermission::group('Омбор (Филиал фойдаланувчилари учун)')
+                ->addPermission('platform.stock.list', 'Захира махсулотлар')
+                ->addPermission('platform.stock.add_product', 'Захира махсулотни омборга қўшиш')
+                ->addPermission('platform.stock.sell', 'Сотиш')
+                ->addPermission('platform.stock.buy', 'Сотиб олиш')
+                ->addPermission('platform.stock.buy_parties', 'Олинган партиялар')
+                ->addPermission('platform.stock.sell_parties', 'Сотилган партиялар')
+                ->addPermission('platform.stock.purchases', 'Олинган махсулотлар')
+                ->addPermission('platform.stock.sales', 'Сотилган махсулотлар')
+                ->addPermission('platform.stock.orders', 'Буюртмалар')
+                ->addPermission('platform.stock.payments', 'Тўловлар')
+                ->addPermission('platform.stock.expences', 'Чиқимлар')
+                ->addPermission('platform.stock.customer_duties', 'Қарздорлар')
+                ->addPermission('platform.stock.my_duties', 'Қарзлар')
         ];
     }
 }
