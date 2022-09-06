@@ -27,8 +27,8 @@ class partPaymentModal extends Rows
     {
         return [
             Group::make([
-                Input::make('price')->title('To\'lov summasi')->type('number')->required(),
-                Select::make('type')->title('To\'lov turi')->options(Payment::TYPE),
+                Input::make('price')->title('Тўлов суммаси')->type('number')->required(),
+                Select::make('type')->title('Тўлов тури')->options(Payment::TYPE),
             ]),
         ];
     }

@@ -31,13 +31,13 @@ class StockListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('product_id', 'Maxsulot')->render(function (Stock $stock) {
+            TD::make('product_id', 'Махсулот')->render(function (Stock $stock) {
                 return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
             })->cantHide(),
-            TD::make('box', 'Qadoqdagi soni')->render(function (Stock $stock) {
+            TD::make('box', 'Қадоқдаги сони')->render(function (Stock $stock) {
                 return $stock->product->box;
             })->cantHide(),
-            TD::make('quantity', 'Qoldiq miqdori')->render(function (Stock $stock) {
+            TD::make('quantity', 'Қолдиқ миқдори')->render(function (Stock $stock) {
                 return ModalToggle::make(HelperService::getStockQuantity($stock))
                     ->modal('asyncEditQuantityModal')
                     ->modalTitle($stock->product->name . ': ' . $stock->quantity . ' ' . $stock->product->measure->name)
@@ -47,10 +47,10 @@ class StockListTable extends Table
                     ])->type(HelperService::getStockColor($stock));
             })->cantHide(),
             TD::make('delete', '')->render(function (Stock $stock){
-                return Button::make('O\'chirish')
+                return Button::make('Ўчириш')
                     ->icon('trash')
                     ->method('deleteStock')
-                    ->confirm('Siz rostdan xam bu maxsulotni ombordan o\'chirmoqchimisiz?')
+                    ->confirm('Сиз ростдан хам бу махсулотни омбордан ўчирмоқчимисиз?')
                     ->parameters([
                         'id' => $stock->id,
                     ]);

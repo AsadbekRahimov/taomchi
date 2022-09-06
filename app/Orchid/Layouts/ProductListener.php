@@ -37,11 +37,11 @@ class ProductListener extends Listener
     {
         return [
             Layout::rows([
-                Input::make('product')->title('Maxsulot nomini kiriting')->horizontal(),
+                Input::make('product')->title('Махсулот номини киритинг')->horizontal(),
                 Matrix::make('products')
                     ->columns([
                         '' => 'id',
-                        'Maxsulot' => 'name',
+                        'Махсулот' => 'name',
                     ])->fields([
                         'id' => Input::make('id')->type('number')->hidden(),
                         'name' => Input::make('name')->disabled(),

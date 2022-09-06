@@ -8,7 +8,6 @@ use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
-use Orchid\Support\Color;
 
 class MyDutiesTable extends Table
 {
@@ -31,43 +30,43 @@ class MyDutiesTable extends Table
     {
         return [
             TD::make('id', 'ID')->cantHide(),
-            TD::make('supplier_id', 'Taminotchi')->render(function ($model) {
+            TD::make('supplier_id', 'Таминотчи')->render(function ($model) {
                 return $model->supplier->name;
             })->cantHide(),
-            TD::make('supplier_id', 'Telefon raqami')->render(function ($model) {
-                return Link::make($model->supplier->phone)->href('tel:' . HelperService::telephone($model->supplier->phone));
+            TD::make('supplier_id', 'Телефон рақами')->render(function ($model) {
+                return Link::make($model->supplier->phone)->href('тел:' . HelperService::telephone($model->supplier->phone));
             })->cantHide(),
-            TD::make('duty', 'Miqdori')->render(function ($model){
+            TD::make('duty', 'Миқдори')->render(function ($model){
                 return Link::make(number_format($model->duty))->type(HelperService::getDutyColor($model->updated_at));
             })->cantHide(),
-            TD::make('updated_at', 'Sanasi')->render(function ($model){
+            TD::make('updated_at', 'Санаси')->render(function ($model){
                 return $model->updated_at->toDateTimeString();
             })->cantHide(),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->party_id . ' | Taminotchi: ' . $model->supplier->name)
+                    ->modalTitle('Партия: №' . $model->party_id . ' | Таминотчи: ' . $model->supplier->name)
                     ->asyncParameters([
                         'duty' => $model->id,
                     ]);
             })->cantHide(),
-            TD::make('action', 'To\'lov')->render(function ($model) {
+            TD::make('action', 'Тўлов')->render(function ($model) {
                 return DropDown::make('')->icon('wallet')->list([
-                    ModalToggle::make('To\'liq to\'lov qilish')
+                    ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
                         ->icon('dollar')
                         ->parameters([
                             'id' => $model->id,
-                        ])->modalTitle($model->supplier->name . ' | To\'lov summasi: ' . number_format($model->duty)),
-                    ModalToggle::make('Qisman to\'lov qilish')
+                        ])->modalTitle($model->supplier->name . ' | Тўлов суммаси: ' . number_format($model->duty)),
+                    ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
                         ->icon('book-open')
                         ->parameters([
                             'id' => $model->id,
-                        ])->modalTitle($model->supplier->name . ' | To\'lov summasi: ' . number_format($model->duty)),
+                        ])->modalTitle($model->supplier->name . ' | Тўлов суммаси: ' . number_format($model->duty)),
                 ]);
             })->cantHide()
         ];

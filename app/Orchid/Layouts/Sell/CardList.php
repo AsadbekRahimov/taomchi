@@ -34,9 +34,9 @@ class CardList extends Rows
             Matrix::make('cards')
                 ->columns([
                     '' => 'id',
-                    'Maxsulot' => 'product_id',
-                    'Moqdori (dona)' => 'quantity',
-                    'Dona narxi' => 'price',
+                    'Махсулот' => 'product_id',
+                    'Моқдори (дона)' => 'quantity',
+                    'Дона нархи' => 'price',
                 ])->fields([
                     'id' => Input::make('quantity')->type('number')->required()->hidden(),
                     'product_id' => Select::make('product_id')->options($products),

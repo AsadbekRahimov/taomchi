@@ -30,23 +30,23 @@ class PaymentListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('customer_id', 'Mijoz')->render(function ($model) {
+            TD::make('customer_id', 'Мижоз')->render(function ($model) {
                 return $model->customer->name;
             })->cantHide(),
-            TD::make('price', 'Miqdori')->render(function ($model) {
+            TD::make('price', 'Миқдори')->render(function ($model) {
                 return Link::make(number_format($model->price))->type(Color::SUCCESS());
             })->cantHide(),
-            TD::make('type', 'To\'lov turi')->render(function ($model) {
+            TD::make('type', 'Тўлов тури')->render(function ($model) {
                 return Payment::TYPE[$model->type];
             })->cantHide(),
-            TD::make('created_at', 'Sana')->render(function ($model) {
+            TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->party_id . ' | Mijoz: ' . $model->customer->name)
+                    ->modalTitle('Партия: №' . $model->party_id . ' | Мижоз: ' . $model->customer->name)
                     ->asyncParameters([
                         'purchaseParty' => $model->id,
                     ]);

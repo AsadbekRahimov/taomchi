@@ -34,17 +34,17 @@ class BasketList extends Rows
            Matrix::make('baskets')
                ->columns([
                    '' => 'id',
-                   'Maxsulot' => 'product_id',
-                   'Moqdori (dona)' => 'quantity',
-                   'Dona narxi' => 'price',
+                   'Махсулот' => 'product_id',
+                   'Моқдори (дона)' => 'quantity',
+                   'Дона нархи' => 'price',
                ])->fields([
                    'id' => Input::make('quantity')->type('number')->required()->hidden(),
                    'product_id' => Select::make('product_id')->options($products),
                    'quantity' => Input::make('quantity')->type('number')->required(),
                    'price' => Input::make('price')->type('number')->required(),
                ]),
-            Input::make('total_price')->title('Umumiy to\'lov summasi')->type('number')
-                ->help('Agar tolov miqdori umumiy summadan kam bolsa bu qarz sifatida yoziladi!')->required(),
+            Input::make('total_price')->title('Умумий тўлов суммаси')->type('number')
+                ->help('Aгар тўлов миқдори умумий суммадан кам болса бу қарз сифатида ёзилади!')->required(),
         ];
     }
 }

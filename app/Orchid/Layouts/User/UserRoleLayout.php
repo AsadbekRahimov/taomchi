@@ -22,8 +22,8 @@ class UserRoleLayout extends Rows
             Select::make('user.roles.')
                 ->fromModel(Role::class, 'name')
                 ->multiple()
-                ->title('Rollar')
-                ->help('Foydalanuvchi huqularini belgilaydigan rollar'),
+                ->title('Роллар')
+                ->help('Фойдаланувчи ҳуқуларини белгилайдиган роллар'),
         ];
     }
 }

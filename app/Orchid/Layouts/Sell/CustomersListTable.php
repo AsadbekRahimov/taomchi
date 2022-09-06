@@ -27,13 +27,13 @@ class CustomersListTable extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name', 'Ism')->render(function ($model) {
+            TD::make('name', 'Исм')->render(function ($model) {
                 return Link::make($model->name)->route('platform.sell_products', ['customer' => $model->id]);
             })->cantHide(),
-            TD::make('phone', 'Telefon raqam')->render(function ($model) {
-                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
+            TD::make('phone', 'Телефон рақам')->render(function ($model) {
+                return Link::make($model->phone)->href('тел:' . HelperService::telephone($model->phone));
             })->cantHide(),
-            TD::make('address', 'Manzili'),
+            TD::make('address', 'Манзили'),
         ];
     }
 }

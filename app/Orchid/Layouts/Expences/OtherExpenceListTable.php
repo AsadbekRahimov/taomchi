@@ -28,11 +28,11 @@ class OtherExpenceListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('description', 'Tasnifi'),
-            TD::make('price', 'Miqdori')->render(function ($model){
+            TD::make('description', 'Таснифи'),
+            TD::make('price', 'Миқдори')->render(function ($model){
                 return Link::make(number_format($model->price))->type(Color::WARNING());
             }),
-            TD::make('created_at', 'Sana')->render(function ($model){
+            TD::make('created_at', 'Сана')->render(function ($model){
                 return $model->created_at->toDateTimeString();
             }),
         ];

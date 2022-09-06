@@ -24,7 +24,7 @@ class fullPaymentModal extends Rows
     protected function fields(): iterable
     {
         return [
-            Select::make('type')->title('To\'lov turi')->options(Payment::TYPE),
+            Select::make('type')->title('Тўлов тури')->options(Payment::TYPE),
         ];
     }
 }

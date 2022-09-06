@@ -206,8 +206,8 @@ class ExampleFieldsScreen extends Screen
                     ->horizontal()
                     ->help('You might use this when asking to input their website address for a business directory'),
 
-                Input::make('tel')
-                    ->type('tel')
+                Input::make('тел')
+                    ->type('тел')
                     ->title('Telephone')
                     ->value('1-(555)-555-5555')
                     ->horizontal()

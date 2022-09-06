@@ -10,7 +10,7 @@ use Illuminate\Support\Str;
 class SendMessageService
 {
 
-    public static function sendOrder(Order $order, \Illuminate\Database\Eloquent\Collection|array $cards)
+    public static function sendOrder(Order $order, $cards)
     {
         $user = Auth::user()->name;
         $message = 'Сотувчи: #' . Str::slug($user, '_') . "\r\n"
@@ -61,9 +61,9 @@ class SendMessageService
 
     public static function stockQuantity(\App\Models\Stock $stock, $type)
     {
-        if ($type == 'nothing')
+        if ($type === 'nothing')
             $caption = 'maxsulot_qolmadi';
-        elseif ($type == 'less')
+        elseif ($type === 'less')
             $caption = 'maxsulot_kam_miqdorda';
 
         $message = 'Махсулот: ' . $stock->product->name . "\r\n"

@@ -30,8 +30,8 @@ class Supplier extends Resource
     {
         return [
             Group::make([
-                Input::make('name')->title('Ism')->required(),
-                Input::make('phone')->title('Telefon raqami')
+                Input::make('name')->title('Исм')->required(),
+                Input::make('phone')->title('Телефон рақами')
                     ->mask('(99) 999-99-99')->required(),
             ]),
         ];
@@ -46,15 +46,15 @@ class Supplier extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Ism')->cantHide(),
-            TD::make('phone', 'Telefon raqam')->render(function ($model) {
-                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
+            TD::make('name', 'Исм')->cantHide(),
+            TD::make('phone', 'Телефон рақам')->render(function ($model) {
+                return Link::make($model->phone)->href('тел:' . HelperService::telephone($model->phone));
             })->cantHide(),
-            TD::make('created_at', 'Kiritilgan sana')
+            TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
                 })->defaultHidden(),
-            TD::make('updated_at', 'O`zgertirilgan sana')
+            TD::make('updated_at', 'Ўзгартирилган сана')
                 ->render(function ($model) {
                     return $model->updated_at->toDateTimeString();
                 })->defaultHidden(),
@@ -69,14 +69,14 @@ class Supplier extends Resource
     public function legend(): array
     {
         return [
-            Sight::make('name', 'Ism'),
-            Sight::make('phone', 'Telefon raqam')->render(function ($model) {
-                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
+            Sight::make('name', 'Исм'),
+            Sight::make('phone', 'Телефон рақам')->render(function ($model) {
+                return Link::make($model->phone)->href('тел:' . HelperService::telephone($model->phone));
             }),
-            Sight::make('created_at', 'Kiritilgan sana')->render(function ($model) {
+            Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
-            Sight::make('updated_at','O`zgertirilgan sana')->render(function ($model) {
+            Sight::make('updated_at','Ўзгартирилган сана')->render(function ($model) {
                 return $model->updated_at->toDateTimeString();
             }),
         ];
@@ -105,8 +105,8 @@ class Supplier extends Resource
     public function messages(): array
     {
         return [
-            'name.required' => 'Ism kiritilishi shart!',
-            'phone.required' => 'Telefon raqam kiritilishi shart!',
+            'name.required' => 'Исм киритилиши шарт!',
+            'phone.required' => 'Телефон рақам киритилиши шарт!',
         ];
     }
 
@@ -127,78 +127,78 @@ class Supplier extends Resource
 
     public static function label(): string
     {
-        return 'Taminotchilar';
+        return 'Таминотчилар';
     }
 
 
     public static function description(): ?string
     {
-        return 'Taminotchilar ro`yhati';
+        return 'Таминотчилар рўйҳати';
     }
 
     public static function singularLabel(): string
     {
-        return 'Taminotchi';
+        return 'Киритилган сана';
     }
 
     public static function createButtonLabel(): string
     {
-        return 'Yangi taminotchi qo`shish';
+        return 'Янги таминотчи қўшиш';
     }
 
     public static function createToastMessage(): string
     {
-        return 'Yangi taminotchi qo`shildi';
+        return 'Янги таминотчи қўшилди';
     }
 
     public static function updateButtonLabel(): string
     {
-        return 'O`zgartirish';
+        return 'Ўзгартириш';
     }
 
     public static function updateToastMessage(): string
     {
-        return 'Taminotchi malumotlari o`zgartirildi';
+        return 'Таминотчи малумотлари ўзгартирилди';
     }
 
     public static function deleteButtonLabel(): string
     {
-        return 'Taminotchini o`chirish';
+        return 'Таминотчини ўчириш';
     }
 
     public static function deleteToastMessage(): string
     {
-        return 'Taminotchi o`chirildi';
+        return 'Таминотчи ўчирилди';
     }
 
     public static function saveButtonLabel(): string
     {
-        return 'Saqlash';
+        return 'Сақлаш';
     }
 
     public static function restoreButtonLabel(): string
     {
-        return 'Taminotchini qayta tiklash';
+        return 'Таминотчини қайта тиклаш';
     }
 
     public static function restoreToastMessage(): string
     {
-        return 'Taminotchi malumotlari qayta tiklandi';
+        return 'Таминотчи малумотлари қайта тикланди';
     }
 
     public static function createBreadcrumbsMessage(): string
     {
-        return 'Yangi taminotchi';
+        return 'Янги таминотчи';
     }
 
     public static function editBreadcrumbsMessage(): string
     {
-        return 'Taminotchini o`zgartirish';
+        return 'Таминотчини o`zgartirish';
     }
 
     public static function emptyResourceForAction(): string
     {
-        return 'Bu amallarni bajarish uchun malumotlar mavjud emas';
+        return 'Бу амалларни бажариш учун малумотлар мавжуд емас';
     }
 
     // TODO: add onDelete method

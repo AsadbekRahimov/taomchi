@@ -27,19 +27,19 @@ class PurchasesTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('product_id', 'Maxsulot')->render(function ($model){
+            TD::make('product_id', 'Махсулот')->render(function ($model){
                 return $model->product->name;
             }),
-            TD::make('quantity', 'Miqdori')->render(function ($model){
+            TD::make('quantity', 'Миқдори')->render(function ($model){
                 return HelperService::getQuantity($model->quantity, $model->product->box);
             }),
-            TD::make('price', 'Sotilgan narxi')->render(function ($model){
+            TD::make('price', 'Сотилган нархи')->render(function ($model){
                 return number_format($model->price);
             }),
-            TD::make('profit', 'Qoladigan foyda')->render(function ($model){
+            TD::make('profit', 'Қоладиган фойда')->render(function ($model){
                 return number_format($model->profit);
             }),
-            TD::make('supplier_id', 'Taminotchi')->render(function ($model){
+            TD::make('supplier_id', 'Таминотчи')->render(function ($model){
                 return $model->supplier->name;
             }),
         ];

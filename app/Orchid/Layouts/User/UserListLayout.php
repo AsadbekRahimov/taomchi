@@ -27,7 +27,7 @@ class UserListLayout extends Table
     public function columns(): array
     {
         return [
-            TD::make('name', 'Ismi')
+            TD::make('name', 'Исм')
                 ->sort()
                 ->cantHide()
                 ->filter(Input::make())
@@ -49,19 +49,19 @@ class UserListLayout extends Table
                         ]);
                 }),
 
-            TD::make('created_at', 'Kiritilgan sana')
+            TD::make('created_at', 'Киритилган сана')
                 ->sort()
                 ->render(function (User $user) {
                     return $user->created_at->toDateTimeString();
                 }),
 
-            TD::make('updated_at', 'O`zgertirilgan sana')
+            TD::make('updated_at', 'Ўзгартирилган сана')
                 ->sort()
                 ->render(function (User $user) {
                     return $user->updated_at->toDateTimeString();
                 }),
 
-            TD::make('Amallar')
+            TD::make('Aмаллар')
                 ->align(TD::ALIGN_CENTER)
                 ->width('100px')
                 ->render(function (User $user) {
@@ -69,13 +69,13 @@ class UserListLayout extends Table
                         ->icon('options-vertical')
                         ->list([
 
-                            Link::make('O`zgartirish')
+                            Link::make('Ўзгартириш')
                                 ->route('platform.systems.users.edit', $user->id)
                                 ->icon('pencil'),
 
-                            Button::make('O`chirish')
+                            Button::make('Ўчириш')
                                 ->icon('trash')
-                                ->confirm('Siz rostdan ham ushbu foydalanuvchini o`chirmoqchimisiz?')
+                                ->confirm('Сиз ростдан ҳам ушбу фойдаланувчини ўчирмоқчимисиз?')
                                 ->method('remove', [
                                     'id' => $user->id,
                                 ]),

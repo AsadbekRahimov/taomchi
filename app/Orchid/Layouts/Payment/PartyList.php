@@ -33,9 +33,9 @@ class PartyList extends Rows
         return [
             Matrix::make('sales')
                 ->columns([
-                    'Maxsulot' => 'product_id',
-                    'Moqdori (dona)' => 'quantity',
-                    'Dona narxi' => 'price',
+                    'Махсулот' => 'product_id',
+                    'Моқдори (дона)' => 'quantity',
+                    'Дона нархи' => 'price',
                 ])->fields([
                     'product_id' => Select::make('product_id')->options($products),
                     'quantity' => Input::make('quantity'),

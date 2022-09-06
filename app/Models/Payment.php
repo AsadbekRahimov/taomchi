@@ -22,10 +22,10 @@ class Payment extends Model
     ];
 
     public  const TYPE = [
-        1 => 'Naqt',
-        2 => 'Plastik karta',
-        3 => 'Cick/Payme/...',
-        4 => 'Bank o\'tkazma',
+        1 => 'Нақт',
+        2 => 'Пластик карта',
+        3 => 'Click/Payme/...',
+        4 => 'Банк ўтказма',
     ];
 
     public function customer()

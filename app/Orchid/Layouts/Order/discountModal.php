@@ -23,7 +23,7 @@ class discountModal extends Rows
     protected function fields(): iterable
     {
         return [
-            Input::make('discount')->title('Chegirma summasi')->type('number')->required(),
+            Input::make('discount')->title('Чегирма суммаси')->type('number')->required(),
         ];
     }
 }

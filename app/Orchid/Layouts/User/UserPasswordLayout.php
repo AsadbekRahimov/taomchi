@@ -22,13 +22,13 @@ class UserPasswordLayout extends Rows
         $user = $this->query->get('user');
 
         $placeholder = $user->exists
-            ? 'Parolni o`zgertirmagan bo`lsangiz bo`sh qoldiring'
-            : 'Parolni kiriting';
+            ? 'Паролни ўзгартирмаган бўлсангиз бўш қолдиринг'
+            : 'Паролни киритинг';
 
         return [
             Password::make('user.password')
                 ->placeholder($placeholder)
-                ->title('Parol'),
+                ->title('Парол'),
         ];
     }
 }

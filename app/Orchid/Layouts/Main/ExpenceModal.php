@@ -24,8 +24,8 @@ class ExpenceModal extends Rows
     protected function fields(): iterable
     {
         return [
-            Input::make('price')->title('Miqdori')->type('number')->required(),
-            TextArea::make('description')->rows(5)->title('Tasnifi')->type('text')->required(),
+            Input::make('price')->title('Миқдори')->type('number')->required(),
+            TextArea::make('description')->rows(5)->title('Таснифи')->type('text')->required(),
         ];
     }
 }

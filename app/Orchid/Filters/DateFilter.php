@@ -17,7 +17,7 @@ class DateFilter extends Filter
      */
     public function name(): string
     {
-        return 'Belgilangan vaqt oraligi';
+        return 'Белгиланган вақт оралиги';
     }
 
     /**
@@ -56,8 +56,8 @@ class DateFilter extends Filter
     public function display(): iterable
     {
         return [
-            DateTimer::make('begin')->required()->title('Boshlanish vaqti'),
-            DateTimer::make('end')->required()->title('Tugash vaqti'),
+            DateTimer::make('begin')->required()->title('Бошланиш вақти'),
+            DateTimer::make('end')->required()->title('Тугаш вақти'),
         ];
     }
 }

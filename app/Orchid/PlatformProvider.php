@@ -92,7 +92,7 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Sotish')
                 ->icon('handbag')
                 ->list([
-                    Menu::make('Mijozlar')->icon('people')
+                    Menu::make('Мижозлар')->icon('people')
                         ->route('platform.customers')->permission('platform.stock.sell'),
                     Menu::make('Sotilgan partiyalar')->icon('call-out')
                         ->route('platform.sell_parties')->permission('platform.stock.sell_parties'),
@@ -103,7 +103,7 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Olish')
                 ->icon('basket-loaded')
                 ->list([
-                    Menu::make('Taminotchilar')->icon('organization')
+                    Menu::make('Таминотчилар')->icon('organization')
                         ->route('platform.suppliers')->permission('platform.stock.buy'),
                     Menu::make('Olingan partiyalar')->icon('call-in')
                         ->route('platform.buy_parties')->permission('platform.stock.buy_parties'),

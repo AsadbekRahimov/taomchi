@@ -31,54 +31,54 @@ class OrderListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('customer_id', 'Mijoz')->render(function ($model) {
+            TD::make('customer_id', 'Мижоз')->render(function ($model) {
                return $model->customer->name;
             })->cantHide(),
-            TD::make('user_id', 'Sotuvchi')->render(function ($model) {
+            TD::make('user_id', 'Сотувчи')->render(function ($model) {
                 return $model->user->name;
             }),
-            TD::make('discount', 'Chegirma')->render(function ($model) {
+            TD::make('discount', 'Чегирма')->render(function ($model) {
                 return number_format($model->discount);
             }),
-            TD::make('total_price', 'Umumiy summasi')->render(function ($model) {
+            TD::make('total_price', 'Умумий суммаси')->render(function ($model) {
                 return HelperService::getOrderPrice($model);
             }),
-            TD::make('created_at', 'Sana')->render(function ($model) {
+            TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
-            TD::make('action', 'Amallar')->render(function ($model) {
+            TD::make('action', 'Aмаллар')->render(function ($model) {
                 return DropDown::make('')->icon('list')->list([
-                    Link::make('To\'lov cheki')->icon('printer')
+                    Link::make('Тўлов чеки')->icon('printer')
                         ->route('printCheck', ['id' => $model->id])->target('blank'),
-                    ModalToggle::make('To\'liq to\'lov qilish')
+                    ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
                         ->icon('dollar')
                         ->parameters([
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
-                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
-                    ModalToggle::make('Qisman to\'lov qilish')
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount)),
+                    ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
                         ->icon('book-open')
                         ->parameters([
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
-                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount)),
                     ModalToggle::make('Chegirma kiritish')
                         ->method('addDiscount')
                         ->modal('discountModal')
                         ->icon('tag')
                         ->parameters([
                             'id' => $model->id,
-                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->cardsSum() - $model->discount)),
-                    Button::make('Buyurtmani bekor qilish')
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount)),
+                    Button::make('Буюртмани бекор қилиш')
                         ->method('deleteCard')
                         ->icon('trash')
                         ->parameters([
                             'customer_id' => $model->customer_id,
-                        ])->confirm('Siz rostdan ham ushbu buyurtmani o\'chirmoqchimisiz?')
+                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?')
                 ]);
             })
         ];

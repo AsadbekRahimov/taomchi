@@ -19,7 +19,7 @@ class QuantityFilter extends Filter
      */
     public function name(): string
     {
-        return 'Qoldiq miqdor';
+        return 'Қолдиқ миқдор';
     }
 
     /**
@@ -45,7 +45,7 @@ class QuantityFilter extends Filter
     {
         $stocks = Stock::query()->with(['product'])->where('branch_id', Auth::user()->branch_id)->get();
         $ids = [];
-        if ($this->request->get('type') == 'Maxsulot mavjud')
+        if ($this->request->get('type') == 'Махсулот мавжуд')
         {
             foreach ($stocks as $stock)
             {
@@ -55,7 +55,7 @@ class QuantityFilter extends Filter
                 }
             }
             return  $builder->whereIn('id', $ids);
-        } elseif ($this->request->get('type') == 'Kam miqdorda')
+        } elseif ($this->request->get('type') == 'Кам миқдорда')
         {
             foreach ($stocks as $stock)
             {
@@ -78,7 +78,7 @@ class QuantityFilter extends Filter
     public function display(): iterable
     {
         return [
-            Select::make('type')->title('Qoldiq turi')->options(Stock::TYPE)->required(),
+            Select::make('type')->title('Қолдиқ тури')->options(Stock::TYPE)->required(),
         ];
     }
 }

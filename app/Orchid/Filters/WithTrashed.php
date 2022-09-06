@@ -21,7 +21,7 @@ class WithTrashed extends Filter
      */
     public function name(): string
     {
-        return 'O`chirilganlar';
+        return 'Ўчирилганлар';
     }
 
     /**
@@ -41,7 +41,7 @@ class WithTrashed extends Filter
     {
         return [
             CheckBox::make('withTrashed')
-                ->placeholder(__('O`chirilganlarni ko`rsatish')),
+                ->placeholder('Ўчирилганларни кўрсатиш'),
         ];
     }
 }

@@ -34,17 +34,17 @@ class PartyList extends Rows
         return [
             Matrix::make('products')
                 ->columns([
-                    'Maxsulot' => 'product_id',
-                    'Moqdori (dona)' => 'quantity',
-                    'Dona narxi' => 'price',
+                    'Махсулот' => 'product_id',
+                    'Моқдори (дона)' => 'quantity',
+                    'Дона нархи' => 'price',
                 ])->fields([
                     'product_id' => Select::make('product_id')->options($products),
                     'quantity' => Input::make('quantity'),
                     'price' => Input::make('price')->type('number')->required(),
                 ])->removableRows(false),
             Group::make([
-                Input::make('total_price')->title('Umumiy miqdori'),
-                Input::make('duty')->title('Qarz miqdori'),
+                Input::make('total_price')->title('Умумий миқдори'),
+                Input::make('duty')->title('Қарз миқдори'),
             ]),
         ];
     }

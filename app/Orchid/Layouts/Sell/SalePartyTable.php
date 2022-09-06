@@ -29,36 +29,36 @@ class SalePartyTable extends Table
     {
         return [
             TD::make('id', 'ID')->cantHide(),
-            TD::make('user_id', 'Sotuvchi')->render(function ($model){
+            TD::make('user_id', 'Сотувчи')->render(function ($model){
                 return $model->user->name;
             })->cantHide(),
-            TD::make('supplier_id', 'Mijoz')->render(function ($model) {
+            TD::make('supplier_id', 'Мижоз')->render(function ($model) {
                 return $model->customer->name;
             })->cantHide(),
-            TD::make('total_price', 'Umumiy summasi')->render(function ($model){
+            TD::make('total_price', 'Умумий суммаси')->render(function ($model){
                 return Link::make(number_format($model->salesSum()))->type(Color::INFO());
             }),
-            TD::make('discount', 'Chegirma')->render(function ($model){
+            TD::make('discount', 'Чегирма')->render(function ($model){
                 if ($model->discount > 0)
                     return Link::make(number_format($model->discount))->type(Color::WARNING());
             }),
-            TD::make('payments', 'To\'lagan')->render(function ($model){
+            TD::make('payments', 'Тўланган')->render(function ($model){
                 if ($model->payments->sum('price') > 0)
                     return Link::make(number_format($model->payments->sum('price')))->type(Color::SUCCESS());
             }),
-            TD::make('duty', 'Qarz bo\'lgan')->render(function ($model){
+            TD::make('duty', 'Қарз бўлган')->render(function ($model){
                 if ($model->duties->where('customer_id', $model->customer_id)->sum('duty') > 0)
                     return Link::make(number_format($model->duties
                         ->where('supplier_id', $model->supplier_id)->sum('duty')))->type(Color::DANGER());
             }),
-            TD::make('created_at', 'Kiritilgan sana')->render(function ($model){
+            TD::make('created_at', 'Киритилган сана')->render(function ($model){
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->id . ' | Mijoz: ' . $model->customer->name)
+                    ->modalTitle('Партия: №' . $model->id . ' | Мижоз: ' . $model->customer->name)
                     ->asyncParameters([
                         'salesParty' => $model->id,
                     ]);

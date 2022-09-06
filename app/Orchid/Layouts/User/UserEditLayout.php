@@ -26,8 +26,8 @@ class UserEditLayout extends Rows
                 ->type('text')
                 ->max(255)
                 ->required()
-                ->title('Ism')
-                ->placeholder('Ism'),
+                ->title('Исм')
+                ->placeholder('Исм'),
 
             Input::make('user.email')
                 ->type('email')
@@ -36,8 +36,8 @@ class UserEditLayout extends Rows
                 ->placeholder(__('Email')),
             Select::make('user.branch_id')
                 ->fromModel(Branch::class, 'name')
-                ->title('Filial')
-                ->empty('Umumiy'),
+                ->title('Филиал')
+                ->empty('Умумий'),
         ];
     }
 }

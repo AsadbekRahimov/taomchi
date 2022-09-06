@@ -26,8 +26,8 @@ class QuantityEditLayout extends Rows
     {
         return [
             Group::make([
-                CheckBox::make('box')->title('Qadoq')->sendTrueOrFalse()->value('true'),
-                Input::make('quantity')->title('Moqdori')->type('number')->required(),
+                CheckBox::make('box')->title('Қадоқ')->sendTrueOrFalse()->value('true'),
+                Input::make('quantity')->title('Моқдори')->type('number')->required(),
             ]),
         ];
     }

@@ -26,9 +26,9 @@ class AddProductModal extends Rows
     {
         return [
             Group::make([
-                CheckBox::make('box')->title('Qadoq')->sendTrueOrFalse()->value(true),
-                Input::make('quantity')->title('Miqdori')->type('number')->required(),
-                Input::make('price')->title('Narxi (xar bir dona uchun)')->type('number')->required(),
+                CheckBox::make('box')->title('Қадоқ')->sendTrueOrFalse()->value(true),
+                Input::make('quantity')->title('Миқдори')->type('number')->required(),
+                Input::make('price')->title('Нархи (хар бир дона учун)')->type('number')->required(),
             ]),
         ];
     }

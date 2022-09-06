@@ -33,16 +33,16 @@ class Product extends Resource
     {
         return [
             Group::make([
-                Input::make('name')->title('Nomi')->required(),
-                Select::make('measure_id')->title('O\'lchov birligi')
+                Input::make('name')->title('Номи')->required(),
+                Select::make('measure_id')->title('Ўлчов бирлиги')
                     ->fromModel(\App\Models\Measure::class, 'name')->required(),
-                Input::make('box')->type('number')->title('Qadoqdagi miqdori')->required(),
-                Input::make('min')->type('number')->title('Ombordagi eng kam miqdori')->required(),
+                Input::make('box')->type('number')->title('Қадоқдаги миқдори')->required(),
+                Input::make('min')->type('number')->title('Омбордаги енг кам миқдори')->required(),
             ]),
             Group::make([
-                Input::make('real_price')->type('number')->title('Tan narxi')->required(),
-                Input::make('more_price')->type('number')->title('Ulgurji narx')->required(),
-                Input::make('one_price')->type('number')->title('Doimiy narx')->required(),
+                Input::make('real_price')->type('number')->title('Тан нархи')->required(),
+                Input::make('more_price')->type('number')->title('Улгуржи нарх')->required(),
+                Input::make('one_price')->type('number')->title('Доимий нарх')->required(),
             ]),
         ];
     }
@@ -56,20 +56,20 @@ class Product extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Nomi')->cantHide(),
-            TD::make('measure_id', 'O\'lchov birligi')->render(function (Model $model) {
+            TD::make('name', 'Номи')->cantHide(),
+            TD::make('measure_id', 'Ўлчов бирлиги')->render(function (Model $model) {
                 return $model->measure->name;
             }),
-            TD::make('box', 'Qadoqdagi soni'),
-            TD::make('min', 'Ombordagi eng kam miqdori'),
-            TD::make('real_price', 'Tan narx'),
-            TD::make('more_price', 'Ulgurji narx'),
-            TD::make('one_price', 'Doimiy narx'),
-            TD::make('created_at', 'Kiritilgan sana')
+            TD::make('box', 'Қадоқдаги сони'),
+            TD::make('min', 'Омбордаги енг кам миқдори'),
+            TD::make('real_price', 'Тан нархи'),
+            TD::make('more_price', 'Улгуржи нарх'),
+            TD::make('one_price', 'Доимий нарх'),
+            TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
                 })->defaultHidden(),
-            TD::make('updated_at', 'O`zgertirilgan sana')
+            TD::make('updated_at', 'Ўзгартирилган сана')
                 ->render(function ($model) {
                     return $model->updated_at->toDateTimeString();
                 })->defaultHidden(),
@@ -84,19 +84,19 @@ class Product extends Resource
     public function legend(): array
     {
         return [
-            Sight::make('name', 'Nomi'),
-            Sight::make('measure_id', 'O\'lchov birligi')->render(function ($model) {
+            Sight::make('name', 'Номи'),
+            Sight::make('measure_id', 'Ўлчов бирлиги')->render(function ($model) {
                 return $model->measure->name;
             }),
-            Sight::make('box', 'Qadoqdagi soni'),
-            Sight::make('min', 'Ombordagi eng kam miqdori'),
-            Sight::make('real_price', 'Tan narx'),
-            Sight::make('more_price', 'Ulgurji narx'),
-            Sight::make('one_price', 'Doimiy narx'),
-            Sight::make('created_at', 'Kiritilgan sana')->render(function ($model) {
+            Sight::make('box', 'Қадоқдаги сони'),
+            Sight::make('min', 'Омбордаги енг кам миқдори'),
+            Sight::make('real_price', 'Тан нархи'),
+            Sight::make('more_price', 'Улгуржи нарх'),
+            Sight::make('one_price', 'Доимий нарх'),
+            Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
-            Sight::make('updated_at','O`zgertirilgan sana')->render(function ($model) {
+            Sight::make('updated_at','Ўзгартирилган сана')->render(function ($model) {
                 return $model->updated_at->toDateTimeString();
             }),
         ];
@@ -134,13 +134,13 @@ class Product extends Resource
     public function messages(): array
     {
         return [
-            'name.required' => 'Nomi kiritilishi shart!',
-            'measure_id.required' => 'O\'lchov birligi',
-            'box.required' => 'Qadoqdagi soni kiritilishi shart!',
-            'min.required' => 'Ombordagi eng kam miqdori kiritilishi shart!',
-            'real_price.required' => 'Tan narx kiritilishi shart!',
-            'more_price.required' => 'Ulgurji narx kiritilishi shart!',
-            'one_price.required' => 'Doimiy narx kiritilishi shart!',
+            'name.required' => 'Номи киритилиши шарт!',
+            'measure_id.required' => 'Ўлчов бирлиги',
+            'box.required' => 'Қадоқдаги сони киритилиши шарт!',
+            'min.required' => 'Омбордаги енг кам миқдори киритилиши шарт!',
+            'real_price.required' => 'Тан нархи киритилиши шарт!',
+            'more_price.required' => 'Улгуржи нарх киритилиши шарт!',
+            'one_price.required' => 'Доимий нарх киритилиши шарт!',
         ];
     }
 
@@ -161,84 +161,84 @@ class Product extends Resource
 
     public static function label(): string
     {
-        return 'Maxsulotlar';
+        return 'Махсулотлар';
     }
 
 
     public static function description(): ?string
     {
-        return 'Maxsulotlar ro`yhati';
+        return 'Махсулотлар рўйҳати';
     }
 
     public static function singularLabel(): string
     {
-        return 'Maxsulot';
+        return 'Махсулот';
     }
 
     public static function createButtonLabel(): string
     {
-        return 'Yangi maxsulot qo`shish';
+        return 'Янги махсулот қўшиш';
     }
 
     public static function createToastMessage(): string
     {
-        return 'Yangi maxsulot qo`shildi';
+        return 'Янги махсулот қўшилди';
     }
 
     public static function updateButtonLabel(): string
     {
-        return 'O`zgartirish';
+        return 'Ўзгартириш';
     }
 
     public static function updateToastMessage(): string
     {
-        return 'Maxsulot malumotlari o`zgartirildi';
+        return 'Махсулот малумотлари ўзгартирилди';
     }
 
     public static function deleteButtonLabel(): string
     {
-        return 'Maxsulotni o`chirish';
+        return 'Махсулотни ўчириш';
     }
 
     public static function deleteToastMessage(): string
     {
-        return 'Maxsulot o`chirildi';
+        return 'Махсулот ўчирилди';
     }
 
     public static function saveButtonLabel(): string
     {
-        return 'Saqlash';
+        return 'Сақлаш';
     }
 
     public static function restoreButtonLabel(): string
     {
-        return 'Maxsulotni qayta tiklash';
+        return 'Махсулотни қайта тиклаш';
     }
 
     public static function restoreToastMessage(): string
     {
-        return 'Maxsulot malumotlari qayta tiklandi';
+        return 'Махсулот малумотлари қайта тикланди';
     }
 
     public static function createBreadcrumbsMessage(): string
     {
-        return 'Yangi maxsulot';
+        return 'Янги махсулот';
     }
 
     public static function editBreadcrumbsMessage(): string
     {
-        return 'Maxsulotni o`zgartirish';
+        return 'Махсулотни o`zgartirish';
     }
 
     public static function emptyResourceForAction(): string
     {
-        return 'Bu amallarni bajarish uchun malumotlar mavjud emas';
+        return 'Бу амалларни бажариш учун малумотлар мавжуд емас';
     }
 
     public function onSave(ResourceRequest $request, Model $model)
     {
         if ($request->box == '0') {
-            Alert::error('Qadoqdagi miqdori 0 dan katta bo\'lishi kerak!');
+            Alert::error('Қадоқдаги миқдори 0 дан катта бўлиши керак!');
         } else {
             $model->forceFill($request->all())->save();
             foreach (Branch::all() as $branch) {

@@ -28,11 +28,11 @@ class SuppliersListTable extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name', 'Ismi')->render(function (Supplier $supplier) {
+            TD::make('name', 'Исми')->render(function (Supplier $supplier) {
                 return Link::make($supplier->name)->route('platform.buy_products', ['supplier' => $supplier->id]);
             })->cantHide(),
-            TD::make('phone', 'Telefon raqami')->render(function (Supplier $supplier) {
-                return Link::make($supplier->phone)->href('tel:' . HelperService::telephone($supplier->phone));
+            TD::make('phone', 'Телефон рақами')->render(function (Supplier $supplier) {
+                return Link::make($supplier->phone)->href('тел:' . HelperService::telephone($supplier->phone));
             })->cantHide(),
         ];
     }

@@ -19,18 +19,17 @@ class ProfilePasswordLayout extends Rows
     {
         return [
             Password::make('old_password')
-                ->placeholder(__('Xozirgi ishlatilayotgan parolingiz'))
-                ->title(__('Xozirgi parolingiz'))
-                ->help('This is your password set at the moment.'),
+                ->placeholder('Хозирги ишлатилаётган паролингиз')
+                ->title('Хозирги паролингиз'),
 
             Password::make('password')
-                ->placeholder(__('Yangi kiritmoqchi bo`lgan parolingiz'))
-                ->title('Yangi parol'),
+                ->placeholder('Янги киритмоқчи бўлган паролингиз')
+                ->title('Янги парол'),
 
             Password::make('password_confirmation')
-                ->placeholder('Parolni tasdiqlash uchun qayta kiriting')
-                ->title('Parolni tasdiqlash')
-                ->help('Yaxshi parol kamida kamida 8 ta belgidan iborat bo`lishi kerak, jumladan raqam va kichik harflar qatnashishi maqsadga muoffiq.'),
+                ->placeholder('Паролни тасдиқлаш учун қайта киритинг')
+                ->title('Паролни тасдиқлаш')
+                ->help('Яхши парол камида камида 8 та белгидан иборат бўлиши керак, жумладан рақам ва кичик ҳарфлар қатнашиши мақсадга муоффиқ.'),
         ];
     }
 }

@@ -29,20 +29,20 @@ class ExpenceListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('party_id', 'Taminotchi')->render(function ($model){
+            TD::make('party_id', 'Таминотчи')->render(function ($model){
                 return $model->party->supplier->name;
             }),
-            TD::make('price', 'Miqdori')->render(function ($model){
+            TD::make('price', 'Миқдори')->render(function ($model){
                 return Link::make(number_format($model->price))->type(Color::WARNING());
             }),
-            TD::make('created_at', 'Sana')->render(function ($model){
+            TD::make('created_at', 'Сана')->render(function ($model){
                 return $model->created_at->toDateTimeString();
             }),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->party_id . ' | Taminotchi: ' . $model->party->supplier->name)
+                    ->modalTitle('Партия: №' . $model->party_id . ' | Таминотчи: ' . $model->party->supplier->name)
                     ->asyncParameters([
                         'purchaseParty' => $model->id,
                     ]);

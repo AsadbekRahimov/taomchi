@@ -28,8 +28,8 @@ class Measure extends Resource
     {
         return [
             Group::make([
-                Input::make('name')->title('Nomi')->required(),
-                Input::make('symbol')->title('Belgisi')->required(),
+                Input::make('name')->title('Номи')->required(),
+                Input::make('symbol')->title('Белгиси')->required(),
             ]),
         ];
     }
@@ -43,13 +43,13 @@ class Measure extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Nomi')->cantHide(),
-            TD::make('symbol', 'Belgisi')->cantHide(),
-            TD::make('created_at', 'Kiritilgan sana')
+            TD::make('name', 'Номи')->cantHide(),
+            TD::make('symbol', 'Белгиси')->cantHide(),
+            TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
                 })->defaultHidden(),
-            TD::make('updated_at', 'O`zgertirilgan sana')
+            TD::make('updated_at', 'Ўзгартирилган сана')
                 ->render(function ($model) {
                     return $model->updated_at->toDateTimeString();
                 })->defaultHidden(),
@@ -64,12 +64,12 @@ class Measure extends Resource
     public function legend(): array
     {
         return [
-            Sight::make('name', 'Nomi'),
-            Sight::make('symbol', 'Belgisi'),
-            Sight::make('created_at', 'Kiritilgan sana')->render(function ($model) {
+            Sight::make('name', 'Номи'),
+            Sight::make('symbol', 'Белгиси'),
+            Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
-            Sight::make('updated_at','O`zgertirilgan sana')->render(function ($model) {
+            Sight::make('updated_at','Ўзгартирилган сана')->render(function ($model) {
                 return $model->updated_at->toDateTimeString();
             }),
         ];
@@ -98,8 +98,8 @@ class Measure extends Resource
     public function messages(): array
     {
         return [
-            'name.required' => 'Nomi kiritilishi shart!',
-            'symbol.required' => 'Belgisi kiritilishi shart!',
+            'name.required' => 'Номи киритилиши шарт!',
+            'symbol.required' => 'Белгиси киритилиши шарт!',
         ];
     }
 
@@ -120,78 +120,78 @@ class Measure extends Resource
 
     public static function label(): string
     {
-        return 'O\'lchov birliklari';
+        return 'Ўлчов бирликлари';
     }
 
 
     public static function description(): ?string
     {
-        return 'O\'lchov birliklari ro\'yhati';
+        return 'Ўлчов бирликлари рўйҳати';
     }
 
     public static function singularLabel(): string
     {
-        return 'O\'lchov birligi';
+        return 'Ўлчов бирлиги';
     }
 
     public static function createButtonLabel(): string
     {
-        return 'Yangi o\'lchov birligi qo\'shish';
+        return 'Янги ўлчов бирлиги қўшиш';
     }
 
     public static function createToastMessage(): string
     {
-        return 'Yangi o\'lchov birligi qo`shildi';
+        return 'Янги ўлчов бирлиги қўшилди';
     }
 
     public static function updateButtonLabel(): string
     {
-        return 'O\'zgartirish';
+        return 'Ўзгартириш';
     }
 
     public static function updateToastMessage(): string
     {
-        return 'O\'lchov birligi malumotlari o\'zgartirildi';
+        return 'Ўлчов бирлиги малумотлари ўзгартирилди';
     }
 
     public static function deleteButtonLabel(): string
     {
-        return 'O\'lchov birligini o\'chirish';
+        return 'Ўлчов бирлигини ўчириш';
     }
 
     public static function deleteToastMessage(): string
     {
-        return 'O\'lchov birligi o`chirildi';
+        return 'Ўлчов бирлиги ўчирилди';
     }
 
     public static function saveButtonLabel(): string
     {
-        return 'Saqlash';
+        return 'Сақлаш';
     }
 
     public static function restoreButtonLabel(): string
     {
-        return 'O\'lchov birligini qayta tiklash';
+        return 'Ўлчов бирлигини қайта тиклаш';
     }
 
     public static function restoreToastMessage(): string
     {
-        return 'O\'lchov birligi malumotlari qayta tiklandi';
+        return 'Ўлчов бирлиги малумотлари қайта тикланди';
     }
 
     public static function createBreadcrumbsMessage(): string
     {
-        return 'Yangi o\'lchov birligi';
+        return 'Янги ўлчов бирлиги';
     }
 
     public static function editBreadcrumbsMessage(): string
     {
-        return 'O\'lchov birligini o\'zgartirish';
+        return 'Ўлчов бирлигини o\'zgartirish';
     }
 
     public static function emptyResourceForAction(): string
     {
-        return 'Bu amallarni bajarish uchun malumotlar mavjud emas';
+        return 'Бу амалларни бажариш учун малумотлар мавжуд емас';
     }
 
     // TODO: add onDelete method

@@ -120,17 +120,17 @@ Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScr
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.stock_list')
-            ->push('Maxsulot qo\'shish');
+            ->push('Махсулот qo\'shish');
     });
 
 
-// Taminotchilar
+// Таминотчилар
 Route::screen('stock/suppliers', \App\Orchid\Screens\Buy\SupplierListScreen::class)
     ->name('platform.suppliers')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Taminotchilar');
+            ->push('Таминотчилар');
     });
 
 // Omborga maxsulotlarni sotib olish
@@ -139,16 +139,16 @@ Route::screen('stock/buy/{supplier}', \App\Orchid\Screens\Buy\MainBuyScreen::cla
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Maxsulot sotib olish');
+            ->push('Махсулот sotib olish');
     });
 
-// Mijozlar
+// Мижозлар
 Route::screen('stock/customers', \App\Orchid\Screens\Sell\CustomerListScreen::class)
     ->name('platform.customers')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Mijozlar');
+            ->push('Мижозлар');
     });
 
 // Ombordagi maxsulotlarni sotish
@@ -157,7 +157,7 @@ Route::screen('stock/sell/{customer}', \App\Orchid\Screens\Sell\MainSellScreen::
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Maxsulot sotib olish');
+            ->push('Махсулот sotib olish');
     });
 
 // Sotib olingan partiyalar

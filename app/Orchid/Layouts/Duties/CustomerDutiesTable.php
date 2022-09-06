@@ -32,43 +32,43 @@ class CustomerDutiesTable extends Table
     {
         return [
             TD::make('id', 'ID')->cantHide(),
-            TD::make('customer_id', 'Mijoz')->render(function ($model) {
+            TD::make('customer_id', 'Мижоз')->render(function ($model) {
                return $model->customer->name;
             })->cantHide(),
-            TD::make('customer_id', 'Telefon raqami')->render(function ($model) {
-                return Link::make($model->customer->phone)->href('tel:' . HelperService::telephone($model->customer->phone));
+            TD::make('customer_id', 'Телефон рақами')->render(function ($model) {
+                return Link::make($model->customer->phone)->href('тел:' . HelperService::telephone($model->customer->phone));
             })->cantHide(),
-            TD::make('duty', 'Miqdori')->render(function ($model){
+            TD::make('duty', 'Миқдори')->render(function ($model){
                return Link::make(number_format($model->duty))->type(HelperService::getDutyColor($model->updated_at));
             })->cantHide(),
-            TD::make('updated_at', 'Sanasi')->render(function ($model){
+            TD::make('updated_at', 'Санаси')->render(function ($model){
                return $model->updated_at->toDateTimeString();
             })->cantHide(),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Partiya: №' . $model->party_id . ' | Mijoz: ' . $model->customer->name)
+                    ->modalTitle('Партия: №' . $model->party_id . ' | Мижоз: ' . $model->customer->name)
                     ->asyncParameters([
                         'duty' => $model->id,
                     ]);
             })->cantHide(),
-            TD::make('action', 'To\'lov')->render(function ($model) {
+            TD::make('action', 'Тўлов')->render(function ($model) {
                 return DropDown::make('')->icon('wallet')->list([
-                    ModalToggle::make('To\'liq to\'lov qilish')
+                    ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
                         ->icon('dollar')
                         ->parameters([
                             'id' => $model->id,
-                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->duty)),
-                    ModalToggle::make('Qisman to\'lov qilish')
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->duty)),
+                    ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
                         ->icon('book-open')
                         ->parameters([
                             'id' => $model->id,
-                        ])->modalTitle($model->customer->name . ' | To\'lov summasi: ' . number_format($model->duty)),
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->duty)),
                 ]);
             })->cantHide(),
         ];
