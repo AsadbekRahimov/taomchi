@@ -3,9 +3,15 @@
 namespace App\Orchid\Screens\Sell;
 
 use App\Models\Sale;
+use App\Orchid\Layouts\Report\ByDateRangeModal;
 use App\Orchid\Layouts\Sell\SalesTable;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class SalesScreen extends Screen
 {
@@ -52,7 +58,12 @@ class SalesScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            ModalToggle::make('')
+                ->icon('save-alt')
+                ->method('report')
+                ->modal('reportModal'),
+        ];
     }
 
     /**
@@ -63,7 +74,17 @@ class SalesScreen extends Screen
     public function layout(): iterable
     {
         return [
-            SalesTable::class
+            SalesTable::class,
+            Layout::modal('reportModal', ByDateRangeModal::class)->applyButton('Юклаш')->closeButton('Ёпиш')->title('Сотилган махсулотлар'),
         ];
+    }
+
+    public function report(Request $request)
+    {
+        $begin = $request->date['start'] . ' 00:00:00';
+        $end = $request->date['end'] . ' 23:59:59';
+
+        $result = DB::select('SELECT C.name, P.name, S.quantity, S.price FROM sales S JOIN customers C ON C.id = S.customer_id JOIN products P ON S.product_id = P.id');
+        dd($result);
     }
 }
