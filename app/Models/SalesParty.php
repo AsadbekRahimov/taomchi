@@ -27,12 +27,12 @@ class SalesParty extends Model
 
     public function user()
     {
-        return $this->belongsTo(Customer::class, 'user_id', 'id');
+        return $this->belongsTo(User::class, 'user_id', 'id');
     }
 
     public function branch()
     {
-        return $this->belongsTo(Customer::class, 'branch_id', 'id');
+        return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
     public function sales()

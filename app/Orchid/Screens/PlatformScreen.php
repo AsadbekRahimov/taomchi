@@ -4,11 +4,19 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
+use App\Models\Customer;
 use App\Models\Duty;
 use App\Models\Expence;
 use App\Models\Payment;
+use App\Models\Product;
 use App\Models\Sale;
+use App\Models\Supplier;
+use App\Orchid\Layouts\Charts\CourierChart;
+use App\Orchid\Layouts\Charts\DutyChart;
+use App\Orchid\Layouts\Charts\PaymentChart;
+use App\Orchid\Layouts\Charts\SellChart;
 use App\Orchid\Layouts\Main\ExpenceModal;
+use App\Services\ChartService;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -38,14 +46,24 @@ class PlatformScreen extends Screen
         $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
         return [
             'statistic' => [
-               'sell_price' => number_format($this->sell_price),
-               'real_price' => number_format($this->real_price),
-               'payments' => number_format((int)Payment::query()->whereDay('updated_at', date('d'))->sum('price')),
-               'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->sum('duty')),
-               'supplier_payments' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))->whereNotNull('party_id')
-                    ->sum('price')),
-                'expenses' => number_format($this->expenses),
+                'all' => [
+                    'products' => Product::count(),
+                    'customers' => Customer::count(),
+                    'suppliers' => Supplier::count(),
+                ],
+                'day' => [
+                    'sell_price' => number_format($this->sell_price),
+                    'real_price' => number_format($this->real_price),
+                    'payments' => number_format((int)Payment::query()->whereDay('updated_at', date('d'))->sum('price')),
+                    'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->sum('duty')),
+                    'supplier_payments' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))
+                        ->whereNotNull('party_id')->sum('price')),
+                    'expenses' => number_format($this->expenses),
+                ],
             ],
+            'payments' => [ (request()->has('begin')) ? ChartService::paymentChart($begin, $end) : ChartService::paymentChart()],
+            'duties' => [ (request()->has('begin')) ? ChartService::dutiesChart($begin, $end) : ChartService::dutiesChart()],
+            'sell_products' => [ (request()->has('begin')) ? ChartService::SellChart($begin, $end) : ChartService::SellChart()],
         ];
     }
 
@@ -97,15 +115,25 @@ class PlatformScreen extends Screen
     {
         return [
             Layout::metrics([
-                'Сотилган нарх' => 'statistic.sell_price',
-                'Тан нархи' => 'statistic.real_price',
-                'Чиқимлар' => 'statistic.expenses',
-
+                'Махсулотлар' => 'statistic.all.products',
+                'Мижозлар' => 'statistic.all.customers',
+                'Таминотчилар' => 'statistic.all.suppliers',
             ]),
             Layout::metrics([
-                'Тўловлар' => 'statistic.payments',
-                'Қарзорлик' => 'statistic.duties',
-                'Махсулот учун тўловлар' => 'statistic.supplier_payments',
+                'Сотилган нарх' => 'statistic.day.sell_price',
+                'Тан нархи' => 'statistic.day.real_price',
+                'Чиқимлар' => 'statistic.day.expenses',
+            ])->title('Бугунги савдо'),
+            Layout::metrics([
+                'Тўловлар' => 'statistic.day.payments',
+                'Қарздорлик' => 'statistic.day.duties',
+                'Махсулот учун тўловлар' => 'statistic.day.supplier_payments',
+            ]),
+            Layout::tabs([
+                'Тўлов' => PaymentChart::class,
+                'Қарздорлик' => DutyChart::class,
+                'Сотилган махсулот' => SellChart::class,
+                'Сотувчи' => CourierChart::class,
             ]),
             Layout::modal('addExpenceModal', [ExpenceModal::class])
                 ->applyButton('Киритиш')->closeButton('Ёпиш'),

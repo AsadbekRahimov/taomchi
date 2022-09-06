@@ -4,13 +4,16 @@ namespace App\Orchid\Resources;
 
 use App\Services\HelperService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
+use Orchid\Crud\ResourceRequest;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
+use Orchid\Support\Facades\Alert;
 
 class Customer extends Resource
 {
@@ -203,6 +206,18 @@ class Customer extends Resource
     public static function emptyResourceForAction(): string
     {
         return 'Бу амалларни бажариш учун малумотлар мавжуд емас';
+    }
+
+    public function onSave(ResourceRequest $request, Model $model)
+    {
+        $model->forceFill($request->all())->save();
+        Cache::forget('customers');
+    }
+
+    public function onDelete(Model $model)
+    {
+        $model->delete();
+        Cache::forget('customers');
     }
 
     // TODO: add onDelete method
