@@ -18,6 +18,6 @@ Route::get('/', function () {
 });
 
 Route::get('/checkPrint/{id}', function ($id){
-    $order = \App\Models\Order::query()->with(['cards.product.measure'])->find($id);
+    $order = \App\Models\Order::query()->with(['cards.product.measure', 'customer'])->find($id);
     return view('printCheck', compact('order'));
 })->name('printCheck');
