@@ -248,5 +248,11 @@ class Product extends Resource
         }
     }
 
+    public function onDelete(Model $model)
+    {
+        $model->delete();
+        Cache::forget('products');
+    }
+
     // TODO: add onDelete method
 }
