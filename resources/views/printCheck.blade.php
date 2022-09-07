@@ -90,7 +90,7 @@
     <!--   <img  src="https://rtmedlineuz.com/site/img/logo.png" alt="">-->
     <p class="centered"><b>Kokand trade productivity MCHJ <br>Тел: 998 90 308 84 14 | Нодирхон</b>
     <p><b>Мижоз: {{ $order->customer->name }}</b>
-    <b> | Карздорлиги: {{ number_format($order->customer->duties->sum('duty')) }}</b>
+    <p><b>Эски карздорлик: {{ number_format($order->customer->duties->sum('duty')) }}</b>
     <table class="table table-bordered" >
         <thead>
         <tr>
@@ -121,7 +121,7 @@
 
         <tr>
             <td style="border: 1px solid black;"></td>
-            <td style="border: 1px solid black;" colspan="2" class="description"><b>Жами карздорлиги</b></td>
+            <td style="border: 1px solid black;" colspan="2" class="description"><b>Жами карздорлик</b></td>
             <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum() - $order->discount + $order->customer->duties->sum('duty')) }}</b></td>
         </tr>
 
