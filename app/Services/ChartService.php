@@ -41,9 +41,7 @@ class ChartService
 
     public static function dutiesChart($begin = null, $end = null)
     {
-        $customers = Cache::rememberForever('customers', function () {
-            return Customer::query()->pluck('name', 'id');
-        });
+        $customers = Cache::get('customers');
 
         $duties = Duty::select('customer_id', DB::raw('sum(duty) as sum'))
             ->whereNotNull('customer_id')
@@ -65,9 +63,7 @@ class ChartService
 
     public static function SellChart($begin = null, $end = null)
     {
-        $product_names = Cache::rememberForever('products', function () {
-            return Product::query()->pluck('name', 'id');
-        });
+        $product_names = Cache::get('products');
 
         $products = Sale::select('product_id', 'quantity', 'price')
             ->when(Auth::user()->branch_id, function ($query){

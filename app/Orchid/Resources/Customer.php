@@ -212,12 +212,18 @@ class Customer extends Resource
     {
         $model->forceFill($request->all())->save();
         Cache::forget('customers');
+        Cache::rememberForever('customers', function () {
+            return \App\Models\Customer::query()->pluck('name', 'id');
+        });
     }
 
     public function onDelete(Model $model)
     {
         $model->delete();
         Cache::forget('customers');
+        Cache::rememberForever('customers', function () {
+            return \App\Models\Customer::query()->pluck('name', 'id');
+        });
     }
 
     // TODO: add onDelete method

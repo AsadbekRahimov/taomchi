@@ -245,6 +245,9 @@ class Product extends Resource
                 Cache::forget('stock_' . $branch->id);
             }
             Cache::forget('products');
+            Cache::rememberForever('products', function () {
+                return \App\Models\Product::query()->pluck('name', 'id');
+            });
         }
     }
 
@@ -252,6 +255,9 @@ class Product extends Resource
     {
         $model->delete();
         Cache::forget('products');
+        Cache::rememberForever('products', function () {
+            return \App\Models\Product::query()->pluck('name', 'id');
+        });
     }
 
     // TODO: add onDelete method

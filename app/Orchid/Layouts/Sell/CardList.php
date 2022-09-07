@@ -26,9 +26,7 @@ class CardList extends Rows
      */
     protected function fields(): iterable
     {
-        $products = Cache::rememberForever('products', function () {
-            return Product::query()->pluck('name', 'id');
-        });
+        $products = Cache::get('products');
 
         return [
             Matrix::make('cards')
