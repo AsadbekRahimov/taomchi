@@ -4,8 +4,13 @@ namespace App\Orchid\Screens\Buy;
 
 use App\Models\Purchase;
 use App\Orchid\Layouts\Buy\PurchasesTable;
+use App\Orchid\Layouts\Report\ByDateRangeModal;
+use App\Services\ReportService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Layout;
 
 class PurchasesScreen extends Screen
 {
@@ -52,7 +57,12 @@ class PurchasesScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            ModalToggle::make('')
+                ->icon('save-alt')
+                ->method('report')
+                ->modal('reportModal'),
+        ];
     }
 
     /**
@@ -64,6 +74,13 @@ class PurchasesScreen extends Screen
     {
         return [
             PurchasesTable::class,
+            Layout::modal('reportModal', ByDateRangeModal::class)
+                ->applyButton('Юклаш')->closeButton('Ёпиш')->title('Сотилган махсулотлар')->rawClick(),
         ];
+    }
+
+    public function report(Request $request)
+    {
+        return ReportService::buyReport($request->date);
     }
 }

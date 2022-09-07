@@ -4,8 +4,10 @@ namespace App\Orchid\Resources;
 
 use App\Services\HelperService;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
+use Orchid\Crud\ResourceRequest;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
@@ -199,6 +201,24 @@ class Supplier extends Resource
     public static function emptyResourceForAction(): string
     {
         return 'Бу амалларни бажариш учун малумотлар мавжуд емас';
+    }
+
+    public function onSave(ResourceRequest $request, Model $model)
+    {
+        $model->forceFill($request->all())->save();
+        Cache::forget('suppliers');
+        Cache::rememberForever('suppliers', function () {
+            return \App\Models\Supplier::query()->pluck('name', 'id');
+        });
+    }
+
+    public function onDelete(Model $model)
+    {
+        $model->delete();
+        Cache::forget('suppliers');
+        Cache::rememberForever('suppliers', function () {
+            return \App\Models\Supplier::query()->pluck('name', 'id');
+        });
     }
 
     // TODO: add onDelete method
