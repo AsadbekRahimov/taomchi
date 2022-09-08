@@ -6,7 +6,11 @@ use App\Models\Payment;
 use App\Models\PurchaseParty;
 use App\Orchid\Layouts\Payment\PartyList;
 use App\Orchid\Layouts\Payment\PaymentListTable;
+use App\Orchid\Layouts\Report\ByDateRangeModal;
+use App\Services\ReportService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -56,7 +60,12 @@ class PaymentListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            ModalToggle::make('')
+                ->icon('save-alt')
+                ->method('report')
+                ->modal('reportModal'),
+        ];
     }
 
     /**
@@ -71,6 +80,8 @@ class PaymentListScreen extends Screen
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
                 ->withoutApplyButton(true)->closeButton('Ёпиш'),
+            Layout::modal('reportModal', ByDateRangeModal::class)
+                ->applyButton('Юклаш')->closeButton('Ёпиш')->title('Сотилган махсулотлар')->rawClick(),
         ];
     }
 
@@ -79,5 +90,10 @@ class PaymentListScreen extends Screen
         return [
             'sales' => $payment->sales,
         ];
+    }
+
+    public function report(Request $request)
+    {
+        return ReportService::paymentReport($request->date);
     }
 }

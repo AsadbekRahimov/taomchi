@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\Payment;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
@@ -31,13 +32,7 @@ class ReportService
             ]);
         }
 
-        return (new FastExcel($result))
-            ->headerStyle((new StyleBuilder())->setFontBold()->build())
-            ->rowsStyle((new StyleBuilder())
-                ->setFontSize(12)
-                ->setBackgroundColor("EDEDED")
-                ->build())
-            ->download('Cотилган-' . $date['start'] . '_' . $date['end'] .'.xlsx');
+        return self::generateExcel($result, $date, 'Cотилган');
     }
 
     public static function buyReport(array $date)
@@ -63,12 +58,40 @@ class ReportService
             ]);
         }
 
+        return self::generateExcel($result, $date, 'Cотиб_олинган');
+    }
+
+    public static function paymentReport(array $date)
+    {
+        $begin = $date['start'] . ' 00:00:00';
+        $end = $date['end'] . ' 23:59:59';
+
+        $customers = Cache::get('customers');
+
+        $payments = DB::select("SELECT customer_id, price, type FROM payments where created_at BETWEEN '" . $begin . "' AND '" .  $end . "'");
+
+        $result = collect();
+
+        foreach($payments as $payment)
+        {
+            $result->push([
+                'Мижоз' => $customers[$payment->customer_id],
+                'Тўлов суммаси' => $payment->price,
+                'Тўлов тури' => Payment::TYPE[$payment->type],
+            ]);
+        }
+
+        return self::generateExcel($result, $date, 'Тўловлар');
+    }
+
+    private static function generateExcel(\Illuminate\Support\Collection $result, array $date, string $title)
+    {
         return (new FastExcel($result))
             ->headerStyle((new StyleBuilder())->setFontBold()->build())
             ->rowsStyle((new StyleBuilder())
                 ->setFontSize(12)
                 ->setBackgroundColor("EDEDED")
                 ->build())
-            ->download('Cотиб_олинган-' . $date['start'] . '_' . $date['end'] .'.xlsx');
+            ->download($title . '-' . $date['start'] . '_' . $date['end'] .'.xlsx');
     }
 }
