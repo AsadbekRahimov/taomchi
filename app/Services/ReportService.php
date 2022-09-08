@@ -120,14 +120,51 @@ class ReportService
         return self::generateExcel($results, $date, 'Chiqimlar');
     }
 
-    private static function generateExcel($result, array $date, string $title)
+
+    public static function dutiesReport($type)
     {
+        $suppliers = Cache::get('suppliers');
+        $customers = Cache::get('customers');
+
+        $result = collect();
+        $title = '';
+        if ($type == 'customer')
+        {
+            $duties = DB::select("SELECT customer_id, duty, created_at FROM duties where customer_id is not null");
+            $title = 'Qarzdorlar';
+            foreach($duties as $duty)
+            {
+                $result->push([
+                    'Мижоз' => $customers[$duty->customer_id],
+                    'Қарз' => $duty->duty,
+                    'Сана' => $duty->created_at,
+                ]);
+            }
+        } elseif ($type == 'supplier') {
+            $duties = DB::select("SELECT supplier_id, duty, created_at FROM duties where supplier_id is not null");
+            $title = 'Qarzlarim';
+            foreach($duties as $duty)
+            {
+                $result->push([
+                    'Таминотчи' => $suppliers[$duty->supplier_id],
+                    'Қарз' => $duty->duty,
+                    'Сана' => $duty->created_at,
+                ]);
+            }
+        }
+
+        return self::generateExcel($result, null, $title);
+    }
+
+    private static function generateExcel($result, $date, $title)
+    {
+        $interval = is_null($date) ? '' : '-' . $date['start'] . '_' . $date['end'];
         return (new FastExcel($result))
             ->headerStyle((new StyleBuilder())->setFontBold()->build())
             ->rowsStyle((new StyleBuilder())
                 ->setFontSize(12)
                 ->setBackgroundColor("EDEDED")
                 ->build())
-            ->download($title . '-' . $date['start'] . '_' . $date['end'] .'.xlsx');
+            ->download($title . $interval .'.xlsx');
     }
 }

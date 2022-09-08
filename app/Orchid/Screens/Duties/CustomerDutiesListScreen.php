@@ -9,7 +9,9 @@ use App\Orchid\Layouts\Duties\PartyList;
 use App\Orchid\Layouts\Order\fullPaymentModal;
 use App\Orchid\Layouts\Order\partPaymentModal;
 use App\Services\HelperService;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
@@ -59,7 +61,11 @@ class CustomerDutiesListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Button::make('')
+                ->icon('save-alt')
+                ->method('report')->rawClick(),
+        ];
     }
 
     /**
@@ -113,5 +119,10 @@ class CustomerDutiesListScreen extends Screen
             $duty->save();
             Alert::success('Қарзнинг бир миқдори муаффақиятли тўланди');
         }
+    }
+
+    public function report()
+    {
+        return ReportService::dutiesReport('customer');
     }
 }
