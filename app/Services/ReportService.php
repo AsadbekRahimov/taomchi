@@ -13,7 +13,7 @@ use Rap2hpoutre\FastExcel\SheetCollection;
 class ReportService
 {
 
-    public static function sellReport(array $date)
+    public static function sellReport(array $date, $for_sheet_collection = null)
     {
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
@@ -34,10 +34,10 @@ class ReportService
             ]);
         }
 
-        return self::generateExcel($result, $date, 'Sotilgan');
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Sotilgan') : $result;
     }
 
-    public static function buyReport(array $date)
+    public static function buyReport(array $date, $for_sheet_collection = null)
     {
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
@@ -60,10 +60,10 @@ class ReportService
             ]);
         }
 
-        return self::generateExcel($result, $date, 'Sotib-olingan');
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Sotib-olingan') : $result;
     }
 
-    public static function paymentReport(array $date)
+    public static function paymentReport(array $date, $for_sheet_collection = null)
     {
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
@@ -83,11 +83,11 @@ class ReportService
             ]);
         }
 
-        return self::generateExcel($result, $date, 'Tolovlar');
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Tolovlar') : $result;
     }
 
 
-    public static function expenceReport(array $date)
+    public static function expenceReport(array $date, $for_sheet_collection = null)
     {
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
@@ -116,12 +116,11 @@ class ReportService
         }
 
         $results = new SheetCollection($result);
-
-        return self::generateExcel($results, $date, 'Chiqimlar');
+        return is_null($for_sheet_collection) ? self::generateExcel($results, $date, 'Chiqimlar') : $result;
     }
 
 
-    public static function dutiesReport($type)
+    public static function dutiesReport($type, $for_sheet_collection = null)
     {
         $suppliers = Cache::get('suppliers');
         $customers = Cache::get('customers');
@@ -153,10 +152,26 @@ class ReportService
             }
         }
 
-        return self::generateExcel($result, null, $title);
+        return is_null($for_sheet_collection) ? self::generateExcel($result, null, $title) : $result;
     }
 
-    private static function generateExcel($result, $date, $title)
+
+    public static function allReport($date)
+    {
+        $results = new SheetCollection([
+            'Sotilgan' => self::sellReport($date, 'yes'),
+            'Sotib-olingan' => self::buyReport($date, 'yes'),
+            'Tolovlar' => self::paymentReport($date, 'yes'),
+            'Chiqimlar' => self::expenceReport($date, 'yes')['Boshqa'],
+            'Taminotchilarga chiqimlar' => self::expenceReport($date, 'yes')['Taminotchilarga'],
+            'Qarzdorlar' => self::dutiesReport('customer', 'yes'),
+            'Qarzlarim' => self::dutiesReport('supplier', 'yes'),
+        ]);
+
+        return self::generateExcel($results, $date, 'Kunlik_umumiy_xisobot');
+    }
+
+    private static function generateExcel($result, $date, $title, $for_sheet_collection = null)
     {
         $interval = is_null($date) ? '' : '-' . $date['start'] . '_' . $date['end'];
         return (new FastExcel($result))

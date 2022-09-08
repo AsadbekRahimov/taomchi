@@ -15,9 +15,11 @@ use App\Orchid\Layouts\Charts\SellChart;
 use App\Orchid\Layouts\Main\ExpenceModal;
 use App\Services\ChartService;
 use App\Services\HelperService;
+use App\Services\ReportService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
@@ -59,7 +61,7 @@ class PlatformScreen extends Screen
                     'sell_price' => number_format($this->sell_price),
                     'real_price' => number_format($this->real_price),
                     'payments' => number_format((int)Payment::query()->whereDay('updated_at', date('d'))->sum('price')),
-                    'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->sum('duty')),
+                    'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->whereNotNull('customer_id')->sum('duty')),
                     'supplier_payments' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))
                         ->whereNotNull('party_id')->sum('price')),
                     'expenses' => number_format($this->expenses),
@@ -108,6 +110,9 @@ class PlatformScreen extends Screen
                 ->modalTitle('Чиқим киритиш')
                 ->method('addExpence')
                 ->canSee(Auth::user()->hasAccess('platform.stock.expences')),
+            Button::make('')
+                ->icon('save-alt')
+                ->method('report')->rawClick(),
         ];
     }
 
@@ -149,5 +154,15 @@ class PlatformScreen extends Screen
     {
         Expence::otherExpence($request->price, $request->description);
         Alert::success('Чиқим муаффақиятли киритилди');
+    }
+
+    public function report(Request $request)
+    {
+        $date = [
+           'start' => date('Y-m-d'),
+           'end' => date('Y-m-d')
+        ];
+
+        return ReportService::allReport($date);
     }
 }
