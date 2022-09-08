@@ -20,6 +20,7 @@ use App\Services\ChartService;
 use App\Services\HelperService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Screen;
@@ -47,9 +48,15 @@ class PlatformScreen extends Screen
         return [
             'statistic' => [
                 'all' => [
-                    'products' => Product::count(),
-                    'customers' => Customer::count(),
-                    'suppliers' => Supplier::count(),
+                    'products' => Cache::rememberForever('products', function () {
+                        return \App\Models\Product::query()->pluck('name', 'id');
+                    })->count(),
+                    'customers' => Cache::rememberForever('customers', function () {
+                        return \App\Models\Customer::query()->pluck('name', 'id');
+                    })->count(),
+                    'suppliers' => Cache::rememberForever('suppliers', function () {
+                        return \App\Models\Supplier::query()->pluck('name', 'id');
+                    })->count(),
                 ],
                 'day' => [
                     'sell_price' => number_format($this->sell_price),

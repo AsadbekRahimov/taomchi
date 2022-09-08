@@ -2,10 +2,8 @@
 
 namespace App\Services;
 
-use App\Models\Customer;
 use App\Models\Duty;
 use App\Models\Payment;
-use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Models\User;
