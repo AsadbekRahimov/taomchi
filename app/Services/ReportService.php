@@ -2,11 +2,13 @@
 
 namespace App\Services;
 
+use App\Models\Expence;
 use App\Models\Payment;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use Rap2hpoutre\FastExcel\FastExcel;
+use Rap2hpoutre\FastExcel\SheetCollection;
 
 class ReportService
 {
@@ -32,7 +34,7 @@ class ReportService
             ]);
         }
 
-        return self::generateExcel($result, $date, 'Cотилган');
+        return self::generateExcel($result, $date, 'Sotilgan');
     }
 
     public static function buyReport(array $date)
@@ -58,7 +60,7 @@ class ReportService
             ]);
         }
 
-        return self::generateExcel($result, $date, 'Cотиб_олинган');
+        return self::generateExcel($result, $date, 'Sotib-olingan');
     }
 
     public static function paymentReport(array $date)
@@ -81,10 +83,44 @@ class ReportService
             ]);
         }
 
-        return self::generateExcel($result, $date, 'Тўловлар');
+        return self::generateExcel($result, $date, 'Tolovlar');
     }
 
-    private static function generateExcel(\Illuminate\Support\Collection $result, array $date, string $title)
+
+    public static function expenceReport(array $date)
+    {
+        $begin = $date['start'] . ' 00:00:00';
+        $end = $date['end'] . ' 23:59:59';
+
+        $suppliers = Cache::get('suppliers');
+
+        $expences = Expence::query()->with(['party'])->whereBetween('created_at', [$begin, $end])->get();
+
+
+        $result['Boshqa'] = collect();
+        $result['Taminotchilarga'] = collect();
+
+        foreach($expences as $consumption)
+        {
+            if (!$consumption->party_id) {
+                $result['Boshqa']->push([
+                    'Миқдори' => $consumption->price,
+                    'Таснифи' => $consumption->description,
+                ]);
+            } else {
+                $result['Taminotchilarga']->push([
+                    'Миқдори' => $consumption->price,
+                    'Таминотчи' => $suppliers[$consumption->party->supplier_id],
+                ]);
+            }
+        }
+
+        $results = new SheetCollection($result);
+
+        return self::generateExcel($results, $date, 'Chiqimlar');
+    }
+
+    private static function generateExcel($result, array $date, string $title)
     {
         return (new FastExcel($result))
             ->headerStyle((new StyleBuilder())->setFontBold()->build())

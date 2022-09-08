@@ -33,7 +33,7 @@ class PurchasesTable extends Table
             TD::make('quantity', 'Миқдори')->render(function ($model){
                 return HelperService::getQuantity($model->quantity, $model->product->box);
             }),
-            TD::make('price', 'Сотилган нархи')->render(function ($model){
+            TD::make('price', 'Сотиб олинган нархи')->render(function ($model){
                 return number_format($model->price);
             }),
             TD::make('profit', 'Қоладиган фойда')->render(function ($model){

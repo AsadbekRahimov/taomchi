@@ -6,7 +6,11 @@ use App\Models\Expence;
 use App\Orchid\Layouts\Expences\ExpenceListTable;
 use App\Orchid\Layouts\Expences\OtherExpenceListTable;
 use App\Orchid\Layouts\Expences\PartyList;
+use App\Orchid\Layouts\Report\ByDateRangeModal;
+use App\Services\ReportService;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Layout;
@@ -60,7 +64,12 @@ class ExpenceListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            ModalToggle::make('')
+                ->icon('save-alt')
+                ->method('report')
+                ->modal('reportModal'),
+        ];
     }
 
     /**
@@ -78,6 +87,8 @@ class ExpenceListScreen extends Screen
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
                 ->withoutApplyButton(true)->closeButton('Ёпиш'),
+            Layout::modal('reportModal', ByDateRangeModal::class)
+                ->applyButton('Юклаш')->closeButton('Ёпиш')->title('Сотилган махсулотлар')->rawClick(),
         ];
     }
 
@@ -86,5 +97,10 @@ class ExpenceListScreen extends Screen
         return [
             'purchases' => $expence->party->purchases,
         ];
+    }
+
+    public function report(Request $request)
+    {
+        return ReportService::expenceReport($request->date);
     }
 }
