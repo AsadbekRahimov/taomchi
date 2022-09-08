@@ -64,7 +64,13 @@ class PaymentListScreen extends Screen
             ModalToggle::make('')
                 ->icon('save-alt')
                 ->method('report')
-                ->modal('reportModal'),
+                ->modal('reportModal')
+                ->modalTitle('Тўловлар'),
+            ModalToggle::make('')
+                ->icon('people')
+                ->method('courierReport')
+                ->modal('reportModal')
+                ->modalTitle('Сотувчи суммаси'),
         ];
     }
 
@@ -95,5 +101,10 @@ class PaymentListScreen extends Screen
     public function report(Request $request)
     {
         return ReportService::paymentReport($request->date);
+    }
+
+    public function courierReport(Request $request)
+    {
+        return ReportService::courierReport($request->date);
     }
 }

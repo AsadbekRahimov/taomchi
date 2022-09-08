@@ -61,7 +61,8 @@ class SalesScreen extends Screen
             ModalToggle::make('')
                 ->icon('save-alt')
                 ->method('report')
-                ->modal('reportModal'),
+                ->modal('reportModal')
+                ->modalTitle('Сотилган махсулотлар'),
         ];
     }
 

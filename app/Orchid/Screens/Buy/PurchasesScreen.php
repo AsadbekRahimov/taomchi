@@ -61,7 +61,8 @@ class PurchasesScreen extends Screen
             ModalToggle::make('')
                 ->icon('save-alt')
                 ->method('report')
-                ->modal('reportModal'),
+                ->modal('reportModal')
+                ->modalTitle('Сотиб олинган махсулотлар'),
         ];
     }
 

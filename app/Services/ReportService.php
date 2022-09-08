@@ -4,6 +4,9 @@ namespace App\Services;
 
 use App\Models\Expence;
 use App\Models\Payment;
+use App\Models\User;
+use Carbon\Carbon;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
@@ -12,6 +15,35 @@ use Rap2hpoutre\FastExcel\SheetCollection;
 
 class ReportService
 {
+
+    public static function courierReport(array $date, $for_sheet_collection = null)
+    {
+        $begin = $date['start'] . ' 00:00:00';
+        $end = $date['end'] . ' 23:59:59';
+
+        $payments = Payment::select('user_id', DB::raw('sum(price) as sum'))
+            ->when(Auth::user()->branch_id, function ($query){
+                return $query->where('branch_id', Auth::user()->branch_id);
+            })->when(is_null($begin) && is_null($end), function ($query) {
+                $query->whereDate('created_at', Carbon::today());
+            })->when(!is_null($begin) && !is_null($end), function ($query) use ($begin, $end) {
+                $query->whereBetween('created_at', [$begin, $end]);
+            })->groupBy('user_id')->get()->toArray();
+
+        $users = User::query()->pluck('name', 'id')->toArray();
+
+        $result = collect();
+
+        foreach($payments as $payment)
+        {
+            $result->push([
+                'Сотувчи' => $users[$payment['user_id']],
+                'Суммаси' => $payment['sum'],
+            ]);
+        }
+
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Sotuvchilar') : $result;
+    }
 
     public static function sellReport(array $date, $for_sheet_collection = null)
     {
@@ -159,11 +191,12 @@ class ReportService
     public static function allReport($date)
     {
         $results = new SheetCollection([
+            'Sotuvchilar' => self::courierReport($date, 'yes'),
             'Sotilgan' => self::sellReport($date, 'yes'),
             'Sotib-olingan' => self::buyReport($date, 'yes'),
-            'Tolovlar' => self::paymentReport($date, 'yes'),
+            'To\'lovlar' => self::paymentReport($date, 'yes'),
             'Chiqimlar' => self::expenceReport($date, 'yes')['Boshqa'],
-            'Taminotchilarga chiqimlar' => self::expenceReport($date, 'yes')['Taminotchilarga'],
+            'Taminotchilarga to\'lovlar' => self::expenceReport($date, 'yes')['Taminotchilarga'],
             'Qarzdorlar' => self::dutiesReport('customer', 'yes'),
             'Qarzlarim' => self::dutiesReport('supplier', 'yes'),
         ]);
