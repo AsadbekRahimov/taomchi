@@ -96,7 +96,7 @@ class ChartService
 
     public static function CourierChart($begin = null, $end = null)
     {
-        $salesUsers = SalesParty::select('user_id', DB::raw('GROUP_CONCAT(id) as ids'))
+        $payments = Payment::select('user_id', DB::raw('sum(price) as sum'))
             ->when(Auth::user()->branch_id, function ($query){
                 return $query->where('branch_id', Auth::user()->branch_id);
             })->when(is_null($begin) && is_null($end), function ($query) {
@@ -112,9 +112,9 @@ class ChartService
             'labels' => [],
         ];
 
-        foreach ($salesUsers as $user) {
-            $result['values'][] = (int)Payment::query()->whereIn('party_id', self::getIds(explode(',', $user['ids'])))->sum('price');
-            $result['labels'][] = $users[$user['user_id']];
+        foreach ($payments as $payment) {
+            $result['values'][] = $payment['sum'];
+            $result['labels'][] = $users[$payment['user_id']];
         }
 
         return $result;
