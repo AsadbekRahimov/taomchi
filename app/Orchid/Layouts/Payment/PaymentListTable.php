@@ -39,6 +39,9 @@ class PaymentListTable extends Table
             TD::make('type', 'Тўлов тури')->render(function ($model) {
                 return Payment::TYPE[$model->type];
             })->cantHide(),
+            TD::make('type', 'Qabul qildi')->render(function ($model) {
+                return $model->user->name;
+            })->cantHide(),
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),

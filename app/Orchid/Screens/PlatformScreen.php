@@ -4,13 +4,10 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
-use App\Models\Customer;
 use App\Models\Duty;
 use App\Models\Expence;
 use App\Models\Payment;
-use App\Models\Product;
 use App\Models\Sale;
-use App\Models\Supplier;
 use App\Orchid\Layouts\Charts\CourierChart;
 use App\Orchid\Layouts\Charts\DutyChart;
 use App\Orchid\Layouts\Charts\PaymentChart;

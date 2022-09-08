@@ -20,6 +20,7 @@ return new class extends Migration
             $table->integer('type');
             $table->integer('party_id')->nullable();
             $table->integer('branch_id');
+            $table->integer('user_id');
             $table->timestamps();
         });
     }

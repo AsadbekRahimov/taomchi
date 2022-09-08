@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Attachment\Attachable;
 use Orchid\Filters\Filterable;
 use Orchid\Screen\AsSource;
@@ -18,7 +19,8 @@ class Payment extends Model
         'price',
         'type',
         'branch_id',
-        'party_id'
+        'party_id',
+        'user_id',
     ];
 
     public  const TYPE = [
@@ -48,6 +50,11 @@ class Payment extends Model
         return $this->hasMany(Sale::class, 'party_id', 'id');
     }
 
+    public function user()
+    {
+        return $this->belongsTo(User::class, 'user_id', 'id');
+    }
+
     public static function addPayment($party_id, Order $order, $type)
     {
         return self::query()->create([
@@ -56,6 +63,7 @@ class Payment extends Model
             'type' => $type,
             'branch_id' => $order->branch_id,
             'party_id' => $party_id,
+            'user_id' => Auth::user()->id
         ]);
     }
 
@@ -69,6 +77,7 @@ class Payment extends Model
                 'type' => $type,
                 'branch_id' => $order->branch_id,
                 'party_id' => $party_id,
+                'user_id' => Auth::user()->id,
             ]);
         }
     }
@@ -81,6 +90,7 @@ class Payment extends Model
             'type' => $type,
             'branch_id' => $duty->branch_id,
             'party_id' => $duty->party_id,
+            'user_id' => Auth::user()->id,
         ]);
     }
 
@@ -92,6 +102,7 @@ class Payment extends Model
             'type' => $type,
             'branch_id' => $duty->branch_id,
             'party_id' => $duty->party_id,
+            'user_id' => Auth::user()->id,
         ]);
     }
 
