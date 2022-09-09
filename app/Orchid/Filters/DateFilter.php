@@ -3,10 +3,9 @@
 namespace App\Orchid\Filters;
 
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
 use Orchid\Filters\Filter;
 use Orchid\Screen\Field;
-use Orchid\Screen\Fields\DateTimer;
+use Orchid\Screen\Fields\DateRange;
 
 class DateFilter extends Filter
 {
@@ -56,8 +55,7 @@ class DateFilter extends Filter
     public function display(): iterable
     {
         return [
-            DateTimer::make('begin')->required()->title('Бошланиш вақти'),
-            DateTimer::make('end')->required()->title('Тугаш вақти'),
+            DateRange::make('date')->required()->title('Вақт оралиғини танланг'),
         ];
     }
 }

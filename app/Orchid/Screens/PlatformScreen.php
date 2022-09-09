@@ -12,6 +12,7 @@ use App\Orchid\Layouts\Charts\CourierChart;
 use App\Orchid\Layouts\Charts\DutyChart;
 use App\Orchid\Layouts\Charts\PaymentChart;
 use App\Orchid\Layouts\Charts\SellChart;
+use App\Orchid\Layouts\FilterSelections\StatisticSelection;
 use App\Orchid\Layouts\Main\ExpenceModal;
 use App\Services\ChartService;
 use App\Services\HelperService;
@@ -47,6 +48,14 @@ class PlatformScreen extends Screen
         $this->expenses = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNull('party_id')->sum('price');
         $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
         $this->for_suppliers = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNotNull('party_id')->sum('price');
+        if (request()->has('date')) {
+            $date = \request()->get('date');
+            $begin = $date['start'] . ' 00:00:00';
+            $end = $date['end'] . ' 23:59:59';
+        } else {
+            $begin = date('Y-m-d') . ' 00:00:00';
+            $end = date('Y-m-d') . ' 23:59:59';
+        }
 
         return [
             'statistic' => [
@@ -71,10 +80,10 @@ class PlatformScreen extends Screen
                     'expenses' => number_format($this->expenses),
                 ],
             ],
-            'payments' => [ (request()->has('begin')) ? ChartService::paymentChart($begin, $end) : ChartService::paymentChart()],
-            'duties' => [ (request()->has('begin')) ? ChartService::dutiesChart($begin, $end) : ChartService::dutiesChart()],
-            'sell_products' => [ (request()->has('begin')) ? ChartService::SellChart($begin, $end) : ChartService::SellChart()],
-            'courier' => [ (request()->has('begin')) ? ChartService::CourierChart($begin, $end) : ChartService::CourierChart()],
+            'payments' => [ChartService::paymentChart($begin, $end)],
+            'duties' => [ChartService::dutiesChart()],
+            'sell_products' => [ChartService::SellChart($begin, $end)],
+            'courier' => [ChartService::CourierChart($begin, $end)],
         ];
     }
 
@@ -144,6 +153,7 @@ class PlatformScreen extends Screen
                 'Қарздорлик' => 'statistic.day.duties',
                 'Махсулот учун тўловлар' => 'statistic.day.supplier_payments',
             ]),
+            StatisticSelection::class,
             Layout::tabs([
                 'Тўлов' => PaymentChart::class,
                 'Қарздорлик' => DutyChart::class,

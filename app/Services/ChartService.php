@@ -37,7 +37,7 @@ class ChartService
         return $result;
     }
 
-    public static function dutiesChart($begin = null, $end = null)
+    public static function dutiesChart()
     {
         $customers = Cache::get('customers');
 
@@ -119,15 +119,4 @@ class ChartService
 
         return $result;
     }
-
-    private static function getIds(mixed $ids)
-    {
-        $result = [];
-        foreach ($ids as $id)
-        {
-            $result[] = (int)$id;
-        }
-        return $result;
-    }
-
 }
