@@ -22,9 +22,7 @@ class ReportService
         $end = $date['end'] . ' 23:59:59';
 
         $payments = Payment::select('user_id', DB::raw('sum(price) as sum'))
-            ->when(Auth::user()->branch_id, function ($query){
-                return $query->where('branch_id', Auth::user()->branch_id);
-            })->when(is_null($begin) && is_null($end), function ($query) {
+            ->when(is_null($begin) && is_null($end), function ($query) {
                 $query->whereDate('created_at', Carbon::today());
             })->when(!is_null($begin) && !is_null($end), function ($query) use ($begin, $end) {
                 $query->whereBetween('created_at', [$begin, $end]);
@@ -188,7 +186,7 @@ class ReportService
     }
 
 
-    public static function allReport($date)
+    public static function allReport($date, $type)
     {
         $results = new SheetCollection([
             'Sotuvchilar' => self::courierReport($date, 'yes'),
@@ -201,10 +199,13 @@ class ReportService
             'Qarzlarim' => self::dutiesReport('supplier', 'yes'),
         ]);
 
-        return self::generateExcel($results, $date, 'Kunlik_umumiy_xisobot');
+        if ($type == 'download')
+            return self::generateExcel($results, $date, 'Kunlik_umumiy_xisobot');
+        elseif ($type == 'store')
+            return self::storeGeneratedExcel($results);
     }
 
-    private static function generateExcel($result, $date, $title, $for_sheet_collection = null)
+    private static function generateExcel($result, $date, $title)
     {
         $interval = is_null($date) ? '' : '-' . $date['start'] . '_' . $date['end'];
         return (new FastExcel($result))
@@ -214,5 +215,16 @@ class ReportService
                 ->setBackgroundColor("EDEDED")
                 ->build())
             ->download($title . $interval .'.xlsx');
+    }
+
+    private static function storeGeneratedExcel($result)
+    {
+        return (new FastExcel($result))
+            ->headerStyle((new StyleBuilder())->setFontBold()->build())
+            ->rowsStyle((new StyleBuilder())
+                ->setFontSize(12)
+                ->setBackgroundColor("EDEDED")
+                ->build())
+            ->export('storage/app/report.xlsx');
     }
 }

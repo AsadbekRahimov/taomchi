@@ -2,8 +2,7 @@
 
 namespace App\Services;
 
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Str;
+use Carbon\Carbon;
 
 class TelegramNotify
 {
@@ -20,9 +19,6 @@ class TelegramNotify
 
         $message = $text . "\r\n";
 
-        /*if (!is_null(Auth::user()->branch_id))
-            $message .= '#' . Str::slug(Auth::user()->branch->name, '_');*/
-
         if (!is_null($caption))
             $message .= "\r\n" . '#' . $caption;
 
@@ -32,6 +28,25 @@ class TelegramNotify
             'parse_mode' => "HTML",
         ];
 
+        return self::send($url, $post_fields);
+    }
+
+    public static function sendReport($message)
+    {
+        $url = "https://api.telegram.org/bot5092164055:AAERH5aY3eVnfZucYrK-z63af-2MI5o2IQ8/sendDocument?chat_id=-100" . self::CHAT_TYPE['all'];
+
+        $post_fields = [
+            'chat_id' => '-100' . self::CHAT_TYPE['all'],
+            'document' => new \CURLFile(storage_path('app/report.xlsx'), 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet', 'Kunlik-xisobot_'. Carbon::now()->format('Y-m-d').'.xlsx'),
+            'caption' => $message . "\r\n" . '#Хисобот ' . date('Y-m-d') . " холатига",
+            'parse_mode' => "HTML",
+        ];
+
+        return self::send($url, $post_fields);
+    }
+
+    private static function send(string $url, array $post_fields)
+    {
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
             "Content-Type:multipart/form-data"

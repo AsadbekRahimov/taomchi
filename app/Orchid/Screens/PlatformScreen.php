@@ -178,6 +178,6 @@ class PlatformScreen extends Screen
            'end' => date('Y-m-d')
         ];
 
-        return ReportService::allReport($date);
+        return ReportService::allReport($date, 'download');
     }
 }

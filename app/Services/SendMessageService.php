@@ -2,8 +2,10 @@
 
 namespace App\Services;
 
+use App\Models\Expence;
 use App\Models\Order;
 use App\Models\PurchaseParty;
+use App\Models\Sale;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -57,6 +59,25 @@ class SendMessageService
 
         TelegramNotify::sendMessage($message, 'order');
 
+    }
+
+
+    public static function sendReport()
+    {
+        $sell_price = HelperService::statTotalPrice(Sale::query()->whereDay('updated_at', date('d'))->pluck('price', 'quantity')->toArray());
+        $real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDay('updated_at', date('d'))->get()->pluck('product.real_price', 'quantity')->toArray());
+        $expenses = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNull('party_id')->sum('price');
+        $day_profit = $sell_price - $real_price - $expenses;
+
+        $message = 'Сотилган нарх : ' . number_format($sell_price) . "\r\n"
+            . 'Тан нархи : ' . number_format($real_price) . "\r\n"
+            . 'Чиқимлар : ' . number_format($expenses) . "\r\n";
+
+        if ($day_profit >= 0)
+            $message .= 'Бугунги фойда: ' . number_format($day_profit);
+        else
+            $message .= 'Бугунги зарар: ' . number_format($day_profit);
+        TelegramNotify::sendReport($message);
     }
 
     public static function stockQuantity(\App\Models\Stock $stock, $type)
