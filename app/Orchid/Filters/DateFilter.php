@@ -27,8 +27,7 @@ class DateFilter extends Filter
     public function parameters(): ?array
     {
         return [
-            'begin',
-            'end',
+            'date'
         ];
     }
 
@@ -42,8 +41,8 @@ class DateFilter extends Filter
     public function run(Builder $builder): Builder
     {
         return $builder->whereBetween('created_at', [
-            $this->request->get('begin') . ' 00:00:00',
-            $this->request->get('end') . ' 23:59:59',
+            $this->request->get('date')['start'] . ' 00:00:00',
+            $this->request->get('date')['end'] . ' 23:59:59',
         ]);
     }
 
