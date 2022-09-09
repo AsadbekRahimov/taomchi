@@ -115,7 +115,7 @@ class PlatformScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make( 'Бугунги фойда: ' . number_format($this->day_profit))->type(Color::SUCCESS())->canSee($this->day_profit >= 0),
+            Link::make( 'Бугунги фойда: ' . number_format($this->day_profit))->type(Color::SUCCESS())->canSee($this->day_profit > 0),
             Link::make( 'Бугунги зарар: ' . number_format(-1 *$this->day_profit) . ' сўм')->type(Color::DANGER())->canSee($this->day_profit < 0),
             Link::make( 'Таминотчиларга тўлов: ' . number_format($this->for_suppliers))->type(Color::WARNING())->canSee($this->for_suppliers > 0),
             ModalToggle::make('Чиқим')

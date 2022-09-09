@@ -88,7 +88,8 @@
 <body>
 <div class="ticket">
     <!--   <img  src="https://rtmedlineuz.com/site/img/logo.png" alt="">-->
-    <p class="centered"><b>Kokand trade productivity MCHJ <br>Тел: 998 90 308 84 14 | Нодирхон</b>
+    <p class="centered"><b>Kokand trade productivity MCHJ <br>Тел: 998 90 308 84 14 | Нодирхон <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
+    <p></p>
     <p><b>Мижоз: {{ $order->customer->name }}</b>
     <p><b>Эски карздорлик: {{ number_format($order->customer->duties->sum('duty')) }}</b>
     <table class="table table-bordered" >
@@ -127,7 +128,7 @@
 
         </tbody>
     </table>
-    <p>Сана: {{ $order->created_at->toDateTimeString() }}</p>
+
 
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>
