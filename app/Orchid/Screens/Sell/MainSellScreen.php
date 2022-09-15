@@ -127,7 +127,7 @@ class MainSellScreen extends Screen
                         ->icon('plus')
                         ->modal('addProductModal')
                         ->method('addProduct')
-                        ->modalTitle($stock->product->name . ' | Нарх: ' . number_format($stock->product->more_price) . ' - ' . number_format($stock->product->one_price) . ' сўм')
+                        ->modalTitle($stock->product->name . ' | Нарх: ' . number_format($stock->product->one_price) . ' - ' . number_format($stock->product->more_price) . ' - ' . number_format($stock->product->discount_price)  . ' сўм')
                         ->parameters([
                             'id' => $stock->product_id,
                             'customer_id' => $this->customer->id,

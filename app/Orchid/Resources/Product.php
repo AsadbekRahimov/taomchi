@@ -42,7 +42,8 @@ class Product extends Resource
             Group::make([
                 Input::make('real_price')->type('number')->title('Тан нархи')->required(),
                 Input::make('more_price')->type('number')->title('Улгуржи нарх')->required(),
-                Input::make('one_price')->type('number')->title('Доимий нарх')->required(),
+                Input::make('one_price')->type('number')->title('Чакана нарх')->required(),
+                Input::make('discount_price')->type('number')->title('Чегирма нарх')->required(),
             ]),
         ];
     }
@@ -64,7 +65,8 @@ class Product extends Resource
             TD::make('min', 'Омбордаги енг кам миқдори'),
             TD::make('real_price', 'Тан нархи'),
             TD::make('more_price', 'Улгуржи нарх'),
-            TD::make('one_price', 'Доимий нарх'),
+            TD::make('one_price', 'Чакана нарх'),
+            TD::make('discount_price', 'Чегирма нарх'),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
@@ -92,7 +94,8 @@ class Product extends Resource
             Sight::make('min', 'Омбордаги енг кам миқдори'),
             Sight::make('real_price', 'Тан нархи'),
             Sight::make('more_price', 'Улгуржи нарх'),
-            Sight::make('one_price', 'Доимий нарх'),
+            Sight::make('one_price', 'Чакана нарх'),
+            Sight::make('discount_price', 'Чегирма нарх'),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
@@ -127,6 +130,7 @@ class Product extends Resource
             'min' => ['required'],
             'one_price' => ['required'],
             'more_price' => ['required'],
+            'discount_price' => ['required'],
             'real_price' => ['required']
         ];
     }
@@ -140,7 +144,8 @@ class Product extends Resource
             'min.required' => 'Омбордаги енг кам миқдори киритилиши шарт!',
             'real_price.required' => 'Тан нархи киритилиши шарт!',
             'more_price.required' => 'Улгуржи нарх киритилиши шарт!',
-            'one_price.required' => 'Доимий нарх киритилиши шарт!',
+            'discount_price.required' => 'Чегирма нарх киритилиши шарт!',
+            'one_price.required' => 'Чакана нарх киритилиши шарт!',
         ];
     }
 

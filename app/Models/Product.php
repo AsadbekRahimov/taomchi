@@ -20,6 +20,7 @@ class Product extends Model
         'min',
         'one_price',
         'more_price',
+        'discount_price',
         'real_price',
     ];
 

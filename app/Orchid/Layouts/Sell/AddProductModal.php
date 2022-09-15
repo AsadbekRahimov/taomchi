@@ -31,8 +31,9 @@ class AddProductModal extends Rows
                 Input::make('quantity')->title('Миқдори')->type('number')->required(),
                 Select::make('price')
                     ->options([
+                        'one' => 'Чакана нарх',
                         'more'   => 'Улгуржи нарх',
-                        'one' => 'Доимий нарх',
+                        'discount' => 'Чегирма нарх',
                     ])
                     ->title('Нарх'),
             ]),
