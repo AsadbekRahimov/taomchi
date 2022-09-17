@@ -31,7 +31,7 @@ class CustomersListTable extends Table
                 return Link::make($model->name)->route('platform.sell_products', ['customer' => $model->id]);
             })->cantHide(),
             TD::make('phone', 'Телефон рақам')->render(function ($model) {
-                return Link::make($model->phone)->href('тел:' . HelperService::telephone($model->phone));
+                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             })->cantHide(),
             TD::make('address', 'Манзили'),
         ];

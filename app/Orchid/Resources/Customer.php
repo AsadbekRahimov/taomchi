@@ -51,7 +51,7 @@ class Customer extends Resource
             TD::make('id'),
             TD::make('name', 'Исм')->cantHide(),
             TD::make('phone', 'Телефон рақам')->render(function ($model) {
-                return Link::make($model->phone)->href('тел:' . HelperService::telephone($model->phone));
+                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             })->cantHide(),
             TD::make('address', 'Манзили'),
             TD::make('created_at', 'Киритилган сана')
@@ -75,7 +75,7 @@ class Customer extends Resource
         return [
             Sight::make('name', 'Исм'),
             Sight::make('phone', 'Телефон рақам')->render(function ($model) {
-                return Link::make($model->phone)->href('тел:' . HelperService::telephone($model->phone));
+                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             }),
             Sight::make('address', 'Манзили'),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {

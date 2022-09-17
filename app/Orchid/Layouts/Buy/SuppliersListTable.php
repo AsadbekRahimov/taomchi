@@ -32,7 +32,7 @@ class SuppliersListTable extends Table
                 return Link::make($supplier->name)->route('platform.buy_products', ['supplier' => $supplier->id]);
             })->cantHide(),
             TD::make('phone', 'Телефон рақами')->render(function (Supplier $supplier) {
-                return Link::make($supplier->phone)->href('тел:' . HelperService::telephone($supplier->phone));
+                return Link::make($supplier->phone)->href('tel:' . HelperService::telephone($supplier->phone));
             })->cantHide(),
         ];
     }
