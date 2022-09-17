@@ -17,4 +17,9 @@ class Measure extends Model
           'name',
           'symbol',
     ];
+
+    public function products()
+    {
+        return $this->hasMany(Product::class, 'measure_id', 'id');
+    }
 }

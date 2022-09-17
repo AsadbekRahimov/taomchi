@@ -3,12 +3,14 @@
 namespace App\Orchid\Resources;
 
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
+use Orchid\Support\Facades\Alert;
 
 class Measure extends Resource
 {
@@ -194,5 +196,11 @@ class Measure extends Resource
         return 'Бу амалларни бажариш учун малумотлар мавжуд емас';
     }
 
-    // TODO: add onDelete method
+    public function onDelete(Model $model)
+    {
+        if ($model->products()->count())
+            Alert::error('Бу ўлчов бирлиги ишлатилган махсулотлар мавжуд, олдин уларни ўзгартириш керак');
+        else
+            $model->delete();
+    }
 }
