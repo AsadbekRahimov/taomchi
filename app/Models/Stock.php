@@ -31,9 +31,9 @@ class Stock extends Model
     ];
 
     public  const TYPE = [
-        'Maxsulot mavjud' => 'Махсулот мавжуд',
-        'Kam miqdorda' => 'Кам миқдорда',
-        'Mavjud emas' => 'Мавжуд емас',
+        'Махсулот мавжуд' => 'Махсулот мавжуд',
+        'Кам миқдорда' => 'Кам миқдорда',
+        'Мавжуд емас' => 'Мавжуд емас',
     ];
 
     public function product()

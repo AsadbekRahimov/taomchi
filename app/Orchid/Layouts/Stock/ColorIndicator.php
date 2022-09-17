@@ -26,9 +26,9 @@ class ColorIndicator extends Rows
     {
         return [
             Group::make([
-                Link::make()->href('?type=Maxsulot mavjud')->type(Color::SUCCESS())->title('Махсулот мавжуд')->vertical(),
-                Link::make()->href('?type=Kam miqdorda')->type(Color::WARNING())->title('Кам миқдорда')->vertical(),
-                Link::make()->href('?type=Mavjud emas')->type(Color::DANGER())->title('Мавжуд емас')->vertical(),
+                Link::make()->href('?type=Махсулот мавжуд')->type(Color::SUCCESS())->title('Махсулот мавжуд')->vertical(),
+                Link::make()->href('?type=Кам миқдорда')->type(Color::WARNING())->title('Кам миқдорда')->vertical(),
+                Link::make()->href('?type=Мавжуд емас')->type(Color::DANGER())->title('Мавжуд емас')->vertical(),
             ]),
         ];
     }
