@@ -258,12 +258,20 @@ class Product extends Resource
 
     public function onDelete(Model $model)
     {
-        $model->delete();
-        Cache::forget('products');
-        Cache::rememberForever('products', function () {
-            return \App\Models\Product::query()->pluck('name', 'id');
-        });
+        if($model->stock()->count())
+        {
+            Alert::error('Бу махсулотдан омборхонада мавжуд, олдин омборхона махсулотини ўчириш керак!');
+        }elseif($model->sales()->count() || $model->purchases()->count())
+        {
+            Alert::error('Сотилган ва сотиб олинган махсулотлар мавжудлиги учун бу махсулотни ўчира олмайсиз!');
+        }else {
+            $model->cards()->delete();
+            $model->baskets()->delete();
+            $model->delete();
+            Cache::forget('products');
+            Cache::rememberForever('products', function () {
+                return \App\Models\Product::query()->pluck('name', 'id');
+            });
+        }
     }
-
-    // TODO: add onDelete method
 }

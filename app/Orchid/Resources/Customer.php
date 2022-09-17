@@ -230,17 +230,16 @@ class Customer extends Resource
     {
         if ($model->parties()->count())
         {
-            Alert::error('Сотилган махсулотлар мавжудлиги учун бу мижозни ўчириш олмайсиз!');
-        }elseif ($model->cards()->count() || $model->orders()->count())
-        {
-            Alert::error('Буюртма махсулотлар мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+            Alert::error('Сотилган махсулотлар мавжудлиги учун бу мижозни ўчира олмайсиз!');
         }elseif ($model->duties()->count())
         {
-            Alert::error('Қарздорлиги мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+            Alert::error('Қарздорлиги мавжудлиги учун бу мижозни ўчира олмайсиз!');
         }elseif ($model->payments()->count())
         {
-            Alert::error('Тўловлари мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+            Alert::error('Тўловлари мавжудлиги учун бу мижозни ўчира олмайсиз!');
         } else {
+            $model->cards()->delete();
+            $model->orders()->delete();
             $model->delete();
             Cache::forget('customers');
             Cache::rememberForever('customers', function () {

@@ -28,4 +28,29 @@ class Product extends Model
     {
         return $this->belongsTo(Measure::class, 'measure_id', 'id');
     }
+
+    public function baskets()
+    {
+        return $this->hasMany(Basket::class, 'product_id', 'id');
+    }
+
+    public function cards()
+    {
+        return $this->hasMany(Card::class, 'product_id', 'id');
+    }
+
+    public function stock()
+    {
+        return $this->hasMany(Stock::class, 'product_id', 'id');
+    }
+
+    public function sales()
+    {
+        return $this->hasMany(Sale::class, 'product_id', 'id');
+    }
+
+    public function purchases()
+    {
+        return $this->hasMany(Purchase::class, 'product_id', 'id');
+    }
 }
