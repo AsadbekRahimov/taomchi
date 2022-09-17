@@ -228,13 +228,25 @@ class Customer extends Resource
 
     public function onDelete(Model $model)
     {
-        $model->delete();
-        Cache::forget('customers');
-        Cache::rememberForever('customers', function () {
-            return \App\Models\Customer::query()->pluck('name', 'id');
-        });
+        if ($model->parties()->count())
+        {
+            Alert::error('Сотилган махсулотлар мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+        }elseif ($model->cards()->count() || $model->orders()->count())
+        {
+            Alert::error('Буюртма махсулотлар мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+        }elseif ($model->duties()->count())
+        {
+            Alert::error('Қарздорлиги мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+        }elseif ($model->payments()->count())
+        {
+            Alert::error('Тўловлари мавжудлиги учун бу мижозни ўчириш олмайсиз!');
+        } else {
+            $model->delete();
+            Cache::forget('customers');
+            Cache::rememberForever('customers', function () {
+                return \App\Models\Customer::query()->pluck('name', 'id');
+            });
+        }
     }
-
-    // TODO: add onDelete method
 
 }
