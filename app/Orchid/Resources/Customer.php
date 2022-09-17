@@ -34,8 +34,11 @@ class Customer extends Resource
         return [
             Group::make([
                 Input::make('name')->title('Исм')->required(),
-                Input::make('phone')->title('Телефон рақами')->mask('(99) 999-99-99')->required(),
                 Input::make('address')->title('Манзили')->required(),
+            ]),
+            Group::make([
+                Input::make('phone')->title('Телефон рақами 1')->mask('(99) 999-99-99')->required(),
+                Input::make('telephone')->title('Телефон рақами 2')->mask('(99) 999-99-99'),
             ]),
         ];
     }
@@ -50,8 +53,11 @@ class Customer extends Resource
         return [
             TD::make('id'),
             TD::make('name', 'Исм')->cantHide(),
-            TD::make('phone', 'Телефон рақам')->render(function ($model) {
+            TD::make('phone', 'Телефон рақам 1')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
+            })->cantHide(),
+            TD::make('telephone', 'Телефон рақам 2')->render(function ($model) {
+                return Link::make($model->telephone)->href('tel:' . HelperService::telephone($model->telephone));
             })->cantHide(),
             TD::make('address', 'Манзили'),
             TD::make('created_at', 'Киритилган сана')
@@ -74,8 +80,11 @@ class Customer extends Resource
     {
         return [
             Sight::make('name', 'Исм'),
-            Sight::make('phone', 'Телефон рақам')->render(function ($model) {
+            Sight::make('phone', 'Телефон рақам 1 ')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
+            }),
+            Sight::make('telephone', 'Телефон рақам 2')->render(function ($model) {
+                return Link::make($model->telephone)->href('tel:' . HelperService::telephone($model->telephone));
             }),
             Sight::make('address', 'Манзили'),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
