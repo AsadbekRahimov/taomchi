@@ -17,4 +17,19 @@ class Supplier extends Model
         'name',
         'phone',
     ];
+
+    public function baskets()
+    {
+        return $this->hasMany(Basket::class, 'supplier_id', 'id');
+    }
+
+    public function parties()
+    {
+        return $this->hasMany(PurchaseParty::class, 'supplier_id', 'id');
+    }
+
+    public function duties()
+    {
+        return $this->hasMany(Duty::class, 'supplier_id', 'id');
+    }
 }

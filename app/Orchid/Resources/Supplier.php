@@ -13,6 +13,7 @@ use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
+use Orchid\Support\Facades\Alert;
 
 class Supplier extends Resource
 {
@@ -214,11 +215,20 @@ class Supplier extends Resource
 
     public function onDelete(Model $model)
     {
-        $model->delete();
-        Cache::forget('suppliers');
-        Cache::rememberForever('suppliers', function () {
-            return \App\Models\Supplier::query()->pluck('name', 'id');
-        });
+        if ($model->parties()->count())
+        {
+            Alert::error('Сотиб олинган махсулотлар мавжудлиги учун бу таминотчини ўчира олмайсиз!');
+        }elseif ($model->duties()->count())
+        {
+            Alert::error('Қарздорлиги мавжудлиги учун бу таминотчини ўчира олмайсиз!');
+        }else {
+            $model->baskets()->delete();
+            $model->delete();
+            Cache::forget('suppliers');
+            Cache::rememberForever('suppliers', function () {
+                return \App\Models\Supplier::query()->pluck('name', 'id');
+            });
+        }
     }
 
     // TODO: add onDelete method
