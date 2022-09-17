@@ -51,7 +51,7 @@ class PaymentListTable extends Table
                     ->modal('asyncGetPartyModal')
                     ->modalTitle('Партия: №' . $model->party_id . ' | Мижоз: ' . $model->customer->name)
                     ->asyncParameters([
-                        'purchaseParty' => $model->id,
+                        'salesParty' => $model->party_id,
                     ]);
             })->cantHide(),
         ];
