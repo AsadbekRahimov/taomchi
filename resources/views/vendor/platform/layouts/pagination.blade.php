@@ -8,7 +8,7 @@
                         aria-haspopup="true"
                         data-bs-boundary="viewport"
                         aria-expanded="false">
-                    {{ __('Jadvalni sozlash') }}
+                    {{ 'Жадвални созлаш' }}
                 </button>
                 <div class="dropdown-menu dropdown-column-menu dropdown-scrollable">
                     @foreach($columns as $column)
@@ -20,7 +20,7 @@
 
         @if($paginator instanceof \Illuminate\Contracts\Pagination\LengthAwarePaginator)
             <small class="text-muted d-block">
-                {{ __('Jami: :total ta, ko`rsatilmoqda :from-:to gacha',[
+                {{ __('Жами: :total та, кўрсатилмоқда :from-:to гача',[
                     'from' => ($paginator->currentPage() -1 ) * $paginator->perPage() + 1,
                     'to' => ($paginator->currentPage() -1 ) * $paginator->perPage() + count($paginator->items()),
                     'total' => $paginator->total(),

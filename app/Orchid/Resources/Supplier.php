@@ -230,6 +230,4 @@ class Supplier extends Resource
             });
         }
     }
-
-    // TODO: add onDelete method
 }
