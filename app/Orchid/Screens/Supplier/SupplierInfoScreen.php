@@ -7,7 +7,13 @@ use App\Models\Expence;
 use App\Models\Purchase;
 use App\Models\PurchaseParty;
 use App\Models\Supplier;
+use App\Orchid\Layouts\Expences\ExpenceListTable;
+use App\Orchid\Layouts\Payment\PartyList;
+use App\Orchid\Layouts\Payment\PaymentListTable;
+use App\Orchid\Layouts\Sell\SalePartyTable;
+use Illuminate\Database\Eloquent\Builder;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
@@ -29,6 +35,10 @@ class SupplierInfoScreen extends Screen
                 'expences' => $this->getAllExpenceAmount($supplier->id),
                 'debt' => $this->getAllDebtAmount($supplier->id),
             ],
+
+            'expences' => Expence::query()->with(['party.supplier'])->whereHas('party', function (Builder $query) use ($supplier) {
+                $query->where('supplier_id', $supplier->id);
+            })->orderByDesc('id')->paginate(15),
         ];
     }
 
@@ -66,7 +76,16 @@ class SupplierInfoScreen extends Screen
                 'Сотиб олган' => 'statistic.buy',
                 'Тўлаб берилган' => 'statistic.expences',
                 'Қарз' => 'statistic.debt',
-            ])
+            ]),
+
+            Layout::tabs([
+                'Чиқимлар' => ExpenceListTable::class,
+                //'Сотиб олинган партиялар' => SalePartyTable::class,
+            ]),
+
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
         ];
     }
 

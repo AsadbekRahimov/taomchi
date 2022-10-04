@@ -7,7 +7,11 @@ use App\Models\Duty;
 use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SalesParty;
+use App\Orchid\Layouts\Payment\PartyList;
+use App\Orchid\Layouts\Payment\PaymentListTable;
+use App\Orchid\Layouts\Sell\SalePartyTable;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Color;
 use Orchid\Support\Facades\Layout;
@@ -29,6 +33,9 @@ class CustomerInfoScreen extends Screen
                'payment' => $this->getAllPaymentAmount($customer->id),
                'debt' => $this->getAllDebtAmount($customer->id),
             ],
+
+            'payments' => Payment::query()->where('customer_id', $customer->id)->filters()->with(['customer'])->orderByDesc('id')->paginate(15),
+            'parties' => SalesParty::query()->filters()->where('customer_id', $customer->id)->with(['customer', 'user', 'sales', 'payments', 'duties'])->orderByDesc('id')->paginate(15),
         ];
     }
 
@@ -67,7 +74,16 @@ class CustomerInfoScreen extends Screen
                 'Сотиб олган' => 'statistic.sell',
                 'Тўлов' => 'statistic.payment',
                 'Қарз' => 'statistic.debt',
-            ])
+            ]),
+
+            Layout::tabs([
+                'Тўловлар' => PaymentListTable::class,
+                'Сотилган партиялар' => SalePartyTable::class,
+            ]),
+
+            Layout::modal('asyncGetPartyModal', PartyList::class)
+                ->async('asyncGetParty')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
         ];
     }
 
@@ -90,5 +106,12 @@ class CustomerInfoScreen extends Screen
     private function getAllDebtAmount($id)
     {
         return number_format(Duty::query()->where('customer_id', $id)->sum('duty'));
+    }
+
+    public function asyncGetParty(SalesParty $salesParty)
+    {
+        return [
+            'sales' => $salesParty->sales,
+        ];
     }
 }
