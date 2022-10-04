@@ -104,8 +104,9 @@ class SupplierInfoScreen extends Screen
 
     private function getAllExpenceAmount($id)
     {
-        $parties = PurchaseParty::query()->where('supplier_id', $id)->pluck('id')->toArray();
-        return number_format(Expence::query()->whereIn('party_id', $parties)->sum('price'));
+        return number_format(Expence::query()->whereHas('party', function (Builder $query) {
+            $query->where('supplier_id', $this->supplier->id);
+        })->sum('price'));
     }
 
     private function getAllDebtAmount($id)
