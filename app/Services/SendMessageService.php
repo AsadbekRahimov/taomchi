@@ -65,8 +65,8 @@ class SendMessageService
 
     public static function sendReport()
     {
-        $sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->pluck('price', 'quantity')->toArray());
-        $real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get()->pluck('product.real_price', 'quantity')->toArray());
+        $sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get(), 'price');
+        $real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get(), 'real_price');
         $expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNull('party_id')->sum('price');
         $day_profit = $sell_price - $real_price - $expenses;
 

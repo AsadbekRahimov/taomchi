@@ -44,8 +44,8 @@ class PlatformScreen extends Screen
 
     public function query(): iterable
     {
-        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->pluck('price', 'quantity')->toArray());
-        $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get()->pluck('product.real_price', 'quantity')->toArray());
+        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get(), 'price');
+        $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get(), 'real_price');
         $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNull('party_id')->sum('price');
         $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
         $this->for_suppliers = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNotNull('party_id')->sum('price');
