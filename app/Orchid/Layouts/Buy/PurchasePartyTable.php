@@ -35,7 +35,7 @@ class PurchasePartyTable extends Table
                 return $model->user->name;
             })->cantHide(),
             TD::make('supplier_id', 'Таминотчи')->render(function ($model) {
-                return $model->supplier->name;
+                return Link::make($model->supplier->name)->route('platform.supplier_info', ['supplier' => $model->supplier_id]);
             })->filter(Select::make('supplier_id')->options(Cache::get('suppliers'))->empty('', ''))->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model){
                 return Link::make(number_format($model->purchasesSum()))->type(Color::INFO());

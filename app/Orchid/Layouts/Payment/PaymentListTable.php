@@ -33,7 +33,7 @@ class PaymentListTable extends Table
         return [
             TD::make('id', 'ID'),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
-                return $model->customer->name;
+                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
             })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
             TD::make('price', 'Миқдори')->render(function ($model) {
                 return Link::make(number_format($model->price))->type(Color::SUCCESS());

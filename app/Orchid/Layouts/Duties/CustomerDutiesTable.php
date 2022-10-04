@@ -35,7 +35,7 @@ class CustomerDutiesTable extends Table
         return [
             TD::make('id', 'ID')->cantHide(),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
-               return $model->customer->name;
+                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
             })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
             TD::make('phone', 'Телефон рақами')->render(function ($model) {
                 return Link::make($model->customer->phone)->href('tel:' . HelperService::telephone($model->customer->phone));

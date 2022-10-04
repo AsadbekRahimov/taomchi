@@ -4,6 +4,7 @@ namespace App\Orchid\Layouts\Buy;
 
 use App\Services\HelperService;
 use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
@@ -41,8 +42,8 @@ class PurchasesTable extends Table
             TD::make('profit', 'Қоладиган фойда')->render(function ($model){
                 return number_format($model->profit);
             }),
-            TD::make('supplier_id', 'Таминотчи')->render(function ($model){
-                return $model->supplier->name;
+            TD::make('supplier_id', 'Таминотчи')->render(function ($model) {
+                return Link::make($model->supplier->name)->route('platform.supplier_info', ['supplier' => $model->supplier_id]);
             })->filter(Select::make('supplier_id')->options(Cache::get('suppliers'))->empty('', '')),
         ];
     }

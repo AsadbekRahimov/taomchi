@@ -35,7 +35,7 @@ class SalePartyTable extends Table
                 return $model->user->name;
             })->cantHide(),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
-                return $model->customer->name;
+                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
             })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model){
                 return Link::make(number_format($model->salesSum()))->type(Color::INFO());
