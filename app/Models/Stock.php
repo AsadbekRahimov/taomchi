@@ -20,7 +20,8 @@ class Stock extends Model
     ];
 
     protected $allowedFilters = [
-        'quantity'
+        'quantity',
+        'product_id'
     ];
 
     /**

@@ -78,7 +78,7 @@ class QuantityFilter extends Filter
     public function display(): iterable
     {
         return [
-            Select::make('type')->title('Қолдиқ миқдор')->options(Stock::TYPE)->required(),
+            Select::make('type')->title('Қолдиқ миқдор')->options(Stock::TYPE)->empty('', ''),
         ];
     }
 }

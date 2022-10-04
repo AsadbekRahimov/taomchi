@@ -26,7 +26,7 @@ class StockListScreen extends Screen
         return [
             'stock' => Stock::query()->filters(StockSelection::class)->with(['product.measure'])
                 ->where('branch_id', Auth::user()->branch_id)
-                ->orderByDesc('id')->paginate(15),
+                ->orderByDesc('id')->paginate(50),
         ];
     }
 

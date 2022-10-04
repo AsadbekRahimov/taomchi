@@ -3,6 +3,8 @@
 namespace App\Orchid\Layouts\Sell;
 
 use App\Services\HelperService;
+use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -29,7 +31,7 @@ class SalesTable extends Table
             TD::make('id', 'ID'),
             TD::make('product_id', 'Махсулот')->render(function ($model){
                 return $model->product->name;
-            }),
+            })->filter(Select::make('product_id')->options(Cache::get('products'))->empty('', '')),
             TD::make('quantity', 'Миқдори')->render(function ($model){
                 return HelperService::getQuantity($model->quantity, $model->product->box);
             }),
@@ -38,7 +40,7 @@ class SalesTable extends Table
             }),
             TD::make('customer_id', 'Мижоз')->render(function ($model){
                 return $model->customer->name;
-            }),
+            })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', '')),
         ];
     }
 }

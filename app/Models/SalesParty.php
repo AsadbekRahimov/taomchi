@@ -13,11 +13,16 @@ class SalesParty extends Model
 {
     use HasFactory;
     use AsSource, Filterable, Attachable;
+
     protected $fillable = [
         'customer_id',
         'discount',
         'user_id',
         'branch_id',
+    ];
+
+    protected $allowedFilters = [
+        'customer_id'
     ];
 
     public function customer()

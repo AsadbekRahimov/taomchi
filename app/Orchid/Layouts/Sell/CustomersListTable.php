@@ -3,7 +3,9 @@
 namespace App\Orchid\Layouts\Sell;
 
 use App\Services\HelperService;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -27,9 +29,9 @@ class CustomersListTable extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name', 'Исм')->render(function ($model) {
+            TD::make('id', 'Исм')->render(function ($model) {
                 return Link::make($model->name)->route('platform.sell_products', ['customer' => $model->id]);
-            })->cantHide(),
+            })->filter(Select::make('id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
             TD::make('phone', 'Телефон рақам')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             })->cantHide(),

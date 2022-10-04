@@ -4,7 +4,9 @@ namespace App\Orchid\Layouts\Buy;
 
 use App\Models\Supplier;
 use App\Services\HelperService;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Link;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -28,9 +30,9 @@ class SuppliersListTable extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('name', 'Исми')->render(function (Supplier $supplier) {
+            TD::make('id', 'Исми')->render(function (Supplier $supplier) {
                 return Link::make($supplier->name)->route('platform.buy_products', ['supplier' => $supplier->id]);
-            })->cantHide(),
+            })->filter(Select::make('id')->options(Cache::get('suppliers'))->empty('', ''))->cantHide(),
             TD::make('phone', 'Телефон рақами')->render(function (Supplier $supplier) {
                 return Link::make($supplier->phone)->href('tel:' . HelperService::telephone($supplier->phone));
             })->cantHide(),

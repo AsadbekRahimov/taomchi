@@ -2,8 +2,10 @@
 
 namespace App\Orchid\Layouts\Buy;
 
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Color;
@@ -34,7 +36,7 @@ class PurchasePartyTable extends Table
             })->cantHide(),
             TD::make('supplier_id', 'Таминотчи')->render(function ($model) {
                 return $model->supplier->name;
-            })->cantHide(),
+            })->filter(Select::make('supplier_id')->options(Cache::get('suppliers'))->empty('', ''))->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model){
                 return Link::make(number_format($model->purchasesSum()))->type(Color::INFO());
             }),

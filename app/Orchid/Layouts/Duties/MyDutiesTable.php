@@ -3,9 +3,11 @@
 namespace App\Orchid\Layouts\Duties;
 
 use App\Services\HelperService;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 
@@ -32,8 +34,8 @@ class MyDutiesTable extends Table
             TD::make('id', 'ID')->cantHide(),
             TD::make('supplier_id', 'Таминотчи')->render(function ($model) {
                 return $model->supplier->name;
-            })->cantHide(),
-            TD::make('supplier_id', 'Телефон рақами')->render(function ($model) {
+            })->filter(Select::make('suppliers_id')->options(Cache::get('suppliers'))->empty('', ''))->cantHide(),
+            TD::make('phone', 'Телефон рақами')->render(function ($model) {
                 return Link::make($model->supplier->phone)->href('tel:' . HelperService::telephone($model->supplier->phone));
             })->cantHide(),
             TD::make('duty', 'Миқдори')->render(function ($model){

@@ -20,6 +20,11 @@ class Customer extends Model
         'address',
     ];
 
+    protected $allowedFilters = [
+        'id',
+        'name'
+    ];
+
     public function duties()
     {
         return $this->hasMany(Duty::class, 'customer_id', 'id');

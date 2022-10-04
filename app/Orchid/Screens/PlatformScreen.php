@@ -61,15 +61,9 @@ class PlatformScreen extends Screen
         return [
             'statistic' => [
                 'all' => [
-                    'products' => Cache::rememberForever('products', function () {
-                        return \App\Models\Product::query()->pluck('name', 'id');
-                    })->count(),
-                    'customers' => Cache::rememberForever('customers', function () {
-                        return \App\Models\Customer::query()->pluck('name', 'id');
-                    })->count(),
-                    'suppliers' => Cache::rememberForever('suppliers', function () {
-                        return \App\Models\Supplier::query()->pluck('name', 'id');
-                    })->count(),
+                    'products' => Cache::get('products')->count(),
+                    'customers' => Cache::get('customers')->count(),
+                    'suppliers' => Cache::get('suppliers')->count(),
                 ],
                 'day' => [
                     'sell_price' => number_format($this->sell_price),

@@ -21,6 +21,11 @@ class Duty extends Model
        'party_id',
     ];
 
+    protected $allowedFilters = [
+        'customer_id',
+        'supplier_id'
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');

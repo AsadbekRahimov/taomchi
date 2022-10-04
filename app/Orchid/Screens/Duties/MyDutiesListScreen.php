@@ -27,7 +27,7 @@ class MyDutiesListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'my_duties' => Duty::query()->with(['supplier'])->orderByDesc('id')
+            'my_duties' => Duty::query()->filters()->with(['supplier'])->orderByDesc('id')
                 ->whereNotNull('supplier_id')->paginate(15),
         ];
     }

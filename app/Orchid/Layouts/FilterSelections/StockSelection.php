@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Layouts\FilterSelections;
 
+use App\Orchid\Filters\ProductFilter;
 use App\Orchid\Filters\QuantityFilter;
 use Orchid\Filters\Filter;
 use Orchid\Screen\Layouts\Selection;
@@ -15,6 +16,7 @@ class StockSelection extends Selection
     {
         return [
             QuantityFilter::class,
+            ProductFilter::class,
         ];
     }
 }

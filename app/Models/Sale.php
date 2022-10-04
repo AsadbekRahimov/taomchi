@@ -22,6 +22,11 @@ class Sale extends Model
        'party_id'
     ];
 
+    protected $allowedFilters = [
+        'customer_id',
+        'product_id',
+    ];
+
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
