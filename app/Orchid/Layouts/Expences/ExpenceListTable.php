@@ -44,7 +44,7 @@ class ExpenceListTable extends Table
                     ->modal('asyncGetPartyModal')
                     ->modalTitle('Партия: №' . $model->party_id . ' | Таминотчи: ' . $model->party->supplier->name)
                     ->asyncParameters([
-                        'purchaseParty' => $model->id,
+                        'purchaseParty' => $model->party_id,
                     ]);
             })->cantHide(),
         ];

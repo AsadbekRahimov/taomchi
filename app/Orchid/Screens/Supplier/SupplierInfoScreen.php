@@ -7,10 +7,9 @@ use App\Models\Expence;
 use App\Models\Purchase;
 use App\Models\PurchaseParty;
 use App\Models\Supplier;
+use App\Orchid\Layouts\Buy\PurchasePartyTable;
 use App\Orchid\Layouts\Expences\ExpenceListTable;
-use App\Orchid\Layouts\Payment\PartyList;
-use App\Orchid\Layouts\Payment\PaymentListTable;
-use App\Orchid\Layouts\Sell\SalePartyTable;
+use App\Orchid\Layouts\Expences\PartyList;
 use Illuminate\Database\Eloquent\Builder;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Layouts\Modal;
@@ -39,6 +38,10 @@ class SupplierInfoScreen extends Screen
             'expences' => Expence::query()->with(['party.supplier'])->whereHas('party', function (Builder $query) use ($supplier) {
                 $query->where('supplier_id', $supplier->id);
             })->orderByDesc('id')->paginate(15),
+
+            'parties' => PurchaseParty::query()->filters()->whereHas('purchases', function (Builder $query) use ($supplier) {
+                $query->where('supplier_id', $supplier->id);
+            })->with(['supplier', 'user', 'purchases', 'expences', 'duties'])->orderByDesc('id')->paginate(15),
         ];
     }
 
@@ -80,7 +83,7 @@ class SupplierInfoScreen extends Screen
 
             Layout::tabs([
                 'Чиқимлар' => ExpenceListTable::class,
-                //'Сотиб олинган партиялар' => SalePartyTable::class,
+                'Сотиб олинган партиялар' => PurchasePartyTable::class,
             ]),
 
             Layout::modal('asyncGetPartyModal', PartyList::class)
@@ -108,5 +111,12 @@ class SupplierInfoScreen extends Screen
     private function getAllDebtAmount($id)
     {
         return number_format(Duty::query()->where('supplier_id', $id)->sum('duty'));
+    }
+
+    public function asyncGetParty(PurchaseParty $purchaseParty)
+    {
+        return [
+            'purchases' => $purchaseParty->purchases,
+        ];
     }
 }

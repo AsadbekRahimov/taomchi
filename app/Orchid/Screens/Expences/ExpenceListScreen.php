@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Expences;
 
 use App\Models\Expence;
+use App\Models\PurchaseParty;
 use App\Orchid\Layouts\Expences\ExpenceListTable;
 use App\Orchid\Layouts\Expences\OtherExpenceListTable;
 use App\Orchid\Layouts\Expences\PartyList;
@@ -93,10 +94,10 @@ class ExpenceListScreen extends Screen
         ];
     }
 
-    public function asyncGetParty(Expence $expence)
+    public function asyncGetParty(PurchaseParty $purchaseParty)
     {
         return [
-            'purchases' => $expence->party->purchases,
+            'purchases' => $purchaseParty->purchases,
         ];
     }
 
