@@ -17,6 +17,7 @@ use App\Orchid\Layouts\Main\ExpenceModal;
 use App\Services\ChartService;
 use App\Services\HelperService;
 use App\Services\ReportService;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
@@ -43,11 +44,11 @@ class PlatformScreen extends Screen
 
     public function query(): iterable
     {
-        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDay('updated_at', date('d'))->pluck('price', 'quantity')->toArray());
-        $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDay('updated_at', date('d'))->get()->pluck('product.real_price', 'quantity')->toArray());
-        $this->expenses = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNull('party_id')->sum('price');
+        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->pluck('price', 'quantity')->toArray());
+        $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get()->pluck('product.real_price', 'quantity')->toArray());
+        $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNull('party_id')->sum('price');
         $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
-        $this->for_suppliers = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNotNull('party_id')->sum('price');
+        $this->for_suppliers = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNotNull('party_id')->sum('price');
         if (request()->has('date')) {
             $date = \request()->get('date');
             $begin = $date['start'] . ' 00:00:00';
@@ -73,9 +74,9 @@ class PlatformScreen extends Screen
                 'day' => [
                     'sell_price' => number_format($this->sell_price),
                     'real_price' => number_format($this->real_price),
-                    'payments' => number_format((int)Payment::query()->whereDay('updated_at', date('d'))->sum('price')),
-                    'duties' => number_format((int)Duty::query()->whereDay('updated_at', date('d'))->whereNotNull('customer_id')->sum('duty')),
-                    'supplier_payments' => number_format((int)Expence::query()->whereDay('updated_at', date('d'))
+                    'payments' => number_format((int)Payment::query()->whereDate('updated_at', Carbon::today())->sum('price')),
+                    'duties' => number_format((int)Duty::query()->whereDate('updated_at', Carbon::today())->whereNotNull('customer_id')->sum('duty')),
+                    'supplier_payments' => number_format((int)Expence::query()->whereDate('updated_at', Carbon::today())
                         ->whereNotNull('party_id')->sum('price')),
                     'expenses' => number_format($this->expenses),
                 ],
