@@ -241,6 +241,23 @@ Route::screen('my_duties', \App\Orchid\Screens\Duties\MyDutiesListScreen::class)
             ->push('Qarzlarim');
     });
 
+// Mijoz haqida malumot
+Route::screen('/customer/{customer}', \App\Orchid\Screens\Customer\CustomerInfoScreen::class)
+    ->name('platform.customer_info')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Мижоз');
+    });
+
+// Taminotchi haqida malumot
+Route::screen('/supplier/{supplier}', \App\Orchid\Screens\Supplier\SupplierInfoScreen::class)
+    ->name('platform.supplier_info')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Таминотчи');
+    });
 //Example screen routes
 Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
 Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');

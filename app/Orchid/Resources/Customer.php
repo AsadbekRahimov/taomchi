@@ -52,7 +52,9 @@ class Customer extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Исм')->cantHide(),
+            TD::make('name', 'Исм')->render(function ($model) {
+                return Link::make($model->name)->route('platform.customer_info', ['customer' => $model->id]);
+            })->cantHide(),
             TD::make('phone', 'Телефон рақам 1')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             })->cantHide(),
