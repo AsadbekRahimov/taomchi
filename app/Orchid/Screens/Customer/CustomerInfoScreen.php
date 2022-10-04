@@ -3,7 +3,14 @@
 namespace App\Orchid\Screens\Customer;
 
 use App\Models\Customer;
+use App\Models\Duty;
+use App\Models\Payment;
+use App\Models\Sale;
+use App\Models\SalesParty;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
+use Orchid\Support\Facades\Layout;
 
 class CustomerInfoScreen extends Screen
 {
@@ -17,7 +24,11 @@ class CustomerInfoScreen extends Screen
     {
         $this->customer = $customer;
         return [
-
+            'statistic' => [
+               'sell' => $this->getAllSellAmount($customer->id),
+               'payment' => $this->getAllPaymentAmount($customer->id),
+               'debt' => $this->getAllDebtAmount($customer->id),
+            ],
         ];
     }
 
@@ -38,7 +49,10 @@ class CustomerInfoScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make($this->customer->phone)->icon('call-out')->type(Color::SUCCESS())->href('tel://' . $this->customer->phone),
+            Link::make($this->customer->telephone)->icon('call-out')->type(Color::INFO())->href('tel://' . $this->customer->telephone)->canSee(!is_null($this->customer->telephone)),
+        ];
     }
 
     /**
@@ -48,6 +62,31 @@ class CustomerInfoScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Layout::metrics([
+                'Sotib olgan' => 'statistic.sell',
+                'To\'lov' => 'statistic.payment',
+                'Qarz' => 'statistic.debt',
+            ])
+        ];
+    }
+
+    private function getAllSellAmount($id)
+    {
+        $amount = 0;
+        foreach(Sale::query()->where('customer_id', $id)->pluck('price', 'quantity') as $qty => $price)
+            $amount += $qty * $price;
+        $amount -= SalesParty::query()->where('customer_id', $id)->sum('discount');
+        return number_format($amount);
+    }
+
+    private function getAllPaymentAmount($id)
+    {
+        return number_format(Payment::query()->where('customer_id', $id)->sum('price'));
+    }
+
+    private function getAllDebtAmount($id)
+    {
+        return number_format(Duty::query()->where('customer_id', $id)->sum('duty'));
     }
 }

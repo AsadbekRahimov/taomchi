@@ -60,7 +60,7 @@ class SalesParty extends Model
     {
         $sum = 0;
         foreach ($this->sales as $sale) {
-            $sum += ($sale->price * $sale->quantity);
+            $sum += $sale->total;
         }
         return $sum;
     }

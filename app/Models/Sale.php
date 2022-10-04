@@ -63,4 +63,9 @@ class Sale extends Model
             ]);
         }
     }
+
+    public function getTotalAttribute($value)
+    {
+        return $this->price * $this->quantity;
+    }
 }
