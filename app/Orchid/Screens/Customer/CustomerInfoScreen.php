@@ -64,9 +64,9 @@ class CustomerInfoScreen extends Screen
     {
         return [
             Layout::metrics([
-                'Sotib olgan' => 'statistic.sell',
-                'To\'lov' => 'statistic.payment',
-                'Qarz' => 'statistic.debt',
+                'Сотиб олган' => 'statistic.sell',
+                'Тўлов' => 'statistic.payment',
+                'Қарз' => 'statistic.debt',
             ])
         ];
     }
@@ -74,8 +74,10 @@ class CustomerInfoScreen extends Screen
     private function getAllSellAmount($id)
     {
         $amount = 0;
-        foreach(Sale::query()->where('customer_id', $id)->pluck('price', 'quantity') as $qty => $price)
-            $amount += $qty * $price;
+        foreach(Sale::select(['price', 'quantity'])->where('customer_id', $id)->get()->toArray() as $item)
+        {
+            $amount += $item['quantity'] * $item['price'];
+        }
         $amount -= SalesParty::query()->where('customer_id', $id)->sum('discount');
         return number_format($amount);
     }

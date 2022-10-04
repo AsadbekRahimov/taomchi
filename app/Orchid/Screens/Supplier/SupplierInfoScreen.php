@@ -2,8 +2,15 @@
 
 namespace App\Orchid\Screens\Supplier;
 
+use App\Models\Duty;
+use App\Models\Expence;
+use App\Models\Purchase;
+use App\Models\PurchaseParty;
 use App\Models\Supplier;
+use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
+use Orchid\Support\Facades\Layout;
 
 class SupplierInfoScreen extends Screen
 {
@@ -17,7 +24,11 @@ class SupplierInfoScreen extends Screen
     {
         $this->supplier = $supplier;
         return [
-
+            'statistic' => [
+                'buy' => $this->getAllBuyAmount($supplier->id),
+                'expences' => $this->getAllExpenceAmount($supplier->id),
+                'debt' => $this->getAllDebtAmount($supplier->id),
+            ],
         ];
     }
 
@@ -38,7 +49,9 @@ class SupplierInfoScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            Link::make($this->supplier->phone)->icon('call-out')->type(Color::SUCCESS())->href('tel://' . $this->supplier->phone),
+        ];
     }
 
     /**
@@ -48,6 +61,33 @@ class SupplierInfoScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [];
+        return [
+            Layout::metrics([
+                'Сотиб олган' => 'statistic.buy',
+                'Тўлаб берилган' => 'statistic.expences',
+                'Қарз' => 'statistic.debt',
+            ])
+        ];
+    }
+
+    private function getAllBuyAmount($id)
+    {
+        $amount = 0;
+        foreach(Purchase::select(['price', 'quantity'])->where('supplier_id', $id)->get()->toArray() as $item)
+        {
+            $amount += $item['quantity'] * $item['price'];
+        }
+        return number_format($amount);
+    }
+
+    private function getAllExpenceAmount($id)
+    {
+        $parties = PurchaseParty::query()->where('supplier_id', $id)->pluck('id')->toArray();
+        return number_format(Expence::query()->whereIn('party_id', $parties)->sum('price'));
+    }
+
+    private function getAllDebtAmount($id)
+    {
+        return number_format(Duty::query()->where('supplier_id', $id)->sum('duty'));
     }
 }
