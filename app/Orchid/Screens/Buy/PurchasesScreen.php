@@ -23,7 +23,7 @@ class PurchasesScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id?: 0;
         return [
-            'purchases' => Purchase::query()->with(['supplier', 'product'])
+            'purchases' => Purchase::query()->filters()->with(['supplier', 'product'])
                 ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];
     }

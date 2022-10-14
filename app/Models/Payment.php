@@ -23,6 +23,11 @@ class Payment extends Model
         'user_id',
     ];
 
+    protected $allowedFilters = [
+        'customer_id',
+        'type'
+    ];
+
     public  const TYPE = [
         1 => 'Нақт',
         2 => 'Пластик карта',

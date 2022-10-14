@@ -22,7 +22,7 @@ class PurchasesPartyScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id ?: 0;
         return [
-            'parties' => PurchaseParty::query()
+            'parties' => PurchaseParty::query()->filters()
                 ->with(['supplier', 'user', 'purchases', 'expences', 'duties'])
                 ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];

@@ -27,7 +27,7 @@ class CustomerDutiesListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'customer_duties' => Duty::query()->with(['customer'])
+            'customer_duties' => Duty::query()->filters()->with(['customer'])
                 ->whereNotNull('customer_id')->orderByDesc('id')->paginate(15),
         ];
     }

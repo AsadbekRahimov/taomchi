@@ -49,7 +49,9 @@ class Supplier extends Resource
     {
         return [
             TD::make('id'),
-            TD::make('name', 'Исм')->cantHide(),
+            TD::make('name', 'Исм')->render(function ($model) {
+                return Link::make($model->name)->route('platform.supplier_info', ['supplier' => $model->id]);
+            })->cantHide(),
             TD::make('phone', 'Телефон рақам')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             })->cantHide(),

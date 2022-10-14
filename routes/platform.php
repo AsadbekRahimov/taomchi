@@ -97,13 +97,13 @@ Route::screen('roles', RoleListScreen::class)
     });
 
 // Example...
-Route::screen('example', ExampleScreen::class)
+/*Route::screen('example', ExampleScreen::class)
     ->name('platform.example')
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
             ->push('Example screen');
-    });
+    });*/
 
 // Ombor maxsulotlari
 Route::screen('stock/list', \App\Orchid\Screens\Stock\StockListScreen::class)
@@ -111,7 +111,7 @@ Route::screen('stock/list', \App\Orchid\Screens\Stock\StockListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Zaxira maxsulotlar');
+            ->push('Захира махсулотлар');
     });
 
 // Omborga maxsulotlarni kiritish
@@ -120,7 +120,7 @@ Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScr
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.stock_list')
-            ->push('Махсулот qo\'shish');
+            ->push('Махсулот қўшиш');
     });
 
 
@@ -139,7 +139,7 @@ Route::screen('stock/buy/{supplier}', \App\Orchid\Screens\Buy\MainBuyScreen::cla
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Махсулот sotib olish');
+            ->push('Махсулот сотиб олиш');
     });
 
 // Мижозлар
@@ -157,7 +157,7 @@ Route::screen('stock/sell/{customer}', \App\Orchid\Screens\Sell\MainSellScreen::
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Махсулот sotib olish');
+            ->push('Махсулот сотиш');
     });
 
 // Sotib olingan partiyalar
@@ -166,7 +166,7 @@ Route::screen('buy/parties', \App\Orchid\Screens\Buy\PurchasesPartyScreen::class
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Sotib olingan partiyalar');
+            ->push('Сотиб олинган партиялар');
     });
 
 // Sotilgan  partiyalar
@@ -175,7 +175,7 @@ Route::screen('sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Sotilgan partiyalar');
+            ->push('Сотилган партиялар');
     });
 
 // Sotib olingan maxsulotlar
@@ -184,7 +184,7 @@ Route::screen('purchases', \App\Orchid\Screens\Buy\PurchasesScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Sotib olingan maxsulotlar');
+            ->push('Сотиб олинган махсулотлар');
     });
 
 // Sotilgan  maxsulotlar
@@ -193,7 +193,7 @@ Route::screen('sales', \App\Orchid\Screens\Sell\SalesScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Sotilgan maxsulotlar');
+            ->push('Сотилган махсулотлар');
     });
 
 // Buyurtmalar
@@ -202,7 +202,7 @@ Route::screen('orders', \App\Orchid\Screens\Order\OrderListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Buyurtmalar');
+            ->push('Буюртмалар');
     });
 
 // Buyurtmalar
@@ -211,7 +211,7 @@ Route::screen('payments', \App\Orchid\Screens\Payment\PaymentListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('To\'lovlar');
+            ->push('Тўловлар');
     });
 
 // Chiqimlar
@@ -220,7 +220,7 @@ Route::screen('expences', \App\Orchid\Screens\Expences\ExpenceListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Chiqimlar');
+            ->push('Чиқимлар');
     });
 
 // Qarzdorlar
@@ -229,7 +229,7 @@ Route::screen('customer_duties', \App\Orchid\Screens\Duties\CustomerDutiesListSc
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Qarzdorlar');
+            ->push('Қарздорлар');
     });
 
 // Qarzlarim
@@ -238,15 +238,32 @@ Route::screen('my_duties', \App\Orchid\Screens\Duties\MyDutiesListScreen::class)
     ->breadcrumbs(function (Trail $trail) {
         return $trail
             ->parent('platform.index')
-            ->push('Qarzlarim');
+            ->push('Қарзларим');
     });
 
+// Mijoz haqida malumot
+Route::screen('/customer/{customer}', \App\Orchid\Screens\Customer\CustomerInfoScreen::class)
+    ->name('platform.customer_info')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Мижоз');
+    });
+
+// Taminotchi haqida malumot
+Route::screen('/supplier/{supplier}', \App\Orchid\Screens\Supplier\SupplierInfoScreen::class)
+    ->name('platform.supplier_info')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Таминотчи');
+    });
 //Example screen routes
-Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
-Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
-Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
-Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
-Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
-Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
+//Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');
+//Route::screen('example-layouts', ExampleLayoutsScreen::class)->name('platform.example.layouts');
+//Route::screen('example-charts', ExampleChartsScreen::class)->name('platform.example.charts');
+//Route::screen('example-editors', ExampleTextEditorsScreen::class)->name('platform.example.editors');
+//Route::screen('example-cards', ExampleCardsScreen::class)->name('platform.example.cards');
+//Route::screen('example-advanced', ExampleFieldsAdvancedScreen::class)->name('platform.example.advanced');
 
 //Route::screen('idea', Idea::class, 'platform.screens.idea');

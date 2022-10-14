@@ -29,22 +29,22 @@ class ExpenceListTable extends Table
     {
         return [
             TD::make('id', 'ID'),
-            TD::make('party_id', 'Таминотчи')->render(function ($model){
-                return $model->party->supplier->name;
-            }),
+            TD::make('party_id', 'Таминотчи')->render(function ($model) {
+                return Link::make($model->party->supplier->name)->route('platform.supplier_info', ['supplier' => $model->party->supplier_id]);
+            })->cantHide(),
             TD::make('price', 'Миқдори')->render(function ($model){
                 return Link::make(number_format($model->price))->type(Color::WARNING());
-            }),
+            })->cantHide(),
             TD::make('created_at', 'Сана')->render(function ($model){
                 return $model->created_at->toDateTimeString();
-            }),
+            })->cantHide(),
             TD::make('')->render(function ($model){
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
                     ->modalTitle('Партия: №' . $model->party_id . ' | Таминотчи: ' . $model->party->supplier->name)
                     ->asyncParameters([
-                        'purchaseParty' => $model->id,
+                        'purchaseParty' => $model->party_id,
                     ]);
             })->cantHide(),
         ];

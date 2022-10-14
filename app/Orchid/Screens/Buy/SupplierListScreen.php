@@ -16,7 +16,7 @@ class SupplierListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'suppliers' => Supplier::query()->orderByDesc('id')->paginate(15),
+            'suppliers' => Supplier::query()->filters()->orderByDesc('id')->paginate(15),
         ];
     }
 

@@ -18,6 +18,12 @@ class Supplier extends Model
         'phone',
     ];
 
+    protected $allowedFilters = [
+        'id',
+        'name'
+    ];
+
+
     public function baskets()
     {
         return $this->hasMany(Basket::class, 'supplier_id', 'id');

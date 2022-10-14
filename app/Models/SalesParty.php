@@ -13,11 +13,16 @@ class SalesParty extends Model
 {
     use HasFactory;
     use AsSource, Filterable, Attachable;
+
     protected $fillable = [
         'customer_id',
         'discount',
         'user_id',
         'branch_id',
+    ];
+
+    protected $allowedFilters = [
+        'customer_id'
     ];
 
     public function customer()
@@ -55,7 +60,7 @@ class SalesParty extends Model
     {
         $sum = 0;
         foreach ($this->sales as $sale) {
-            $sum += ($sale->price * $sale->quantity);
+            $sum += $sale->total;
         }
         return $sum;
     }

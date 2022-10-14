@@ -27,7 +27,7 @@ class PaymentListScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id ?: 0;
         return [
-            'payments' => Payment::query()->with(['customer'])
+            'payments' => Payment::query()->filters()->with(['customer'])
                 ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];
     }

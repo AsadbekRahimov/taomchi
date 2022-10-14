@@ -6,6 +6,7 @@ use App\Models\Expence;
 use App\Models\Order;
 use App\Models\PurchaseParty;
 use App\Models\Sale;
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
 
@@ -64,9 +65,9 @@ class SendMessageService
 
     public static function sendReport()
     {
-        $sell_price = HelperService::statTotalPrice(Sale::query()->whereDay('updated_at', date('d'))->pluck('price', 'quantity')->toArray());
-        $real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDay('updated_at', date('d'))->get()->pluck('product.real_price', 'quantity')->toArray());
-        $expenses = (int)Expence::query()->whereDay('updated_at', date('d'))->whereNull('party_id')->sum('price');
+        $sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get(), 'price');
+        $real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get(), 'real_price');
+        $expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNull('party_id')->sum('price');
         $day_profit = $sell_price - $real_price - $expenses;
 
         $message = 'Сотилган нарх : ' . number_format($sell_price) . "\r\n"

@@ -2,8 +2,10 @@
 
 namespace App\Orchid\Layouts\Sell;
 
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Color;
@@ -32,9 +34,9 @@ class SalePartyTable extends Table
             TD::make('user_id', 'Сотувчи')->render(function ($model){
                 return $model->user->name;
             })->cantHide(),
-            TD::make('supplier_id', 'Мижоз')->render(function ($model) {
-                return $model->customer->name;
-            })->cantHide(),
+            TD::make('customer_id', 'Мижоз')->render(function ($model) {
+                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
+            })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model){
                 return Link::make(number_format($model->salesSum()))->type(Color::INFO());
             }),

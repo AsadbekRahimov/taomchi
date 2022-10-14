@@ -73,12 +73,17 @@ class HelperService
             return Color::DANGER();
     }
 
-    public static function statTotalPrice($sales)
+    public static function statTotalPrice($sales, $price)
     {
         $sum = 0;
-        foreach ($sales as $qnt => $price)
+        foreach ($sales as $sale)
         {
-            $sum += $qnt * $price;
+            if ($price == 'price')
+            {
+                $sum += $sale->price * $sale->quantity;
+            } else {
+                $sum += $sale->product->real_price * $sale->quantity;
+            }
         }
         return $sum;
     }
