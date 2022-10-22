@@ -19,6 +19,7 @@ class Duty extends Model
        'duty',
        'branch_id',
        'party_id',
+       'for_today',
     ];
 
     protected $allowedFilters = [
