@@ -11,6 +11,7 @@ use Orchid\Crud\ResourceRequest;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
 use Orchid\Support\Facades\Alert;
@@ -35,6 +36,7 @@ class Customer extends Resource
             Group::make([
                 Input::make('name')->title('Исм')->required(),
                 Input::make('address')->title('Манзили')->required(),
+                Select::make('place_id')->title('Худуди')->options(Cache::get('places'))->required(),
             ]),
             Group::make([
                 Input::make('phone')->title('Телефон рақами 1')->mask('(99) 999-99-99')->required(),
@@ -62,6 +64,9 @@ class Customer extends Resource
                 return Link::make($model->telephone)->href('tel:' . HelperService::telephone($model->telephone));
             })->cantHide(),
             TD::make('address', 'Манзили'),
+            TD::make('place_id', 'Худуди')->render(function ($model){
+                return $model->place ? $model->place->name : '';
+            })->filter(Select::make('place_id')->title('Худуди')->options(Cache::get('places'))->empty('', '')),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
@@ -89,6 +94,9 @@ class Customer extends Resource
                 return Link::make($model->telephone)->href('tel:' . HelperService::telephone($model->telephone));
             }),
             Sight::make('address', 'Манзили'),
+            Sight::make('place_id', 'Худуди')->render(function ($model) {
+                return $model->place->name;
+            }),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
@@ -116,6 +124,7 @@ class Customer extends Resource
             'name' => ['required'],
             'phone' => ['required'],
             'address' => ['required'],
+            'place_id' => ['required'],
         ];
     }
 
@@ -125,6 +134,7 @@ class Customer extends Resource
             'name.required' => 'Исм киритилиши шарт',
             'phone.required' => 'Телефон рақам киритилиши шарт!',
             'address.required' => 'Манзили киритилиши шарт!',
+            'place_id.required' => 'Худуди киритилиши шарт!',
         ];
     }
 

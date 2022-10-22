@@ -18,11 +18,13 @@ class Customer extends Model
         'phone',
         'telephone',
         'address',
+        'place_id'
     ];
 
     protected $allowedFilters = [
         'id',
-        'name'
+        'name',
+        'place_id'
     ];
 
     public function duties()
@@ -48,5 +50,10 @@ class Customer extends Model
     public function payments()
     {
         return $this->hasMany(Payment::class, 'customer_id', 'id');
+    }
+
+    public function place()
+    {
+        return $this->belongsTo(Place::class, 'place_id', 'id');
     }
 }

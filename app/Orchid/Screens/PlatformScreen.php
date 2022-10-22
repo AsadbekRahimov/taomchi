@@ -7,6 +7,7 @@ namespace App\Orchid\Screens;
 use App\Models\Duty;
 use App\Models\Expence;
 use App\Models\Payment;
+use App\Models\Place;
 use App\Models\Sale;
 use App\Orchid\Layouts\Charts\CourierChart;
 use App\Orchid\Layouts\Charts\DutyChart;
@@ -58,18 +59,24 @@ class PlatformScreen extends Screen
             $end = date('Y-m-d') . ' 23:59:59';
         }
 
+        if (!Cache::has('places')) {
+            Cache::rememberForever('places', function () {
+                return Place::query()->pluck('name', 'id');
+            });
+        }
+
         return [
             'statistic' => [
                 'all' => [
-                    'products' => Cache::rememberForever('products', function () {
+                    'products' => (!Cache::has('products')) ? Cache::rememberForever('products', function () {
                         return \App\Models\Product::query()->pluck('name', 'id');
-                    })->count(),
-                    'customers' => Cache::rememberForever('customers', function () {
+                    })->count() : Cache::get('products')->count(),
+                    'customers' => (!Cache::has('customers')) ? Cache::rememberForever('customers', function () {
                         return \App\Models\Customer::query()->pluck('name', 'id');
-                    })->count(),
-                    'suppliers' => Cache::rememberForever('suppliers', function () {
+                    })->count() : Cache::get('customers')->count(),
+                    'suppliers' => (!Cache::has('suppliers')) ? Cache::rememberForever('suppliers', function () {
                         return \App\Models\Supplier::query()->pluck('name', 'id');
-                    })->count(),
+                    })->count() : Cache::get('suppliers')->count(),
                 ],
                 'day' => [
                     'sell_price' => number_format($this->sell_price),
