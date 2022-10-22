@@ -65,7 +65,7 @@ class Customer extends Resource
             })->cantHide(),
             TD::make('address', 'Манзили'),
             TD::make('place_id', 'Худуди')->render(function ($model){
-                return $model->place ? $model->place->name : '';
+                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
             })->filter(Select::make('place_id')->title('Худуди')->options(Cache::get('places'))->empty('', '')),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
@@ -95,7 +95,7 @@ class Customer extends Resource
             }),
             Sight::make('address', 'Манзили'),
             Sight::make('place_id', 'Худуди')->render(function ($model) {
-                return $model->place->name;
+                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
             }),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();

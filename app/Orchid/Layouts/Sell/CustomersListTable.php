@@ -29,6 +29,9 @@ class CustomersListTable extends Table
     protected function columns(): iterable
     {
         return [
+            TD::make('place_id', 'Худуд')->render(function ($model) {
+                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
+            })->filter(Select::make('place_id')->options(Cache::get('places'))->empty('', ''))->cantHide(),
             TD::make('id', 'Исм')->render(function ($model) {
                 return Link::make($model->name)->route('platform.sell_products', ['customer' => $model->id]);
             })->filter(Select::make('id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
