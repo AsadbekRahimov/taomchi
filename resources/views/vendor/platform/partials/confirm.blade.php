@@ -7,7 +7,7 @@
         <div class="modal-content">
             <div class="modal-header">
                 <h4 class="modal-title text-black fw-light">
-                    Ishonchingiz komilmi!
+                    Ишончингиз комилми!
                 </h4>
                 <button type="button" class="btn-close" title="Close" data-bs-dismiss="modal" aria-label="Close">
                 </button>
@@ -19,7 +19,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-link" data-bs-dismiss="modal">
-                    Yopish
+                    Ёпиш
                 </button>
 
                 <div data-confirm-target="button">

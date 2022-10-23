@@ -50,6 +50,13 @@ class OrderListTable extends Table
                 return DropDown::make('')->icon('list')->list([
                     Link::make('Тўлов чеки')->icon('printer')
                         ->route('printCheck', ['id' => $model->id])->target('blank'),
+                    Button::make('Қарзга бериш')
+                        ->method('duty')
+                        ->icon('clock')
+                        ->parameters([
+                            'id' => $model->id,
+                            'customer_id' => $model->customer_id,
+                        ])->confirm($model->customer->name . ' - Қарз суммаси: ' . number_format($model->cardsSum() - $model->discount)),
                     ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')

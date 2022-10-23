@@ -6,6 +6,7 @@ use App\Models\Duty;
 use App\Models\Payment;
 use App\Orchid\Layouts\Duties\CustomerDutiesTable;
 use App\Orchid\Layouts\Duties\PartyList;
+use App\Orchid\Layouts\Duties\TodayDutiesTable;
 use App\Orchid\Layouts\Order\fullPaymentModal;
 use App\Orchid\Layouts\Order\partPaymentModal;
 use App\Services\HelperService;
@@ -27,7 +28,9 @@ class CustomerDutiesListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'customer_duties' => Duty::query()->filters()->with(['customer'])
+            'today_duties' => Duty::query()->filters()->with(['customer'])->where('for_today', 1)
+                ->whereNotNull('customer_id')->orderBy('id')->paginate(15),
+            'customer_duties' => Duty::query()->filters()->with(['customer'])->where('for_today', 0)
                 ->whereNotNull('customer_id')->orderByDesc('id')->paginate(15),
         ];
     }
@@ -76,7 +79,10 @@ class CustomerDutiesListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            CustomerDutiesTable::class,
+            Layout::tabs([
+                'Bugungi qarzdorlar' => TodayDutiesTable::class,
+                'Qarzdorlar' => CustomerDutiesTable::class,
+            ]),
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
                 ->withoutApplyButton(true)->closeButton('Ёпиш'),

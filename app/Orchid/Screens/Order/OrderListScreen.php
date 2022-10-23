@@ -83,6 +83,15 @@ class OrderListScreen extends Screen
     }
 
 
+    public function duty(Request $request)
+    {
+        $order = Order::query()->find($request->id);
+        $party = SalesParty::createParty($request->customer_id, $order->discount);
+        Duty::duty($party->id, $order);
+        Sale::createSales($party->id, $request->customer_id, $party->branch_id);
+        $this->deleteCard($request);
+        Alert::success('Махсулотлар муаффақиятли сотилди');
+    }
 
     public function fullPayment(Request $request)
     {
