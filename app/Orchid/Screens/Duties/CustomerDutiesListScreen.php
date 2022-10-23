@@ -80,8 +80,8 @@ class CustomerDutiesListScreen extends Screen
     {
         return [
             Layout::tabs([
-                'Bugungi qarzdorlar' => TodayDutiesTable::class,
-                'Qarzdorlar' => CustomerDutiesTable::class,
+                'Бугунги қарздорлар' => TodayDutiesTable::class,
+                'Қарздорлар' => CustomerDutiesTable::class,
             ]),
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
