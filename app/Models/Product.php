@@ -16,12 +16,8 @@ class Product extends Model
     protected $fillable = [
         'name',
         'measure_id',
-        'box',
-        'min',
         'one_price',
-        'more_price',
         'discount_price',
-        'real_price',
     ];
 
     public function measure()
@@ -32,11 +28,6 @@ class Product extends Model
     public function cards()
     {
         return $this->hasMany(Card::class, 'product_id', 'id');
-    }
-
-    public function stock()
-    {
-        return $this->hasMany(Stock::class, 'product_id', 'id');
     }
 
     public function sales()

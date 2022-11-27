@@ -20,9 +20,7 @@ return new class extends Migration
             $table->integer('box');
             $table->integer('min');
             $table->integer('one_price');
-            $table->integer('more_price');
             $table->integer('discount_price');
-            $table->integer('real_price');
             $table->timestamps();
         });
     }

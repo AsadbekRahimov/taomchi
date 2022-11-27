@@ -36,12 +36,8 @@ class Product extends Resource
                 Input::make('name')->title('Номи')->required(),
                 Select::make('measure_id')->title('Ўлчов бирлиги')
                     ->fromModel(\App\Models\Measure::class, 'name')->required(),
-                Input::make('box')->type('number')->title('Қадоқдаги миқдори')->required(),
-                Input::make('min')->type('number')->title('Омбордаги енг кам миқдори')->required(),
             ]),
             Group::make([
-                Input::make('real_price')->type('number')->title('Тан нархи')->required(),
-                Input::make('more_price')->type('number')->title('Улгуржи нарх')->required(),
                 Input::make('one_price')->type('number')->title('Чакана нарх')->required(),
                 Input::make('discount_price')->type('number')->title('Чегирма нарх')->required(),
             ]),
@@ -61,10 +57,6 @@ class Product extends Resource
             TD::make('measure_id', 'Ўлчов бирлиги')->render(function (Model $model) {
                 return $model->measure->name;
             }),
-            TD::make('box', 'Қадоқдаги сони'),
-            TD::make('min', 'Омбордаги енг кам миқдори'),
-            TD::make('real_price', 'Тан нархи'),
-            TD::make('more_price', 'Улгуржи нарх'),
             TD::make('one_price', 'Чакана нарх'),
             TD::make('discount_price', 'Чегирма нарх'),
             TD::make('created_at', 'Киритилган сана')
@@ -90,10 +82,6 @@ class Product extends Resource
             Sight::make('measure_id', 'Ўлчов бирлиги')->render(function ($model) {
                 return $model->measure->name;
             }),
-            Sight::make('box', 'Қадоқдаги сони'),
-            Sight::make('min', 'Омбордаги енг кам миқдори'),
-            Sight::make('real_price', 'Тан нархи'),
-            Sight::make('more_price', 'Улгуржи нарх'),
             Sight::make('one_price', 'Чакана нарх'),
             Sight::make('discount_price', 'Чегирма нарх'),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
@@ -126,12 +114,8 @@ class Product extends Resource
         return [
             'name' => ['required'],
             'measure_id' => ['required'],
-            'box' => ['required'],
-            'min' => ['required'],
             'one_price' => ['required'],
-            'more_price' => ['required'],
             'discount_price' => ['required'],
-            'real_price' => ['required']
         ];
     }
 
@@ -140,10 +124,6 @@ class Product extends Resource
         return [
             'name.required' => 'Номи киритилиши шарт!',
             'measure_id.required' => 'Ўлчов бирлиги',
-            'box.required' => 'Қадоқдаги сони киритилиши шарт!',
-            'min.required' => 'Омбордаги енг кам миқдори киритилиши шарт!',
-            'real_price.required' => 'Тан нархи киритилиши шарт!',
-            'more_price.required' => 'Улгуржи нарх киритилиши шарт!',
             'discount_price.required' => 'Чегирма нарх киритилиши шарт!',
             'one_price.required' => 'Чакана нарх киритилиши шарт!',
         ];
@@ -232,7 +212,7 @@ class Product extends Resource
 
     public static function editBreadcrumbsMessage(): string
     {
-        return 'Махсулотни o`zgartirish';
+        return 'Махсулотни ўзгартириш';
     }
 
     public static function emptyResourceForAction(): string
@@ -242,31 +222,23 @@ class Product extends Resource
 
     public function onSave(ResourceRequest $request, Model $model)
     {
-        if ($request->box == '0') {
-            Alert::error('Қадоқдаги миқдори 0 дан катта бўлиши керак!');
-        } else {
-            $model->forceFill($request->all())->save();
-            foreach (Branch::all() as $branch) {
-                Cache::forget('stock_' . $branch->id);
-            }
-            Cache::forget('products');
-            Cache::rememberForever('products', function () {
-                return \App\Models\Product::query()->pluck('name', 'id');
-            });
+        $model->forceFill($request->all())->save();
+        foreach (Branch::all() as $branch) {
+            Cache::forget('stock_' . $branch->id);
         }
+        Cache::forget('products');
+        Cache::rememberForever('products', function () {
+            return \App\Models\Product::query()->pluck('name', 'id');
+        });
     }
 
     public function onDelete(Model $model)
     {
-        if($model->stock()->count())
+        if($model->sales()->count())
         {
-            Alert::error('Бу махсулотдан омборхонада мавжуд, олдин омборхона махсулотини ўчириш керак!');
-        }elseif($model->sales()->count() || $model->purchases()->count())
-        {
-            Alert::error('Сотилган ва сотиб олинган махсулотлар мавжудлиги учун бу махсулотни ўчира олмайсиз!');
+            Alert::error('Сотилган махсулотлар мавжудлиги учун бу махсулотни ўчира олмайсиз!');
         }else {
             $model->cards()->delete();
-            $model->baskets()->delete();
             $model->delete();
             Cache::forget('products');
             Cache::rememberForever('products', function () {
