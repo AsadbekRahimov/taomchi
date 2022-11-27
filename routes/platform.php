@@ -96,24 +96,6 @@ Route::screen('roles', RoleListScreen::class)
             ->push(__('Roles'), route('platform.systems.roles'));
     });
 
-// Ombor maxsulotlari
-Route::screen('stock/list', \App\Orchid\Screens\Stock\StockListScreen::class)
-    ->name('platform.stock_list')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Захира махсулотлар');
-    });
-
-// Omborga maxsulotlarni kiritish
-Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScreen::class)
-    ->name('platform.add_products')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.stock_list')
-            ->push('Махсулот қўшиш');
-    });
-
 // Мижозлар
 Route::screen('stock/customers', \App\Orchid\Screens\Sell\CustomerListScreen::class)
     ->name('platform.customers')

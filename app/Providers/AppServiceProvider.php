@@ -3,9 +3,7 @@
 namespace App\Providers;
 
 use App\Models\Sale;
-use App\Models\Stock;
 use App\Observers\SaleObserver;
-use App\Observers\StockObserver;
 use Illuminate\Support\ServiceProvider;
 
 class AppServiceProvider extends ServiceProvider
@@ -28,6 +26,5 @@ class AppServiceProvider extends ServiceProvider
     public function boot()
     {
         Sale::observe(SaleObserver::class);
-        Stock::observe(StockObserver::class);
     }
 }

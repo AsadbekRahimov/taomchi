@@ -28,12 +28,6 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            Menu::make('Захира махсулотлар')
-                ->icon('database')
-                ->route('platform.stock_list')
-                ->permission('platform.stock.list')
-                ->title('Омбор'),
-
             Menu::make('Сотиш')
                 ->icon('handbag')
                 ->list([
@@ -102,8 +96,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.users', 'Фойдаланувчилар'),
 
             ItemPermission::group('Омбор (Филиал фойдаланувчилари учун)')
-                ->addPermission('platform.stock.list', 'Захира махсулотлар')
-                ->addPermission('platform.stock.add_product', 'Захира махсулотни омборга қўшиш')
                 ->addPermission('platform.stock.sell', 'Сотиш')
                 ->addPermission('platform.stock.sell_parties', 'Сотилган партиялар')
                 ->addPermission('platform.stock.sales', 'Сотилган махсулотлар')
