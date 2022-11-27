@@ -3,7 +3,7 @@
 @else
     <div class="text-center user-select-none">
         <p class="small m-0">
-            "E-do'kon" - WMS<br>
+            Taomchi<br>
             <a href="https://t.me/Asadbek_Rahimov" target="_blank" rel="noopener">
                 Developed by Asadbek Rahimov
             </a>

@@ -1,7 +1,7 @@
 @push('head')
     <meta name="robots" content="noindex" />
     <link
-          href="{{ asset('/vendor/orchid/icon/2.png') }}"
+          href="{{ asset('/vendor/orchid/icon/ta1.png') }}"
           sizes="any"
           type="image/svg+xml"
           id="favicon"
@@ -13,5 +13,5 @@
 @endpush
 
 <div class="h2 fw-light d-flex align-items-center">
-        <img src="{{ asset('/vendor/orchid/icon/logo.png') }}" alt="Saxovat ta'lim o`quv markazi" style="width: 175px; height: auto">
+        <img src="{{ asset('/vendor/orchid/icon/ta1.png') }}" alt="Taomchi" style="width: 200px; height: auto">
 </div>
