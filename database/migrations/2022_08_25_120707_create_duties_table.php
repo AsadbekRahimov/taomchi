@@ -16,7 +16,6 @@ return new class extends Migration
         Schema::create('duties', function (Blueprint $table) {
             $table->id();
             $table->integer('customer_id')->nullable();
-            $table->integer('supplier_id')->nullable();
             $table->integer('duty');
             $table->integer('branch_id');
             $table->integer('party_id');

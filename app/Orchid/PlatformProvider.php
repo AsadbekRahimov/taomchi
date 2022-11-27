@@ -45,17 +45,6 @@ class PlatformProvider extends OrchidServiceProvider
                         ->route('platform.sales')->permission('platform.stock.sales'),
                 ]),
 
-            Menu::make('Олиш')
-                ->icon('basket-loaded')
-                ->list([
-                    Menu::make('Таминотчилар')->icon('organization')
-                        ->route('platform.suppliers')->permission('platform.stock.buy'),
-                    Menu::make('Олинган партиялар')->icon('call-in')
-                        ->route('platform.buy_parties')->permission('platform.stock.buy_parties'),
-                    Menu::make('Олинган махсулотлар')->icon('action-undo')
-                        ->route('platform.purchases')->permission('platform.stock.purchases'),
-                ]),
-
             Menu::make('Буюртмалар')
                 ->icon('history')
                 ->route('platform.orders')
@@ -76,11 +65,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->icon('book-open')
                 ->route('platform.customer_duties')
                 ->permission('platform.stock.customer_duties'),
-
-            Menu::make('Қарзлар')
-                ->icon('pie-chart')
-                ->route('platform.my_duties')
-                ->permission('platform.stock.my_duties'),
 
             Menu::make('Фойдаланувчилар')
                 ->icon('user')
@@ -121,16 +105,12 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.stock.list', 'Захира махсулотлар')
                 ->addPermission('platform.stock.add_product', 'Захира махсулотни омборга қўшиш')
                 ->addPermission('platform.stock.sell', 'Сотиш')
-                ->addPermission('platform.stock.buy', 'Сотиб олиш')
-                ->addPermission('platform.stock.buy_parties', 'Олинган партиялар')
                 ->addPermission('platform.stock.sell_parties', 'Сотилган партиялар')
-                ->addPermission('platform.stock.purchases', 'Олинган махсулотлар')
                 ->addPermission('platform.stock.sales', 'Сотилган махсулотлар')
                 ->addPermission('platform.stock.orders', 'Буюртмалар')
                 ->addPermission('platform.stock.payments', 'Тўловлар')
                 ->addPermission('platform.stock.expences', 'Чиқимлар')
                 ->addPermission('platform.stock.customer_duties', 'Қарздорлар')
-                ->addPermission('platform.stock.my_duties', 'Қарзлар')
         ];
     }
 }

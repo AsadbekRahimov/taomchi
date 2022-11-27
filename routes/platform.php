@@ -96,15 +96,6 @@ Route::screen('roles', RoleListScreen::class)
             ->push(__('Roles'), route('platform.systems.roles'));
     });
 
-// Example...
-/*Route::screen('example', ExampleScreen::class)
-    ->name('platform.example')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Example screen');
-    });*/
-
 // Ombor maxsulotlari
 Route::screen('stock/list', \App\Orchid\Screens\Stock\StockListScreen::class)
     ->name('platform.stock_list')
@@ -121,25 +112,6 @@ Route::screen('stock/add_products', \App\Orchid\Screens\Stock\StockAddProductScr
         return $trail
             ->parent('platform.stock_list')
             ->push('Махсулот қўшиш');
-    });
-
-
-// Таминотчилар
-Route::screen('stock/suppliers', \App\Orchid\Screens\Buy\SupplierListScreen::class)
-    ->name('platform.suppliers')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Таминотчилар');
-    });
-
-// Omborga maxsulotlarni sotib olish
-Route::screen('stock/buy/{supplier}', \App\Orchid\Screens\Buy\MainBuyScreen::class)
-    ->name('platform.buy_products')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Махсулот сотиб олиш');
     });
 
 // Мижозлар
@@ -160,14 +132,6 @@ Route::screen('stock/sell/{customer}', \App\Orchid\Screens\Sell\MainSellScreen::
             ->push('Махсулот сотиш');
     });
 
-// Sotib olingan partiyalar
-Route::screen('buy/parties', \App\Orchid\Screens\Buy\PurchasesPartyScreen::class)
-    ->name('platform.buy_parties')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Сотиб олинган партиялар');
-    });
 
 // Sotilgan  partiyalar
 Route::screen('sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::class)
@@ -176,15 +140,6 @@ Route::screen('sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::class)
         return $trail
             ->parent('platform.index')
             ->push('Сотилган партиялар');
-    });
-
-// Sotib olingan maxsulotlar
-Route::screen('purchases', \App\Orchid\Screens\Buy\PurchasesScreen::class)
-    ->name('platform.purchases')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Сотиб олинган махсулотлар');
     });
 
 // Sotilgan  maxsulotlar
@@ -232,15 +187,6 @@ Route::screen('customer_duties', \App\Orchid\Screens\Duties\CustomerDutiesListSc
             ->push('Қарздорлар');
     });
 
-// Qarzlarim
-Route::screen('my_duties', \App\Orchid\Screens\Duties\MyDutiesListScreen::class)
-    ->name('platform.my_duties')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Қарзларим');
-    });
-
 // Mijoz haqida malumot
 Route::screen('/customer/{customer}', \App\Orchid\Screens\Customer\CustomerInfoScreen::class)
     ->name('platform.customer_info')
@@ -248,15 +194,6 @@ Route::screen('/customer/{customer}', \App\Orchid\Screens\Customer\CustomerInfoS
         return $trail
             ->parent('platform.index')
             ->push('Мижоз');
-    });
-
-// Taminotchi haqida malumot
-Route::screen('/supplier/{supplier}', \App\Orchid\Screens\Supplier\SupplierInfoScreen::class)
-    ->name('platform.supplier_info')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Таминотчи');
     });
 //Example screen routes
 //Route::screen('example-fields', ExampleFieldsScreen::class)->name('platform.example.fields');

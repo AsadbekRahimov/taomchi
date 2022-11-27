@@ -15,7 +15,6 @@ class Duty extends Model
 
     protected $fillable = [
        'customer_id',
-       'supplier_id',
        'duty',
        'branch_id',
        'party_id',
@@ -24,17 +23,11 @@ class Duty extends Model
 
     protected $allowedFilters = [
         'customer_id',
-        'supplier_id'
     ];
 
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
-    }
-
-    public function supplier()
-    {
-        return $this->belongsTo(Supplier::class, 'supplier_id', 'id');
     }
 
     public function branch()
@@ -47,10 +40,6 @@ class Duty extends Model
         return $this->belongsTo(SalesParty::class, 'party_id', 'id');
     }
 
-    public function purchases()
-    {
-        return $this->belongsTo(PurchaseParty::class, 'party_id', 'id');
-    }
 
     public static function paymentDuty($party_id, Order $order, $price)
     {
@@ -71,16 +60,6 @@ class Duty extends Model
             'branch_id' => $order->branch_id,
             'party_id' => $party_id,
             'for_today' => 1,
-        ]);
-    }
-
-    public static function purchaseDuty($supplier_id, $party_id, $duty, $branch_id)
-    {
-        return self::query()->create([
-            'supplier_id' => $supplier_id,
-            'duty' => $duty,
-            'branch_id' => $branch_id,
-            'party_id' => $party_id,
         ]);
     }
 

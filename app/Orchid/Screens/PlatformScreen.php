@@ -74,9 +74,6 @@ class PlatformScreen extends Screen
                     'customers' => (!Cache::has('customers')) ? Cache::rememberForever('customers', function () {
                         return \App\Models\Customer::query()->pluck('name', 'id');
                     })->count() : Cache::get('customers')->count(),
-                    'suppliers' => (!Cache::has('suppliers')) ? Cache::rememberForever('suppliers', function () {
-                        return \App\Models\Supplier::query()->pluck('name', 'id');
-                    })->count() : Cache::get('suppliers')->count(),
                 ],
                 'day' => [
                     'sell_price' => number_format($this->sell_price),
@@ -149,7 +146,6 @@ class PlatformScreen extends Screen
             Layout::metrics([
                 'Махсулотлар' => 'statistic.all.products',
                 'Мижозлар' => 'statistic.all.customers',
-                'Таминотчилар' => 'statistic.all.suppliers',
             ]),
             Layout::metrics([
                 'Сотилган нарх' => 'statistic.day.sell_price',

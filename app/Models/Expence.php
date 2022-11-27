@@ -26,21 +26,6 @@ class Expence extends Model
         return $this->belongsTo(Branch::class, 'branch_id', 'id');
     }
 
-    public function party()
-    {
-        return $this->belongsTo(PurchaseParty::class, 'party_id', 'id');
-    }
-
-
-    public static function purchaseExpence($id, $total_price, $branch_id)
-    {
-        return self::query()->create([
-            'price' => $total_price,
-            'party_id' => $id,
-            'branch_id' => $branch_id,
-        ]);
-    }
-
     public static function otherExpence($price, $description)
     {
         return self::query()->create([
