@@ -27,12 +27,10 @@ class AddProductModal extends Rows
     {
         return [
             Group::make([
-                CheckBox::make('box')->title('Қадоқ')->sendTrueOrFalse()->value(true),
                 Input::make('quantity')->title('Миқдори')->type('number')->required(),
                 Select::make('price')
                     ->options([
                         'one' => 'Чакана нарх',
-                        'more'   => 'Улгуржи нарх',
                         'discount' => 'Чегирма нарх',
                     ])
                     ->title('Нарх'),

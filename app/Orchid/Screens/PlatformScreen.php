@@ -9,6 +9,7 @@ use App\Models\Expence;
 use App\Models\Payment;
 use App\Models\Place;
 use App\Models\Sale;
+use App\Models\SalesParty;
 use App\Orchid\Layouts\Charts\CourierChart;
 use App\Orchid\Layouts\Charts\DutyChart;
 use App\Orchid\Layouts\Charts\PaymentChart;
@@ -38,15 +39,14 @@ class PlatformScreen extends Screen
      * @return array
      */
     public $sell_price;
-    public $real_price;
+    public $discounts;
     public $expenses;
-    public $day_profit;
 
     public function query(): iterable
     {
         $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get());
         $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->sum('price');
-        $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
+        $this->discounts = (int)SalesParty::query()->whereDate('updated_at', Carbon::today())->sum('discount');
 
         if (request()->has('date')) {
             $date = \request()->get('date');
@@ -78,6 +78,7 @@ class PlatformScreen extends Screen
                     'payments' => number_format((int)Payment::query()->whereDate('updated_at', Carbon::today())->sum('price')),
                     'duties' => number_format((int)Duty::query()->whereDate('updated_at', Carbon::today())->whereNotNull('customer_id')->sum('duty')),
                     'expenses' => number_format($this->expenses),
+                    'discounts' => number_format($this->discounts),
                 ],
             ],
             'payments' => [ChartService::paymentChart($begin, $end)],
@@ -115,8 +116,6 @@ class PlatformScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make( 'Бугунги фойда: ' . number_format($this->day_profit))->type(Color::SUCCESS())->canSee($this->day_profit > 0),
-            Link::make( 'Бугунги зарар: ' . number_format(-1 *$this->day_profit) . ' сўм')->type(Color::DANGER())->canSee($this->day_profit < 0),
             ModalToggle::make('Чиқим')
                 ->icon('calculator')
                 ->modal('addExpenceModal')
@@ -142,7 +141,8 @@ class PlatformScreen extends Screen
                 'Мижозлар' => 'statistic.all.customers',
             ]),
             Layout::metrics([
-                'Сотилган нарх' => 'statistic.day.sell_price',
+                'Сотилган махсулотлар нархи' => 'statistic.day.sell_price',
+                'Чегирмалар' => 'statistic.day.discounts',
                 'Тўловлар' => 'statistic.day.payments',
             ])->title('Бугунги савдо'),
             Layout::metrics([

@@ -4,16 +4,12 @@ namespace App\Orchid\Screens\Sell;
 
 use App\Models\Card;
 use App\Models\Order;
-use App\Models\Stock;
 use App\Models\Customer;
-use App\Orchid\Layouts\FilterSelections\StockSelection;
 use App\Orchid\Layouts\Sell\AddProductModal;
 use App\Orchid\Layouts\Sell\CardList;
-use App\Orchid\Layouts\Stock\ColorIndicator;
-use App\Services\HelperService;
+use App\Models\Product;
 use App\Services\SendMessageService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
@@ -36,12 +32,11 @@ class MainSellScreen extends Screen
     public function query(Customer $customer): iterable
     {
         $this->customer = $customer;
-        $branch_id = Auth::user()->branch_id ?: 0;
         $this->cards = Card::query()->where('customer_id', $customer->id)->orderByDesc('id')->get();
         $this->ordered = $this->cards->count() ? $this->cards->first()->ordered : 0;
 
         return [
-            'products' => Stock::query()->filters(StockSelection::class)->with(['product'])->where('branch_id', $branch_id)->orderByDesc('id')->get(),
+            'products' => Product::query()->orderByDesc('id')->get(),
             'cards' => $this->cards,
         ];
     }
@@ -61,11 +56,6 @@ class MainSellScreen extends Screen
         } else {
             return 'Сотиш | ' . $this->customer->name;
         }
-    }
-
-    public function description(): ?string
-    {
-        return 'Омборга махсулотларни қабул қилиш';
     }
 
     public function permission(): ?iterable
@@ -109,32 +99,22 @@ class MainSellScreen extends Screen
     public function layout(): iterable
     {
         return [
-            ColorIndicator::class,
-            StockSelection::class,
             Layout::table('products', [
-                TD::make('product_id', 'Махсулот')->render(function (Stock $stock) {
-                    return Link::make($stock->product->name)->href('/admin/crud/view/products/' . $stock->product_id);
+                TD::make('id', 'Махсулот')->render(function (Product $product) {
+                    return Link::make($product->name)->href('/admin/crud/view/products/' . $product->id);
                 })->cantHide(),
-                TD::make('box', 'Қадоқдаги сони')->render(function (Stock $stock) {
-                    return $stock->product->box;
-                })->cantHide(),
-                TD::make('quantity', 'Мавжуд миқдори')->render(function (Stock $stock) {
-                    return Link::make(HelperService::getStockQuantity($stock))
-                        ->type(HelperService::getStockColor($stock));
-                })->cantHide(),
-                TD::make('add', 'Қўшиш')->render(function (Stock $stock) {
+                TD::make('add', 'Қўшиш')->render(function (Product $product) {
                     return ModalToggle::make('')
                         ->icon('plus')
                         ->modal('addProductModal')
                         ->method('addProduct')
-                        ->modalTitle($stock->product->name . ' | Нарх: ' . number_format($stock->product->one_price) . ' - ' . number_format($stock->product->more_price) . ' - ' . number_format($stock->product->discount_price)  . ' сўм')
+                        ->modalTitle($product->name . ' | Нарх: ' . number_format($product->one_price) . ' - ' . number_format($product->discount_price)  . ' сўм')
                         ->parameters([
-                            'id' => $stock->product_id,
+                            'id' => $product->id,
                             'customer_id' => $this->customer->id,
-                            'box_count' => $stock->product->box,
                         ]);
                 })->canSee(!$this->ordered)->cantHide(),
-            ])->title('Омборхона махсулотлари'),
+            ])->title('Махсулотлар'),
             Layout::modal('addProductModal', AddProductModal::class)
                 ->size(Modal::SIZE_LG)->applyButton('Сақлаш')->closeButton('Бекор қилиш'),
             Layout::modal('cardListModal', CardList::class)

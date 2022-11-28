@@ -30,11 +30,6 @@ class CustomerListScreen extends Screen
         return 'Мижозлар рўйҳати';
     }
 
-    public function description(): ?string
-    {
-        return 'Омборхона мижозлари рўйҳати';
-    }
-
     public function permission(): ?iterable
     {
         return [

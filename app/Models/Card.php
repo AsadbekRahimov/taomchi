@@ -33,7 +33,7 @@ class Card extends Model
         return self::query()->create([
             'customer_id' => $request->customer_id,
             'product_id' => $request->id,
-            'quantity' => $request->box === '1' ? $request->quantity * $request->box_count : $request->quantity,
+            'quantity' => $request->quantity,
             'price' => $product->{ $request->price . '_price' },
         ]);
     }

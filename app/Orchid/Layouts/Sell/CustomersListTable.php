@@ -29,16 +29,19 @@ class CustomersListTable extends Table
     protected function columns(): iterable
     {
         return [
-            TD::make('place_id', 'Худуд')->render(function ($model) {
-                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
-            })->filter(Select::make('place_id')->options(Cache::get('places'))->empty('', ''))->cantHide(),
             TD::make('id', 'Исм')->render(function ($model) {
                 return Link::make($model->name)->route('platform.sell_products', ['customer' => $model->id]);
             })->filter(Select::make('id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
-            TD::make('phone', 'Телефон рақам')->render(function ($model) {
+            TD::make('place_id', 'Худуд')->render(function ($model) {
+                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
+            })->filter(Select::make('place_id')->options(Cache::get('places'))->empty('', ''))->cantHide(),
+            TD::make('address', 'Манзили'),
+            TD::make('phone', 'Телефон рақам 1')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));
             })->cantHide(),
-            TD::make('address', 'Манзили'),
+            TD::make('phone', 'Телефон рақам 2')->render(function ($model) {
+                return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->telephone));
+            })->cantHide(),
         ];
     }
 }
