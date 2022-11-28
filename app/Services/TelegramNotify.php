@@ -7,14 +7,13 @@ use Carbon\Carbon;
 class TelegramNotify
 {
     public const CHAT_TYPE = [
-        'all' => '1678836162',
-        'order' => '1587673814',
-        'sale' => '1784671982',
+        'all' => '1868717701',
+        'order' => '1821427006',
     ];
 
-    public static function sendMessage($text, $chat_type, $caption = null)
+    public static function sendMessage($text, $caption = null)
     {
-        $chat_id = self::CHAT_TYPE[$chat_type];
+        $chat_id = self::CHAT_TYPE['order'];
         $url = "https://api.telegram.org/bot5092164055:AAERH5aY3eVnfZucYrK-z63af-2MI5o2IQ8/sendMessage?chat_id=-100" . $chat_id;
 
         $message = $text . "\r\n";
