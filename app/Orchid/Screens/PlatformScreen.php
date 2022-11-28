@@ -42,50 +42,67 @@ class PlatformScreen extends Screen
     public $discounts;
     public $expenses;
 
+    public $superadmin;
+    public $call_center;
+    public $courier;
+
     public function query(): iterable
     {
-        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get());
-        $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->sum('price');
-        $this->discounts = (int)SalesParty::query()->whereDate('updated_at', Carbon::today())->sum('discount');
+        $this->superadmin = Auth::user()->inRole('super_admin') ? 1 : 0;
+        $this->call_center = Auth::user()->inRole('call_center') ? 1 : 0;
+        $this->courier = Auth::user()->inRole('courier') ? 1 : 0;
 
-        if (request()->has('date')) {
-            $date = \request()->get('date');
-            $begin = $date['start'] . ' 00:00:00';
-            $end = $date['end'] . ' 23:59:59';
+        if ($this->superadmin)
+        {
+            $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get());
+            $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->sum('price');
+            $this->discounts = (int)SalesParty::query()->whereDate('updated_at', Carbon::today())->sum('discount');
+
+            if (request()->has('date')) {
+                $date = \request()->get('date');
+                $begin = $date['start'] . ' 00:00:00';
+                $end = $date['end'] . ' 23:59:59';
+            } else {
+                $begin = date('Y-m-d') . ' 00:00:00';
+                $end = date('Y-m-d') . ' 23:59:59';
+            }
+
+            if (!Cache::has('places')) {
+                Cache::rememberForever('places', function () {
+                    return Place::query()->pluck('name', 'id');
+                });
+            }
+
+            return [
+                'statistic' => [
+                    'all' => [
+                        'products' => (!Cache::has('products')) ? Cache::rememberForever('products', function () {
+                            return \App\Models\Product::query()->pluck('name', 'id');
+                        })->count() : Cache::get('products')->count(),
+                        'customers' => (!Cache::has('customers')) ? Cache::rememberForever('customers', function () {
+                            return \App\Models\Customer::query()->pluck('name', 'id');
+                        })->count() : Cache::get('customers')->count(),
+                    ],
+                    'day' => [
+                        'sell_price' => number_format($this->sell_price),
+                        'payments' => number_format((int)Payment::query()->whereDate('updated_at', Carbon::today())->sum('price')),
+                        'duties' => number_format((int)Duty::query()->whereDate('updated_at', Carbon::today())->whereNotNull('customer_id')->sum('duty')),
+                        'expenses' => number_format($this->expenses),
+                        'discounts' => number_format($this->discounts),
+                    ],
+                ],
+                'payments' => [ChartService::paymentChart($begin, $end)],
+                'duties' => [ChartService::dutiesChart()],
+                'sell_products' => [ChartService::SellChart($begin, $end)],
+                'courier' => [ChartService::CourierChart($begin, $end)],
+            ];
+        } elseif ($this->call_center) {
+            return [];
+        } elseif ($this->courier) {
+            return [];
         } else {
-            $begin = date('Y-m-d') . ' 00:00:00';
-            $end = date('Y-m-d') . ' 23:59:59';
+            return [];
         }
-
-        if (!Cache::has('places')) {
-            Cache::rememberForever('places', function () {
-                return Place::query()->pluck('name', 'id');
-            });
-        }
-
-        return [
-            'statistic' => [
-                'all' => [
-                    'products' => (!Cache::has('products')) ? Cache::rememberForever('products', function () {
-                        return \App\Models\Product::query()->pluck('name', 'id');
-                    })->count() : Cache::get('products')->count(),
-                    'customers' => (!Cache::has('customers')) ? Cache::rememberForever('customers', function () {
-                        return \App\Models\Customer::query()->pluck('name', 'id');
-                    })->count() : Cache::get('customers')->count(),
-                ],
-                'day' => [
-                    'sell_price' => number_format($this->sell_price),
-                    'payments' => number_format((int)Payment::query()->whereDate('updated_at', Carbon::today())->sum('price')),
-                    'duties' => number_format((int)Duty::query()->whereDate('updated_at', Carbon::today())->whereNotNull('customer_id')->sum('duty')),
-                    'expenses' => number_format($this->expenses),
-                    'discounts' => number_format($this->discounts),
-                ],
-            ],
-            'payments' => [ChartService::paymentChart($begin, $end)],
-            'duties' => [ChartService::dutiesChart()],
-            'sell_products' => [ChartService::SellChart($begin, $end)],
-            'courier' => [ChartService::CourierChart($begin, $end)],
-        ];
     }
 
     /**
@@ -105,7 +122,7 @@ class PlatformScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Елетрон дўкон автоматлаштириш тизими';
+        return  ' Злектрон савдони автоматлаштириш тизими';
     }
 
     /**
@@ -135,30 +152,38 @@ class PlatformScreen extends Screen
      */
     public function layout(): iterable
     {
-        return [
-            Layout::metrics([
-                'Махсулотлар' => 'statistic.all.products',
-                'Мижозлар' => 'statistic.all.customers',
-            ]),
-            Layout::metrics([
-                'Сотилган махсулотлар нархи' => 'statistic.day.sell_price',
-                'Чегирмалар' => 'statistic.day.discounts',
-                'Тўловлар' => 'statistic.day.payments',
-            ])->title('Бугунги савдо'),
-            Layout::metrics([
-                'Чиқимлар' => 'statistic.day.expenses',
-                'Қарздорлик' => 'statistic.day.duties',
-            ]),
-            StatisticSelection::class,
-            Layout::tabs([
-                'Тўлов' => PaymentChart::class,
-                'Қарздорлик' => DutyChart::class,
-                'Сотилган махсулот' => SellChart::class,
-                'Курерлар' => CourierChart::class,
-            ]),
-            Layout::modal('addExpenceModal', [ExpenceModal::class])
-                ->applyButton('Киритиш')->closeButton('Ёпиш'),
-        ];
+        if ($this->superadmin) {
+            return [
+                Layout::metrics([
+                    'Махсулотлар' => 'statistic.all.products',
+                    'Мижозлар' => 'statistic.all.customers',
+                ]),
+                Layout::metrics([
+                    'Сотилган махсулотлар нархи' => 'statistic.day.sell_price',
+                    'Чегирмалар' => 'statistic.day.discounts',
+                    'Тўловлар' => 'statistic.day.payments',
+                ])->title('Бугунги савдо'),
+                Layout::metrics([
+                    'Чиқимлар' => 'statistic.day.expenses',
+                    'Қарздорлик' => 'statistic.day.duties',
+                ]),
+                StatisticSelection::class,
+                Layout::tabs([
+                    'Тўлов' => PaymentChart::class,
+                    'Қарздорлик' => DutyChart::class,
+                    'Сотилган махсулот' => SellChart::class,
+                    'Курерлар' => CourierChart::class,
+                ]),
+                Layout::modal('addExpenceModal', [ExpenceModal::class])
+                    ->applyButton('Киритиш')->closeButton('Ёпиш'),
+            ];
+        }elseif($this->call_center) {
+            return [];
+        }elseif($this->courier) {
+            return [];
+        }else {
+            return [];
+        }
     }
 
     public function addExpence(Request $request)
