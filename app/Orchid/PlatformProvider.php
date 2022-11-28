@@ -28,7 +28,7 @@ class PlatformProvider extends OrchidServiceProvider
     public function registerMainMenu(): array
     {
         return [
-            Menu::make('Сотиш')
+            Menu::make('Сотув')
                 ->icon('handbag')
                 ->list([
                     Menu::make('Мижозлар')->icon('people')
@@ -37,7 +37,7 @@ class PlatformProvider extends OrchidServiceProvider
                         ->route('platform.sell_parties')->permission('platform.stock.sell_parties'),
                     Menu::make('Сотилган махсулотлар')->icon('action-redo')
                         ->route('platform.sales')->permission('platform.stock.sales'),
-                ]),
+                ])->permission('platform.stock.sell'),
 
             Menu::make('Буюртмалар')
                 ->icon('history')

@@ -3,6 +3,7 @@
 namespace App\Orchid\Layouts\Order;
 
 use App\Services\HelperService;
+use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
@@ -29,6 +30,10 @@ class OrderListTable extends Table
      */
     protected function columns(): iterable
     {
+        $call_center = Auth::user()->inRole('call_center') ? 1 : 0;
+        $courier = Auth::user()->inRole('courier') ? 1 : 0;
+        $superadmin = Auth::user()->inRole('super_admin') ? 1 : 0;
+
         return [
             TD::make('id', 'ID'),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
@@ -46,17 +51,18 @@ class OrderListTable extends Table
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
-            TD::make('action', 'Aмаллар')->render(function ($model) {
+            TD::make('action', 'Aмаллар')->render(function ($model) use ($courier, $call_center, $superadmin) {
                 return DropDown::make('')->icon('list')->list([
                     Link::make('Тўлов чеки')->icon('printer')
-                        ->route('printCheck', ['id' => $model->id])->target('blank'),
+                        ->route('printCheck', ['id' => $model->id])->target('blank')->canSee($call_center),
                     Button::make('Қарзга бериш')
                         ->method('duty')
                         ->icon('clock')
                         ->parameters([
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
-                        ])->confirm($model->customer->name . ' - Қарз суммаси: ' . number_format($model->cardsSum() - $model->discount)),
+                        ])->confirm($model->customer->name . ' - Қарз суммаси: ' . number_format($model->cardsSum() - $model->discount))
+                        ->canSee($courier),
                     ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
@@ -64,7 +70,8 @@ class OrderListTable extends Table
                         ->parameters([
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
-                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount)),
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount))
+                        ->canSee($courier),
                     ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
@@ -72,20 +79,22 @@ class OrderListTable extends Table
                         ->parameters([
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
-                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount)),
-                    ModalToggle::make('Chegirma kiritish')
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount))
+                        ->canSee($courier),
+                    ModalToggle::make('Чегирма киритиш')
                         ->method('addDiscount')
                         ->modal('discountModal')
                         ->icon('tag')
                         ->parameters([
                             'id' => $model->id,
-                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount)),
+                        ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount))
+                        ->canSee($call_center),
                     Button::make('Буюртмани бекор қилиш')
                         ->method('deleteCard')
                         ->icon('trash')
                         ->parameters([
                             'customer_id' => $model->customer_id,
-                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?')
+                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?')->canSee($superadmin),
                 ]);
             })->cantHide(),
         ];

@@ -5,20 +5,17 @@ declare(strict_types=1);
 namespace App\Orchid\Screens;
 
 use App\Models\Card;
-use App\Models\Customer;
 use App\Models\Duty;
 use App\Models\Expence;
 use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Place;
-use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Orchid\Layouts\Charts\CourierChart;
 use App\Orchid\Layouts\Charts\DutyChart;
 use App\Orchid\Layouts\Charts\PaymentChart;
 use App\Orchid\Layouts\Charts\SellChart;
-use App\Orchid\Layouts\CustomerListener;
 use App\Orchid\Layouts\FilterSelections\StatisticSelection;
 use App\Orchid\Layouts\Main\ExpenceModal;
 use App\Services\ChartService;
@@ -228,7 +225,6 @@ class PlatformScreen extends Screen
 
     public function saveOrder(Request $request)
     {
-        //dd($request->all());
         if (!$request->has('products')) {
             Alert::error('Камида 1 та махсулот танланиши керак!');
         } else {
