@@ -32,7 +32,7 @@ class OrderListTable extends Table
         return [
             TD::make('id', 'ID'),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
-                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
+                return Link::make($model->customer->all_name)->route('platform.customer_info', ['customer' => $model->customer_id]);
             })->cantHide(),
             TD::make('user_id', 'Сотувчи')->render(function ($model) {
                 return $model->user->name;
@@ -87,7 +87,7 @@ class OrderListTable extends Table
                             'customer_id' => $model->customer_id,
                         ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?')
                 ]);
-            })
+            })->cantHide(),
         ];
     }
 }

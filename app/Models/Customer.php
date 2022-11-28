@@ -56,4 +56,9 @@ class Customer extends Model
     {
         return $this->belongsTo(Place::class, 'place_id', 'id');
     }
+
+    public function getAllNameAttribute($value)
+    {
+        return $this->name . ' | ' . $this->place->name . ' ' . $this->address;
+    }
 }

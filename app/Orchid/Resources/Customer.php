@@ -234,7 +234,7 @@ class Customer extends Resource
         $model->forceFill($request->all())->save();
         Cache::forget('customers');
         Cache::rememberForever('customers', function () {
-            return \App\Models\Customer::query()->pluck('name', 'id');
+            return \App\Models\Customer::query()->get()->pluck('all_name', 'id');
         });
     }
 
@@ -255,7 +255,7 @@ class Customer extends Resource
             $model->delete();
             Cache::forget('customers');
             Cache::rememberForever('customers', function () {
-                return \App\Models\Customer::query()->pluck('name', 'id');
+                return \App\Models\Customer::query()->get()->pluck('all_name', 'id');
             });
         }
     }

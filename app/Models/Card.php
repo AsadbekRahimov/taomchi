@@ -46,4 +46,21 @@ class Card extends Model
 
         return self::query()->where('customer_id', $customer_id)->get();
     }
+
+    public static function createOrderCards(\Illuminate\Http\Request $request)
+    {
+        foreach ($request->products as $item)
+        {
+            $product = Product::query()->find((int)$item['id']);
+            self::query()->create([
+                'customer_id' => $request->customer_id,
+                'product_id' => $product->id,
+                'quantity' => (int)$item['count'],
+                'price' => $product->{ $item['price'] . '_price' },
+                'ordered' => 1,
+            ]);
+        }
+
+        return self::query()->where('customer_id', $request->customer_id)->get();
+    }
 }

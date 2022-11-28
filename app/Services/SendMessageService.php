@@ -24,7 +24,7 @@ class SendMessageService
             $message .= "\r\n" . 'Махсулотлар: '. "\r\n" . '—————————————————' . "\r\n\r\n";
             foreach ($cards as $card) {
                 $message .=  'Махсулот: ' . $card->product->name . "\r\n"
-                         . 'Микдори: ' . HelperService::getQuantity($card->quantity, $card->product->box) . "\r\n"
+                         . 'Микдори: ' . HelperService::getQuantity($card->quantity) . "\r\n"
                          . 'Суммаси: ' . number_format($card->price) . ' | ' . number_format($card->price * $card->quantity) . "\r\n\r\n";
             }
             $message .= '—————————————————' . "\r\n" . 'Умумий суммаси: ' . number_format($order->cardsSum()) . "\r\n"
@@ -32,33 +32,6 @@ class SendMessageService
         }
 
         TelegramNotify::sendMessage($message, 'sale');
-
-    }
-
-    public static function sendPurchase(PurchaseParty $purchaseParty, $expence, $duty)
-    {
-        $profit = 0;
-        $user = Auth::user()->name;
-        $message = 'Сотувчи: #' . Str::slug($user, '_') . "\r\n"
-            . 'Таминотчи: #' . $purchaseParty->supplier->name . "\r\n";
-
-        $message .= "\r\n" . 'Махсулотлар: '. "\r\n" . '—————————————————' . "\r\n\r\n";
-        foreach ($purchaseParty->purchases as $purchases)
-        {
-            $product_profit = ($purchases->product->more_price - $purchases->price) * $purchases->quantity;
-            $profit += $product_profit;
-            $message .=  'Махсулот: ' . $purchases->product->name . "\r\n"
-                    . 'Микдори: ' . HelperService::getQuantity($purchases->quantity, $purchases->product->box) . "\r\n"
-                    . 'Суммаси: ' . number_format($purchases->price) . ' | ' . number_format($purchases->price * $purchases->quantity) . "\r\n"
-                    . 'Фойдаси: ' . number_format($product_profit) . "\r\n\r\n";
-        }
-        $message .= '—————————————————' . "\r\n" . 'Умумий суммаси: ' . number_format($purchaseParty->purchasesSum()) . "\r\n"
-                . 'Умумий фойдаси: ' . number_format($profit) . "\r\n"
-                . 'Туланди: ' . number_format($expence) . "\r\n"
-                . 'Карз булди: ' . number_format($duty) . "\r\n"
-                . 'Сана: ' . $purchaseParty->created_at->toDateTimeString();
-
-        TelegramNotify::sendMessage($message, 'order');
 
     }
 

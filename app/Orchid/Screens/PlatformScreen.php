@@ -4,28 +4,38 @@ declare(strict_types=1);
 
 namespace App\Orchid\Screens;
 
+use App\Models\Card;
+use App\Models\Customer;
 use App\Models\Duty;
 use App\Models\Expence;
+use App\Models\Order;
 use App\Models\Payment;
 use App\Models\Place;
+use App\Models\Product;
 use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Orchid\Layouts\Charts\CourierChart;
 use App\Orchid\Layouts\Charts\DutyChart;
 use App\Orchid\Layouts\Charts\PaymentChart;
 use App\Orchid\Layouts\Charts\SellChart;
+use App\Orchid\Layouts\CustomerListener;
 use App\Orchid\Layouts\FilterSelections\StatisticSelection;
 use App\Orchid\Layouts\Main\ExpenceModal;
 use App\Services\ChartService;
 use App\Services\HelperService;
 use App\Services\ReportService;
+use App\Services\SendMessageService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Input;
+use Orchid\Screen\Fields\Matrix;
+use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Screen;
+use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
@@ -176,7 +186,23 @@ class PlatformScreen extends Screen
                     ->applyButton('Киритиш')->closeButton('Ёпиш'),
             ];
         }elseif($this->call_center) {
-            return [];
+            return [
+                Layout::rows([
+                    Select::make('customer_id')->title('Мижоз')->options(Cache::get('customers')),
+                    Matrix::make('products')
+                        ->columns([
+                            'Махсулот' => 'id',
+                            'Сони' => 'count',
+                            'Нархи' => 'price'
+                        ])->fields([
+                            'id' => Select::make('id')->options(Cache::get('products'))->required(),
+                            'count' => Input::make('count')->type('number')->required(),
+                            'price' => Select::make('price')
+                                ->options(['one' => 'Чакана нарх', 'discount' => 'Чегирма нарх'])->required()
+                        ]),
+                    Button::make('Сақлаш')->method('saveOrder')->type(Color::INFO()),
+                ]),
+            ];
         }elseif($this->courier) {
             return [];
         }else {
@@ -198,5 +224,19 @@ class PlatformScreen extends Screen
         ];
 
         return ReportService::allReport($date, 'download');
+    }
+
+    public function saveOrder(Request $request)
+    {
+        //dd($request->all());
+        if (!$request->has('products')) {
+            Alert::error('Камида 1 та махсулот танланиши керак!');
+        } else {
+            $order = Order::createOrder($request->customer_id);
+            $cards = Card::createOrderCards($request);
+            SendMessageService::sendOrder($order, $cards);
+            Alert::success('Буюртма муаффақиятли яратилди');
+            return redirect()->route('platform.orders');
+        }
     }
 }
