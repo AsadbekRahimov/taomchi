@@ -3,7 +3,6 @@
 namespace App\Orchid\Screens\Payment;
 
 use App\Models\Payment;
-use App\Models\PurchaseParty;
 use App\Models\SalesParty;
 use App\Orchid\Layouts\Payment\PartyList;
 use App\Orchid\Layouts\Payment\PaymentListTable;

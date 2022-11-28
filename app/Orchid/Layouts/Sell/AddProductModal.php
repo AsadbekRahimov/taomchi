@@ -3,7 +3,6 @@
 namespace App\Orchid\Layouts\Sell;
 
 use Orchid\Screen\Field;
-use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;

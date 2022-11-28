@@ -4,14 +4,12 @@ namespace App\Orchid\Layouts\Duties;
 
 use App\Services\HelperService;
 use Illuminate\Support\Facades\Cache;
-use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
-use Orchid\Support\Color;
 
 class CustomerDutiesTable extends Table
 {

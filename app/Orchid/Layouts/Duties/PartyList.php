@@ -2,7 +2,6 @@
 
 namespace App\Orchid\Layouts\Duties;
 
-use App\Models\Product;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Group;

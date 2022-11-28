@@ -17,7 +17,7 @@ class OtherExpenceListTable extends Table
      *
      * @var string
      */
-    protected $target = 'other_expences';
+    protected $target = 'expences';
 
     /**
      * Get the table cells to be displayed.

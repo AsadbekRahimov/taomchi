@@ -3,8 +3,6 @@
 namespace App\Orchid\Screens\Expences;
 
 use App\Models\Expence;
-use App\Models\PurchaseParty;
-use App\Orchid\Layouts\Expences\ExpenceListTable;
 use App\Orchid\Layouts\Expences\OtherExpenceListTable;
 use App\Orchid\Layouts\Expences\PartyList;
 use App\Orchid\Layouts\Report\ByDateRangeModal;
@@ -27,11 +25,8 @@ class ExpenceListScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id?: 0;
         return [
-            'expences' => Expence::query()->with(['party.supplier'])
-                ->where('branch_id', $branch_id)->whereNull('description')
-                ->orderByDesc('id')->paginate(15),
-            'other_expences' => Expence::query()->with(['party.supplier'])
-                ->where('branch_id', $branch_id)->whereNull('party_id')
+            'expences' => Expence::query()
+                ->where('branch_id', $branch_id)
                 ->orderByDesc('id')->paginate(15),
         ];
     }
@@ -82,10 +77,7 @@ class ExpenceListScreen extends Screen
     public function layout(): iterable
     {
         return [
-            Layout::tabs([
-                'Таминотчиларга тўланган тўловлар' => ExpenceListTable::class,
-                'Бошқа чиқимлар' => OtherExpenceListTable::class,
-            ]),
+            OtherExpenceListTable::class,
             Layout::modal('asyncGetPartyModal', PartyList::class)
                 ->async('asyncGetParty')->size(Modal::SIZE_LG)
                 ->withoutApplyButton(true)->closeButton('Ёпиш'),

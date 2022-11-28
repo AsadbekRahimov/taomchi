@@ -4,7 +4,6 @@ namespace App\Orchid\Layouts\Report;
 
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\DateRange;
-use Orchid\Screen\Fields\DateTimer;
 use Orchid\Screen\Layouts\Rows;
 
 class ByDateRangeModal extends Rows
