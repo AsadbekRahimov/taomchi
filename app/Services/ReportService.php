@@ -40,7 +40,7 @@ class ReportService
             ]);
         }
 
-        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Sotuvchilar') : $result;
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Курерлар') : $result;
     }
 
     public static function sellReport(array $date, $for_sheet_collection = null)
@@ -64,33 +64,7 @@ class ReportService
             ]);
         }
 
-        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Sotilgan') : $result;
-    }
-
-    public static function buyReport(array $date, $for_sheet_collection = null)
-    {
-        $begin = $date['start'] . ' 00:00:00';
-        $end = $date['end'] . ' 23:59:59';
-
-        $suppliers = Cache::get('suppliers');
-        $products = Cache::get('products');
-
-        $purchases = DB::select("SELECT supplier_id, product_id, quantity, price, profit FROM purchases where created_at BETWEEN '" . $begin . "' AND '" .  $end . "'");
-
-        $result = collect();
-
-        foreach($purchases as $purchase)
-        {
-            $result->push([
-                'Таминотчи' => $suppliers[$purchase->supplier_id],
-                'Махсулот' => $products[$purchase->product_id],
-                'Микдори' => $purchase->quantity,
-                'Сотилган нарх' => $purchase->price,
-                'Умумий фойда' => $purchase->profit,
-            ]);
-        }
-
-        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Sotib-olingan') : $result;
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Сотилган') : $result;
     }
 
     public static function paymentReport(array $date, $for_sheet_collection = null)
@@ -113,7 +87,7 @@ class ReportService
             ]);
         }
 
-        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Tolovlar') : $result;
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Тўловлар') : $result;
     }
 
 
@@ -122,85 +96,54 @@ class ReportService
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
 
-        $suppliers = Cache::get('suppliers');
-
-        $expences = Expence::query()->with(['party'])->whereBetween('created_at', [$begin, $end])->get();
+        $expences = Expence::query()->whereBetween('created_at', [$begin, $end])->get();
 
 
-        $result['Boshqa'] = collect();
-        $result['Taminotchilarga'] = collect();
+        $result = collect();
 
         foreach($expences as $consumption)
         {
-            if (!$consumption->party_id) {
-                $result['Boshqa']->push([
-                    'Миқдори' => $consumption->price,
-                    'Таснифи' => $consumption->description,
-                ]);
-            } else {
-                $result['Taminotchilarga']->push([
-                    'Миқдори' => $consumption->price,
-                    'Таминотчи' => $suppliers[$consumption->party->supplier_id],
-                ]);
-            }
+            $result->push([
+                 'Миқдори' => $consumption->price,
+                 'Таснифи' => $consumption->description,
+            ]);
         }
 
-        $results = new SheetCollection($result);
-        return is_null($for_sheet_collection) ? self::generateExcel($results, $date, 'Chiqimlar') : $result;
+        return is_null($for_sheet_collection) ? self::generateExcel($result, $date, 'Чиқимлар') : $result;
     }
 
 
-    public static function dutiesReport($type, $for_sheet_collection = null)
+    public static function dutiesReport($for_sheet_collection = null)
     {
-        $suppliers = Cache::get('suppliers');
         $customers = Cache::get('customers');
 
         $result = collect();
-        $title = '';
-        if ($type == 'customer')
+        $duties = DB::select("SELECT customer_id, duty, created_at FROM duties where customer_id is not null");
+        foreach($duties as $duty)
         {
-            $duties = DB::select("SELECT customer_id, duty, created_at FROM duties where customer_id is not null");
-            $title = 'Qarzdorlar';
-            foreach($duties as $duty)
-            {
-                $result->push([
-                    'Мижоз' => $customers[$duty->customer_id],
-                    'Қарз' => $duty->duty,
-                    'Сана' => $duty->created_at,
-                ]);
-            }
-        } elseif ($type == 'supplier') {
-            $duties = DB::select("SELECT supplier_id, duty, created_at FROM duties where supplier_id is not null");
-            $title = 'Qarzlarim';
-            foreach($duties as $duty)
-            {
-                $result->push([
-                    'Таминотчи' => $suppliers[$duty->supplier_id],
-                    'Қарз' => $duty->duty,
-                    'Сана' => $duty->created_at,
-                ]);
-            }
+            $result->push([
+                'Мижоз' => $customers[$duty->customer_id],
+                'Қарз' => $duty->duty,
+                'Сана' => $duty->created_at,
+            ]);
         }
 
-        return is_null($for_sheet_collection) ? self::generateExcel($result, null, $title) : $result;
+        return is_null($for_sheet_collection) ? self::generateExcel($result, null, 'Қарздорлар') : $result;
     }
 
 
     public static function allReport($date, $type)
     {
         $results = new SheetCollection([
-            'Sotuvchilar' => self::courierReport($date, 'yes'),
-            'Sotilgan' => self::sellReport($date, 'yes'),
-            'Sotib-olingan' => self::buyReport($date, 'yes'),
-            'To\'lovlar' => self::paymentReport($date, 'yes'),
-            'Chiqimlar' => self::expenceReport($date, 'yes')['Boshqa'],
-            'Taminotchilarga to\'lovlar' => self::expenceReport($date, 'yes')['Taminotchilarga'],
-            'Qarzdorlar' => self::dutiesReport('customer', 'yes'),
-            'Qarzlarim' => self::dutiesReport('supplier', 'yes'),
+            'Курерлар' => self::courierReport($date, 'yes'),
+            'Сотилган' => self::sellReport($date, 'yes'),
+            'Тўловлар' => self::paymentReport($date, 'yes'),
+            'Чиқимлар' => self::expenceReport($date, 'yes'),
+            'Қарздорлар' => self::dutiesReport('yes'),
         ]);
 
         if ($type == 'download')
-            return self::generateExcel($results, $date, 'Kunlik_umumiy_xisobot');
+            return self::generateExcel($results, $date, 'Умумий_хисобот');
         elseif ($type == 'store')
             return self::storeGeneratedExcel($results);
     }

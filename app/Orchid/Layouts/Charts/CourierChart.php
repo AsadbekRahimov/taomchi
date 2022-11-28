@@ -11,7 +11,7 @@ class CourierChart extends Chart
      *
      * @var string
      */
-    protected $title = 'Бугунги сотувчилар статистикаси';
+    protected $title = 'Бугунги курерлар статистикаси';
 
     /**
      * Available options:

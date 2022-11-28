@@ -44,9 +44,8 @@ class PlatformScreen extends Screen
 
     public function query(): iterable
     {
-        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get(), 'price');
-        $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get(), 'real_price');
-        $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNull('party_id')->sum('price');
+        $this->sell_price = HelperService::statTotalPrice(Sale::query()->whereDate('updated_at', Carbon::today())->get());
+        $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->sum('price');
         $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
 
         if (request()->has('date')) {
@@ -76,7 +75,6 @@ class PlatformScreen extends Screen
                 ],
                 'day' => [
                     'sell_price' => number_format($this->sell_price),
-                    'real_price' => number_format($this->real_price),
                     'payments' => number_format((int)Payment::query()->whereDate('updated_at', Carbon::today())->sum('price')),
                     'duties' => number_format((int)Duty::query()->whereDate('updated_at', Carbon::today())->whereNotNull('customer_id')->sum('duty')),
                     'expenses' => number_format($this->expenses),
@@ -96,7 +94,7 @@ class PlatformScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'E-do\'kon - WMS';
+        return 'Taomchi - CRM';
     }
 
     /**
@@ -106,7 +104,7 @@ class PlatformScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Елетрон обморхона автоматлаштириш тизими';
+        return 'Елетрон дўкон автоматлаштириш тизими';
     }
 
     /**
@@ -145,11 +143,10 @@ class PlatformScreen extends Screen
             ]),
             Layout::metrics([
                 'Сотилган нарх' => 'statistic.day.sell_price',
-                'Тан нархи' => 'statistic.day.real_price',
-                'Чиқимлар' => 'statistic.day.expenses',
+                'Тўловлар' => 'statistic.day.payments',
             ])->title('Бугунги савдо'),
             Layout::metrics([
-                'Тўловлар' => 'statistic.day.payments',
+                'Чиқимлар' => 'statistic.day.expenses',
                 'Қарздорлик' => 'statistic.day.duties',
             ]),
             StatisticSelection::class,
@@ -157,7 +154,7 @@ class PlatformScreen extends Screen
                 'Тўлов' => PaymentChart::class,
                 'Қарздорлик' => DutyChart::class,
                 'Сотилган махсулот' => SellChart::class,
-                'Сотувчи' => CourierChart::class,
+                'Курерлар' => CourierChart::class,
             ]),
             Layout::modal('addExpenceModal', [ExpenceModal::class])
                 ->applyButton('Киритиш')->closeButton('Ёпиш'),
