@@ -44,7 +44,7 @@ class RoleEditScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Manage roles';
+        return 'Ролларни бошқаринг';
     }
 
     /**
@@ -54,7 +54,7 @@ class RoleEditScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Access rights';
+        return 'Кириш ҳуқуқлари';
     }
 
     /**
@@ -75,11 +75,11 @@ class RoleEditScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Button::make(__('Save'))
+            Button::make('Сақлаш')
                 ->icon('check')
                 ->method('save'),
 
-            Button::make(__('Remove'))
+            Button::make('Ўчириш')
                 ->icon('trash')
                 ->method('remove')
                 ->canSee($this->role->exists),
@@ -134,7 +134,7 @@ class RoleEditScreen extends Screen
 
         $role->save();
 
-        Toast::info(__('Role was saved'));
+        Toast::info('');
 
         return redirect()->route('platform.systems.roles');
     }
@@ -150,7 +150,7 @@ class RoleEditScreen extends Screen
     {
         $role->delete();
 
-        Toast::info(__('Role was removed'));
+        Toast::info('Рол муаффақиятли сақланди');
 
         return redirect()->route('platform.systems.roles');
     }

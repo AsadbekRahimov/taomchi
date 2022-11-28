@@ -31,7 +31,7 @@ class RoleListScreen extends Screen
      */
     public function name(): ?string
     {
-        return 'Rollarni boshqarish';
+        return 'Ролларни бошқариш';
     }
 
     /**
@@ -41,7 +41,7 @@ class RoleListScreen extends Screen
      */
     public function description(): ?string
     {
-        return 'Rollar yaratish va ularga kerakli huqularni biriktish.';
+        return 'Роллар яратиш ва уларга керакли ҳуқуларни бириктиш.';
     }
 
     /**
@@ -62,7 +62,7 @@ class RoleListScreen extends Screen
     public function commandBar(): iterable
     {
         return [
-            Link::make(__('Qo\'shish'))
+            Link::make('Қўшиш')
                 ->icon('plus')
                 ->href(route('platform.systems.roles.create')),
         ];
