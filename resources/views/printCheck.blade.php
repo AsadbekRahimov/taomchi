@@ -87,11 +87,13 @@
 
 <body>
 <div class="ticket">
-    <!--   <img  src="https://rtmedlineuz.com/site/img/logo.png" alt="">-->
-    <p class="centered"><b>Kokand trade productivity MCHJ <br>Тел: 998 90 308 84 14 | Нодирхон <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
+    <img  src="{{ asset('/vendor/orchid/icon/ta1.png') }}" alt="">
+    <p class="centered">Тел: 998 99 999 99 99 <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
     <p></p>
     <p><b>Мижоз: {{ $order->customer->name }}</b>
-    <p><b>Эски карздорлик: {{ number_format($order->customer->duties->sum('duty')) }}</b>
+    @if($order->customer->duties->sum('duty'))
+        <p><b>Эски карздорлик: {{ number_format($order->customer->duties->sum('duty')) }}</b>
+    @endif
     <table class="table table-bordered" >
         <thead>
         <tr>
@@ -109,7 +111,7 @@
                 <td style="border: 1px solid black;" class="description"> {{ $card->product->name }} </td>
 
                 <td style="border: 1px solid black;  white-space: nowrap; padding: 0 2px;">{{ number_format($card->price) }}
-                    <b>x</b> {{ $card->quantity . ' ' . $card->product->measure->symbol }}</td>
+                    <b>x</b> {{ $card->quantity }}</td>
                 <td style="border: 1px solid black;" class="price"> {{ number_format($card->price * $card->quantity) }}</td>
             </tr>
         @endforeach

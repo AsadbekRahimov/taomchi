@@ -54,7 +54,7 @@ class OrderListTable extends Table
             TD::make('action', 'Aмаллар')->render(function ($model) use ($courier, $call_center, $superadmin) {
                 return DropDown::make('')->icon('list')->list([
                     Link::make('Тўлов чеки')->icon('printer')
-                        ->route('printCheck', ['id' => $model->id])->target('blank')->canSee($call_center),
+                        ->route('printCheck', ['id' => $model->id])->target('blank')->canSee($superadmin || $call_center),
                     Button::make('Қарзга бериш')
                         ->method('duty')
                         ->icon('clock')
