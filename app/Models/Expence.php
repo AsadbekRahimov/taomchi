@@ -17,7 +17,6 @@ class Expence extends Model
     protected $fillable = [
         'price',
         'description',
-        'party_id',
         'branch_id',
     ];
 

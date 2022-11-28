@@ -41,7 +41,6 @@ class PlatformScreen extends Screen
     public $real_price;
     public $expenses;
     public $day_profit;
-    public $for_suppliers;
 
     public function query(): iterable
     {
@@ -49,7 +48,7 @@ class PlatformScreen extends Screen
         $this->real_price = HelperService::statTotalPrice(Sale::query()->with('product')->whereDate('updated_at', Carbon::today())->get(), 'real_price');
         $this->expenses = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNull('party_id')->sum('price');
         $this->day_profit = $this->sell_price - $this->real_price - $this->expenses;
-        $this->for_suppliers = (int)Expence::query()->whereDate('updated_at', Carbon::today())->whereNotNull('party_id')->sum('price');
+
         if (request()->has('date')) {
             $date = \request()->get('date');
             $begin = $date['start'] . ' 00:00:00';
@@ -80,8 +79,6 @@ class PlatformScreen extends Screen
                     'real_price' => number_format($this->real_price),
                     'payments' => number_format((int)Payment::query()->whereDate('updated_at', Carbon::today())->sum('price')),
                     'duties' => number_format((int)Duty::query()->whereDate('updated_at', Carbon::today())->whereNotNull('customer_id')->sum('duty')),
-                    'supplier_payments' => number_format((int)Expence::query()->whereDate('updated_at', Carbon::today())
-                        ->whereNotNull('party_id')->sum('price')),
                     'expenses' => number_format($this->expenses),
                 ],
             ],
@@ -122,7 +119,6 @@ class PlatformScreen extends Screen
         return [
             Link::make( 'Бугунги фойда: ' . number_format($this->day_profit))->type(Color::SUCCESS())->canSee($this->day_profit > 0),
             Link::make( 'Бугунги зарар: ' . number_format(-1 *$this->day_profit) . ' сўм')->type(Color::DANGER())->canSee($this->day_profit < 0),
-            Link::make( 'Таминотчиларга тўлов: ' . number_format($this->for_suppliers))->type(Color::WARNING())->canSee($this->for_suppliers > 0),
             ModalToggle::make('Чиқим')
                 ->icon('calculator')
                 ->modal('addExpenceModal')
@@ -155,7 +151,6 @@ class PlatformScreen extends Screen
             Layout::metrics([
                 'Тўловлар' => 'statistic.day.payments',
                 'Қарздорлик' => 'statistic.day.duties',
-                'Махсулот учун тўловлар' => 'statistic.day.supplier_payments',
             ]),
             StatisticSelection::class,
             Layout::tabs([
