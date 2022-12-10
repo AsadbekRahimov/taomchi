@@ -5,7 +5,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta http-equiv="X-UA-Compatible" content="ie=edge">
     <link rel="stylesheet" href="style.css">
-    <title>Kokand trade productivity MCHJ</title>
+    <title>Taomchi</title>
 </head>
 <style>
     * {
@@ -46,8 +46,9 @@
     }
 
     img {
-        max-width: inherit;
-        width: inherit;
+        max-width: 300px;
+        width: 300px;
+        height: 200px;
     }
 
 
@@ -88,9 +89,9 @@
 <body>
 <div class="ticket">
     <img  src="{{ asset('/vendor/orchid/icon/ta1.png') }}" alt="">
-    <p class="centered">Тел: 998 99 999 99 99 <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
+    <p class="centered">Тел: +998917070907, +998770150907 <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
     <p></p>
-    <p><b>Мижоз: {{ $order->customer->name }}</b>
+    <p><b>Мижоз: {{ $order->customer->all_name }}</b>
     @if($order->customer->duties->sum('duty'))
         <p><b>Эски карздорлик: {{ number_format($order->customer->duties->sum('duty')) }}</b>
     @endif
