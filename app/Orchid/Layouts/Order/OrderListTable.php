@@ -30,9 +30,10 @@ class OrderListTable extends Table
      */
     protected function columns(): iterable
     {
-        $call_center = Auth::user()->inRole('call_center') ? 1 : 0;
-        $courier = Auth::user()->inRole('courier') ? 1 : 0;
+        $user = Auth::user();
+        $call_center = ($user->inRole('call_center') and $user->branch_id) ? 1 : 0;
         $superadmin = Auth::user()->inRole('super_admin') ? 1 : 0;
+        $payment = (($user->inRole('courier') or $superadmin) and $user->branch_id) ? 1 : 0;
 
         return [
             TD::make('id', 'ID'),
@@ -51,7 +52,7 @@ class OrderListTable extends Table
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
-            TD::make('action', 'Aмаллар')->render(function ($model) use ($courier, $call_center, $superadmin) {
+            TD::make('action', 'Aмаллар')->render(function ($model) use ($call_center, $superadmin, $payment) {
                 return DropDown::make('')->icon('list')->list([
                     Link::make('Тўлов чеки')->icon('printer')
                         ->route('printCheck', ['id' => $model->id])->target('blank')->canSee($superadmin || $call_center),
@@ -62,7 +63,7 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->confirm($model->customer->name . ' - Қарз суммаси: ' . number_format($model->cardsSum() - $model->discount))
-                        ->canSee($courier),
+                        ->canSee($payment),
                     ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
@@ -71,7 +72,7 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount))
-                        ->canSee($courier),
+                        ->canSee($payment),
                     ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
@@ -80,7 +81,7 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->modalTitle($model->customer->name . ' | Тўлов суммаси: ' . number_format($model->cardsSum() - $model->discount))
-                        ->canSee($courier),
+                        ->canSee($payment),
                     ModalToggle::make('Чегирма киритиш')
                         ->method('addDiscount')
                         ->modal('discountModal')
