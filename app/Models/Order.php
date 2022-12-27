@@ -37,7 +37,7 @@ class Order extends Model
 
     public function cards()
     {
-        return $this->hasMany(Card::class, 'customer_id', 'customer_id');
+        return $this->hasMany(Card::class, 'order_id', 'id');
     }
 
 

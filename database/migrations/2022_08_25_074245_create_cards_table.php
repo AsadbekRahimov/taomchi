@@ -19,7 +19,7 @@ return new class extends Migration
             $table->integer('product_id');
             $table->integer('quantity');
             $table->integer('price');
-            $table->boolean('ordered')->default(0);
+            $table->integer('order_id')->nullable();
             $table->timestamps();
         });
     }

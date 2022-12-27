@@ -14,7 +14,7 @@ class Card extends Model
         'product_id',
         'quantity',
         'price',
-        'ordered'
+        'order_id'
     ];
 
     public function customer()
@@ -47,7 +47,7 @@ class Card extends Model
         return self::query()->where('customer_id', $customer_id)->get();
     }
 
-    public static function createOrderCards(\Illuminate\Http\Request $request)
+    public static function createOrderCards(\Illuminate\Http\Request $request, $order_id)
     {
         foreach ($request->products as $item)
         {
@@ -57,10 +57,10 @@ class Card extends Model
                 'product_id' => $product->id,
                 'quantity' => (int)$item['count'],
                 'price' => $product->{ $item['price'] . '_price' },
-                'ordered' => 1,
+                'order_id' => $order_id,
             ]);
         }
 
-        return self::query()->where('customer_id', $request->customer_id)->get();
+        return self::query()->where('order_id', $order_id)->get();
     }
 }

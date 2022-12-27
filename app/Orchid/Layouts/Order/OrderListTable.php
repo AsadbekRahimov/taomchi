@@ -94,7 +94,7 @@ class OrderListTable extends Table
                         ->method('deleteCard')
                         ->icon('trash')
                         ->parameters([
-                            'customer_id' => $model->customer_id,
+                            'id' => $model->id,
                         ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?')->canSee($superadmin),
                 ]);
             })->cantHide(),

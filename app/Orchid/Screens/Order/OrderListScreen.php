@@ -88,7 +88,7 @@ class OrderListScreen extends Screen
         $order = Order::query()->find($request->id);
         $party = SalesParty::createParty($request->customer_id, $order->discount);
         Duty::duty($party->id, $order);
-        Sale::createSales($party->id, $request->customer_id, $party->branch_id);
+        Sale::createSales($party->id, $request->id, $party->branch_id);
         $this->deleteCard($request);
         Alert::success('Махсулотлар муаффақиятли сотилди');
     }
@@ -98,7 +98,7 @@ class OrderListScreen extends Screen
         $order = Order::query()->find($request->id);
         $party = SalesParty::createParty($request->customer_id, $order->discount);
         Payment::addPayment($party->id, $order, $request->type);
-        Sale::createSales($party->id, $request->customer_id, $party->branch_id);
+        Sale::createSales($party->id, $request->id, $party->branch_id);
         $this->deleteCard($request);
         Alert::success('Махсулотлар муаффақиятли сотилди');
     }
@@ -113,7 +113,7 @@ class OrderListScreen extends Screen
             $party = SalesParty::createParty($request->customer_id, $order->discount);
             Payment::addPartPayment($party->id, $order, $request->type, $request->price);
             Duty::paymentDuty($party->id, $order, $request->price);
-            Sale::createSales($party->id, $request->customer_id, $party->branch_id);
+            Sale::createSales($party->id, $request->id, $party->branch_id);
             $this->deleteCard($request);
             Alert::success('Махсулотлар муаффақиятли сотилди');
         }
@@ -129,8 +129,8 @@ class OrderListScreen extends Screen
 
     public function deleteCard(Request $request)
     {
-        Card::query()->where('customer_id', $request->customer_id)->delete();
-        Order::query()->where('customer_id', $request->customer_id)->delete();
+        Card::query()->where('order_id', $request->id)->delete();
+        Order::query()->where('id', $request->id)->delete();
         Alert::success('Муаффақиятли тозаланди');
     }
 }

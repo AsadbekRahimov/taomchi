@@ -229,7 +229,7 @@ class PlatformScreen extends Screen
             Alert::error('Камида 1 та махсулот танланиши керак!');
         } else {
             $order = Order::createOrder($request->customer_id);
-            $cards = Card::createOrderCards($request);
+            $cards = Card::createOrderCards($request, $order->id);
             SendMessageService::sendOrder($order, $cards);
             Alert::success('Буюртма муаффақиятли яратилди');
             return redirect()->route('platform.orders');
