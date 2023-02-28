@@ -1,6 +1,7 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\TelegramBotController;
 
 /*
 |--------------------------------------------------------------------------
@@ -21,3 +22,7 @@ Route::get('/checkPrint/{id}', function ($id){
     $order = \App\Models\Order::query()->with(['cards.product.measure', 'customer'])->find($id);
     return view('printCheck', compact('order'));
 })->name('printCheck');
+
+// Telegram bot routes
+Route::get('telegram/setWebhook', [TelegramBotController::class, 'setWebhook']);
+Route::post('telegram/bot/webhook', [TelegramBotController::class, 'webhook']);
