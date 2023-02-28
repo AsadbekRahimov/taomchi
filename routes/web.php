@@ -24,5 +24,4 @@ Route::get('/checkPrint/{id}', function ($id){
 })->name('printCheck');
 
 // Telegram bot routes
-Route::get('telegram/setWebhook', [TelegramBotController::class, 'setWebhook']);
-Route::post('telegram/bot/webhook', [TelegramBotController::class, 'webhook']);
+Route::post('/bot{token}', [TelegramBotController::class, 'handle']);
