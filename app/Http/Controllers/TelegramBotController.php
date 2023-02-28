@@ -40,55 +40,8 @@ class TelegramBotController extends Controller
         }
     }
 
-    public function register(Request $request)
-    {
-        $telegram = new Api(config('telegram.bots.taomchi_bot.token'));
 
-        // get User from request
-        $telegram_id = $request->input('telegram_id');
-        $name = $request->input('name');
 
-        // check registration user
-        $user = TelegramUser::query()->where('telegram_id', $telegram_id)->first();
-        if ($user){
-            $telegram->sendMessage([
-                'chat_id' => $user->telegram_id,
-                'text' => 'Siz royhatdan otib bolgansiz',
-            ]);
-        } else {
-            // register user if not registered
-            $user = TelegramUser::query()->create([
-                'telegram_id' => $telegram_id,
-                'name' => $name,
-            ]);
 
-            $telegram->sendMessage([
-                'chat_id' => $user->telegram_id,
-                'text' => 'Siz muaffaqiyatli royhatdan otdingiz',
-            ]);
-        }
-
-    }
-
-    public function login(Request $request)
-    {
-        $telegram = new Api(config('telegram.bots.taomchi_bot.token'));
-        $telegram_id = $request->input('telegram_id');
-        // check user for authenticated
-        $user = TelegramUser::query()->where('telegram_id', $telegram_id)->first();
-
-        if (!$user) {
-            $telegram->sendMessage([
-                'chat_id' => $user->telegram_id,
-                'text' => 'Siz royhatdan otmagansiz!',
-            ]);
-        } else {
-            //auth()->login($user);
-            $telegram->sendMessage([
-                'chat_id' => $user->telegram_id,
-                'text' => 'Muaffaqiyatli tizimga kirdingiz!'
-            ]);
-        }
-    }
 
 }
