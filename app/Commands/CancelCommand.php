@@ -12,7 +12,7 @@ class CancelCommand extends Command
 
     protected $description = 'Жорий амални бекор қилиш';
 
-    public function handle($arguments)
+    public function handle()
     {
         $this->telegram->sendMessage([
             'chat_id' => $this->getUpdate()->getMessage()->getChat()->getId(),

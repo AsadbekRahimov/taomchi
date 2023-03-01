@@ -12,9 +12,9 @@ class PhoneCommand extends Command
 
     protected $description = 'Телефон рақамингизни киритинг';
 
-    public function handle($arguments)
+    public function handle()
     {
-        $message = $this->getMessage();
+        $message = $this->getUpdate()->getMessage();
         $chat_id = $message->getChat()->getId();
 
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
@@ -29,7 +29,7 @@ class PhoneCommand extends Command
         $this->telegram->sendMessage([
            'chat_id' => $chat_id,
            'text' => 'Телефон рақамингизни киритинг.',
-           'reply' => json_encode([
+           'reply_markup' => json_encode([
                'keyboard' => [
                     [
                         [

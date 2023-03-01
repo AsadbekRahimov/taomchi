@@ -19,7 +19,7 @@ class TelegramBotController extends Controller
     {
         $telegram = new Api(config('telegram.bots.taomchi_bot.token'));
         $response = $telegram->setWebhook([
-            'url' => 'https://iceboy.agro.uz/telegram/bot/webhook'
+            'url' => 'https://46f2-185-139-137-124.eu.ngrok.io/telegram/bot/webhook'
         ]);
         return $response;
     }

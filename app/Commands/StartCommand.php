@@ -12,9 +12,9 @@ class StartCommand extends Command
 
     protected $description = 'Мулоқотни бошлаш';
 
-    public function handle($arguments)
+    public function handle()
     {
-        $message = $this->getMessage();
+        $message = $this->getUpdate()->getMessage();
         $chat_id = $message->getChat()->getId();
 
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();

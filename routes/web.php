@@ -29,9 +29,9 @@ Route::post('/bot', function () {
     \App\TelegramBot::run();
 });
 
-Route::get('/bot/webhook', function () {
+/*Route::get('/bot/webhook', function () {
    return \App\TelegramBot::setWebHook();
-});
+});*/
 
 Route::get('/bot/webhook', [TelegramController::class, 'setWebHook']);
 Route::post('/bot', [TelegramController::class, 'run']);
