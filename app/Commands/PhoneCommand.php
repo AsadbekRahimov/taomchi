@@ -26,8 +26,7 @@ class PhoneCommand extends Command
             return;
         }
 
-        $this->telegram->sendMessage([
-           'chat_id' => $chat_id,
+        $this->replyWithMessage([
            'text' => 'Телефон рақамингизни киритинг.',
            'reply_markup' => json_encode([
                'keyboard' => [
@@ -47,5 +46,25 @@ class PhoneCommand extends Command
                'one_time_keyboard' => true,
            ]),
         ]);
+
+        $update = $this->getUpdate();
+        $contact = $update->getMessage()->getContact();
+        $aa = json_encode($contact);
+        $this->telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => $aa,
+        ]);
+
+        if (!empty($contact)) {
+            $phone_number = $contact->getPhoneNumber();
+
+            // сохраняем номер телефона в базе данных
+            // ...
+
+            $this->telegram->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => 'Сиз муаффақиятли ройҳатдан ўтдингиз'
+            ]);
+        }
     }
 }
