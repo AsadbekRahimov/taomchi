@@ -3,6 +3,8 @@
 namespace App\Http\Controllers;
 
 use App\Models\Product;
+use App\Models\TelegramOrder;
+use App\Models\TelegramOrderItem;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
 use Illuminate\Support\Facades\Cache;
@@ -13,7 +15,36 @@ class TelegramBotController extends Controller
 {
     protected $telegram;
 
-    public function __construct(Api $telegram)
+    public function setWebhook()
+    {
+        $telegram = new Api(config('telegram.bots.taomchi_bot.token'));
+        $response = $telegram->setWebhook([
+            'url' => 'https://iceboy.agro.uz/telegram/bot/webhook'
+        ]);
+        return $response;
+    }
+
+    public function webhook()
+    {
+        $this->telegram = new Api(config('telegram.bots.taomchi_bot.token'));
+        $updates = $this->telegram->getWebhookUpdate();
+
+        $message = $updates->getMessage();
+
+        $csrf_token = \Illuminate\Support\Str::random(32);
+        \Illuminate\Support\Facades\Session::put('_token', $csrf_token);
+
+
+        if ($message && $message->getText() == '/start') {
+            $this->telegram->sendMessage([
+                'chat_id' => $message->getChat()->getId(),
+                'text' => 'Hello Taomchi User',
+                //'csrf_token' => $csrf_token,
+            ]);
+        }
+    }
+
+    /*public function __construct(Api $telegram)
     {
         $this->telegram = $telegram;
     }
@@ -50,10 +81,14 @@ class TelegramBotController extends Controller
             }
         }
 
-    }
+    }*/
 
     private function startCommand($chat_id)
     {
+        return $this->telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => 'Salom!',
+        ]);
     }
 
     private function menuCommand($chat_id)
@@ -118,7 +153,7 @@ class TelegramBotController extends Controller
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
         if (!$user) {
             $this->telegram->sendMessage([
-               'chat_id', $chat_id,
+               'chat_id' => $chat_id,
                'text' => 'Aввал телефон рақамингизни киритишингиз керак!'
             ]);
             return;
@@ -158,7 +193,7 @@ class TelegramBotController extends Controller
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
         if (!$user) {
             $this->telegram->sendMessage([
-                'chat_id', $chat_id,
+                'chat_id' => $chat_id,
                 'text' => 'Aввал телефон рақамингизни киритишингиз керак!'
             ]);
             return;
@@ -187,10 +222,54 @@ class TelegramBotController extends Controller
         ]);
     }
 
-    protected function chekcout($chat_id)
+    protected function checkout($chat_id)
     {
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
 
+        if (!$user) {
+            $this->telegram->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => 'Aввал телефон рақамингизни киритишингиз керак!'
+            ]);
+            return;
+        }
+
+        $carts = TelegramUserCard::query()->with(['product'])->where('telegram_user_id', $user->id)->get();
+
+        if ($carts->isEmpty()) {
+            $this->telegram->sendMessage([
+                'chat_id' => $chat_id,
+                'text' => 'Саватчада махсулотлар мавжуд эмас!',
+            ]);
+            return;
+        }
+
+        $total_price = 0;
+        foreach ($carts as $cart) {
+            $total_price += $cart->product->one_price * $cart->count;
+        }
+
+        $order = TelegramOrder::query()->create([
+            'user_id' => $user->id,
+            'price' => $total_price
+        ]);
+
+        foreach ($carts as $cart)
+        {
+            TelegramOrderItem::query()->create([
+                'order_id' => $order->id,
+                'product_id' => $cart->product_id,
+                'count' => $cart->count,
+                'price' => $cart->product->one_price,
+            ]);
+
+            $cart->delete();
+        }
+
+        $this->telegram->sendMessage([
+           'chat_id' => $chat_id,
+           'text' => 'Буюртма расмийлаштирилди!'
+        ]);
     }
 
 }
