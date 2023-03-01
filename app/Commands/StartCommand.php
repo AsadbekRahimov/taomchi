@@ -18,6 +18,9 @@ class StartCommand extends Command
         $chat_id = $message->getChat()->getId();
 
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
+
+        $this->replyWithChatAction(['action' => Actions::TYPING]);
+
         if (!$user) {
             $this->telegram->sendMessage([
                 'chat_id' => $chat_id,
@@ -25,11 +28,9 @@ class StartCommand extends Command
             ]);
         } else {
             $this->telegram->sendMessage([
-                'chat_id', $chat_id,
+                'chat_id' => $chat_id,
                 'text' => 'Таомчига хуш келибсиз.'
             ]);
         }
-
-        $this->replyWithChatAction(['action' => Actions::TYPING]);
     }
 }

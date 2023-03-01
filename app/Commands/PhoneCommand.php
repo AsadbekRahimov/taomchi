@@ -18,6 +18,9 @@ class PhoneCommand extends Command
         $chat_id = $message->getChat()->getId();
 
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
+
+        $this->replyWithChatAction(['action' => Actions::TYPING]);
+
         if ($user) {
             $this->telegram->sendMessage([
                 'chat_id' => $chat_id,
@@ -46,25 +49,5 @@ class PhoneCommand extends Command
                'one_time_keyboard' => true,
            ]),
         ]);
-
-        $update = $this->getUpdate();
-        $contact = $update->getMessage()->getContact();
-        $aa = json_encode($contact);
-        $this->telegram->sendMessage([
-            'chat_id' => $chat_id,
-            'text' => $aa,
-        ]);
-
-        if (!empty($contact)) {
-            $phone_number = $contact->getPhoneNumber();
-
-            // сохраняем номер телефона в базе данных
-            // ...
-
-            $this->telegram->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => 'Сиз муаффақиятли ройҳатдан ўтдингиз'
-            ]);
-        }
     }
 }

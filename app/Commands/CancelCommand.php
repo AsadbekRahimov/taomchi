@@ -14,11 +14,10 @@ class CancelCommand extends Command
 
     public function handle()
     {
+        $this->replyWithChatAction(['action' => Actions::TYPING]);
         $this->telegram->sendMessage([
             'chat_id' => $this->getUpdate()->getMessage()->getChat()->getId(),
             'text' => 'Aмал бекор қилинди!'
         ]);
-
-        $this->replyWithChatAction(['action' => Actions::TYPING]);
     }
 }

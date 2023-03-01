@@ -22,6 +22,9 @@ class MenuCommand extends Command
         $chat_id = $message->getChat()->getId();
 
         $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
+
+        $this->replyWithChatAction(['action' => Actions::TYPING]);
+
         if (!$user) {
             $this->telegram->sendMessage([
                 'chat_id' => $chat_id,
@@ -52,8 +55,6 @@ class MenuCommand extends Command
                 'inline_keyboard' => $keyboard,
             ]),
         ]);
-
-        $this->replyWithChatAction(['action' => Actions::TYPING]);
     }
 
     /**
