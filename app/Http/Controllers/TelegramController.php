@@ -51,14 +51,24 @@ class TelegramController extends Controller
     private function saveContact($telegram)
     {
         $message = $telegram->getWebhookUpdate()->getMessage();
+        $chat_id = $message->getChat()->getId();
         $contact = $message->getContact();
+
         if (!empty($contact))
         {
             $number = $contact->getPhoneNumber();
-            $telegram->sendMessage([
-                'chat_id' => $message->getChat()->getId(),
-                'text' => $number,
-            ]);
+            if (strlen($number) != 13)
+            {
+                $telegram->sendMessage([
+                    'chat_id' => $chat_id,
+                    'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!',
+                ]);
+            } else {
+                $telegram->sendMessage([
+                    'chat_id' => $chat_id,
+                    'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.',
+                ]);
+            }
         }
     }
 
