@@ -34,10 +34,6 @@ class TelegramController extends Controller
             $telegram->addCommand(new $command);
         }
 
-        /*$telegram->on('callback_query', function (CallbackQuery $callbackQuery) use ($telegram) {
-            $telegram->getCommandBus()->handler($callbackQuery);
-        });*/
-
         $telegram->commandsHandler(true);
     }
 
@@ -46,7 +42,7 @@ class TelegramController extends Controller
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
         $response = $telegram->setWebhook([
-            'url' => 'https://14ee-185-139-137-124.eu.ngrok.io/bot'
+            'url' => 'https://iceboy.agro.uz/bot'
         ]);
 
         return $response;

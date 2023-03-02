@@ -26,10 +26,7 @@ class MenuCommand extends Command
         $this->replyWithChatAction(['action' => Actions::TYPING]);
 
         if (!$user) {
-            $this->telegram->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => 'Aввал телефон рақамингизни киритишингиз керак!'
-            ]);
+            $this->replyContactNumber();
             return;
         }
 
@@ -53,6 +50,30 @@ class MenuCommand extends Command
             'text' => $text,
             'reply_markup' => json_encode([
                 'inline_keyboard' => $keyboard,
+            ]),
+        ]);
+    }
+
+    private function replyContactNumber()
+    {
+        $this->replyWithMessage([
+            'text' => 'Телефон рақамингизни киритинг.',
+            'reply_markup' => json_encode([
+                'keyboard' => [
+                    [
+                        [
+                            'text' => 'Телефон рақамни юбориш',
+                            'request_contact' => true,
+                        ],
+                    ],
+                    [
+                        [
+                            'text' => 'Бекор қилиш',
+                        ],
+                    ],
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
             ]),
         ]);
     }

@@ -29,10 +29,15 @@ class PhoneCommand extends Command
             return;
         }
 
+        $this->replyContactNumber();
+    }
+
+    private function replyContactNumber()
+    {
         $this->replyWithMessage([
-           'text' => 'Телефон рақамингизни киритинг.',
-           'reply_markup' => json_encode([
-               'keyboard' => [
+            'text' => 'Телефон рақамингизни киритинг.',
+            'reply_markup' => json_encode([
+                'keyboard' => [
                     [
                         [
                             'text' => 'Телефон рақамни юбориш',
@@ -44,10 +49,10 @@ class PhoneCommand extends Command
                             'text' => 'Бекор қилиш',
                         ],
                     ],
-               ],
-               'resize_keyboard' => true,
-               'one_time_keyboard' => true,
-           ]),
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]),
         ]);
     }
 }
