@@ -14,4 +14,13 @@ class TelegramUser extends Model
         'phone',
         'customer_id',
     ];
+
+    public static function createNewUser($chat_id, $number)
+    {
+        self::query()->create([
+            'telegram_id' => $chat_id,
+            'phone' => '(' . substr($number, 0, 2) . ') ' . substr($number, 2, 3) . '-' .
+                substr($number, 5, 2) . '-' . substr($number, 7, 2),
+        ]);
+    }
 }

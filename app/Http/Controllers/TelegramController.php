@@ -6,7 +6,6 @@ use App\Commands\CancelCommand;
 use App\Commands\CartCommand;
 use App\Commands\CheckoutCommand;
 use App\Commands\MenuCommand;
-use App\Commands\PhoneCommand;
 use App\Commands\StartCommand;
 use App\Models\TelegramUser;
 use Telegram\Bot\Api;
@@ -23,7 +22,6 @@ class TelegramController extends Controller
 
         $commands = [
             StartCommand::class,
-            PhoneCommand::class,
             CancelCommand::class,
             MenuCommand::class,
             CartCommand::class,
@@ -58,23 +56,18 @@ class TelegramController extends Controller
         if (!empty($contact))
         {
             $number = $contact->getPhoneNumber();
-            if (strlen($number) != 13)
+            $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
+            if ($user) {
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
+            }elseif (strlen($number) != 13)
             {
-                $telegram->sendMessage([
-                    'chat_id' => $chat_id,
-                    'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!',
-                ]);
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
-                TelegramUser::query()->create([
-                    'telegram_id' => $chat_id,
-                    'phone' => $number,
-                ]);
-                $telegram->sendMessage([
-                    'chat_id' => $chat_id,
-                    'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.',
-                ]);
+                TelegramUser::createNewUser($chat_id, substr($number, 4));
+                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
             }
         }
+
     }
 
 }
