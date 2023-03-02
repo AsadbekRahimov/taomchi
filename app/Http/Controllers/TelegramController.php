@@ -18,6 +18,7 @@ class TelegramController extends Controller
     {
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
+        $this->proccessCallbackData($telegram);
         $this->saveContact($telegram);
 
         $commands = [
@@ -41,7 +42,7 @@ class TelegramController extends Controller
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
         $response = $telegram->setWebhook([
-            'url' => 'https://iceboy.agro.uz/bot'
+            'url' => 'https://7d7b-185-139-137-124.eu.ngrok.io/bot'
         ]);
 
         return $response;
@@ -50,12 +51,11 @@ class TelegramController extends Controller
     private function saveContact($telegram)
     {
         $message = $telegram->getWebhookUpdate()->getMessage();
-        $chat_id = $message->getChat()->getId();
-        $contact = $message->getContact();
-
-        if (!empty($contact))
+        if ($message->has('contact'))
         {
-            $number = $contact->getPhoneNumber();
+            $number = $message->contact->phone_number;
+            $chat_id = $message->contact->user_id;
+
             $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
             if ($user) {
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
@@ -68,6 +68,58 @@ class TelegramController extends Controller
             }
         }
 
+    }
+
+    private function proccessCallbackData(Api $telegram)
+    {
+        if($telegram->getWebhookUpdate()->has('callback_query')) {
+
+            $callBackData = $telegram->getWebhookUpdate()->callbackQuery->data;
+
+            $countKeyboard = $this->getCountKeyboard($callBackData);
+
+            $telegram->sendMessage([
+                'chat_id' => $telegram->getWebhookUpdate()->getMessage()->getChat()->getId(),
+                'text' => $telegram->getWebhookUpdate()->callbackQuery->data,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => $countKeyboard,
+                ]),
+            ]);
+        }
+    }
+
+    private function getCountKeyboard($callBackData)
+    {
+        return  [
+            [
+                [
+                    'text' => '1',
+                    'callback_data' => 'add_1_' . $callBackData
+                ],
+                [
+                    'text' => '2',
+                    'callback_data' => 'add_2_' . $callBackData
+                ],
+                [
+                    'text' => '3',
+                    'callback_data' => 'add_3_' .$callBackData
+                ],
+            ],
+            [
+                [
+                    'text' => '4',
+                    'callback_data' => 'add_4_' . $callBackData
+                ],
+                [
+                    'text' => '5',
+                    'callback_data' => 'add_5_'. $callBackData
+                ],
+                [
+                    'text' => '6',
+                    'callback_data' => 'add_6_' . $callBackData
+                ],
+            ]
+        ];
     }
 
 }
