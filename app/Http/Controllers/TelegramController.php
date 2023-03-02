@@ -8,6 +8,7 @@ use App\Commands\CheckoutCommand;
 use App\Commands\MenuCommand;
 use App\Commands\PhoneCommand;
 use App\Commands\StartCommand;
+use App\Models\TelegramUser;
 use Telegram\Bot\Api;
 
 
@@ -64,6 +65,10 @@ class TelegramController extends Controller
                     'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!',
                 ]);
             } else {
+                TelegramUser::query()->create([
+                    'telegram_id' => $chat_id,
+                    'phone' => $number,
+                ]);
                 $telegram->sendMessage([
                     'chat_id' => $chat_id,
                     'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.',
