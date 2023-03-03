@@ -3,7 +3,8 @@
 namespace App\Orchid\Layouts\Payment;
 
 use App\Models\Payment;
-use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
+
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Select;
@@ -34,7 +35,7 @@ class PaymentListTable extends Table
             TD::make('id', 'ID'),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
                 return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
-            })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
+            })->filter(Select::make('customer_id')->options(CacheService::getCustomers())->empty('', ''))->cantHide(),
             TD::make('price', 'Миқдори')->render(function ($model) {
                 return Link::make(number_format($model->price))->type(Color::SUCCESS());
             })->cantHide(),

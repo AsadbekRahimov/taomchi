@@ -9,7 +9,6 @@ use App\Models\Duty;
 use App\Models\Expence;
 use App\Models\Order;
 use App\Models\Payment;
-use App\Models\Place;
 use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Orchid\Layouts\Charts\CourierChart;
@@ -26,7 +25,6 @@ use App\Services\SendMessageService;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Input;
@@ -73,19 +71,11 @@ class PlatformScreen extends Screen
                 $end = date('Y-m-d') . ' 23:59:59';
             }
 
-            if (!Cache::has('places')) {
-                Cache::rememberForever('places', function () {
-                    return Place::query()->pluck('name', 'id');
-                });
-            }
-
             return [
                 'statistic' => [
                     'all' => [
                         'products' => CacheService::ProductsKeyValue()->count(),
-                        'customers' => (!Cache::has('customers')) ? Cache::rememberForever('customers', function () {
-                            return \App\Models\Customer::query()->pluck('name', 'id');
-                        })->count() : Cache::get('customers')->count(),
+                        'customers' => CacheService::getCustomers()->count(),
                     ],
                     'day' => [
                         'sell_price' => number_format($this->sell_price),
@@ -184,14 +174,14 @@ class PlatformScreen extends Screen
         }elseif($this->call_center) {
             return [
                 Layout::rows([
-                    Select::make('customer_id')->title('Мижоз')->options(Cache::get('customers')),
+                    Select::make('customer_id')->title('Мижоз')->options(CacheService::getCustomers()),
                     Matrix::make('products')
                         ->columns([
                             'Махсулот' => 'id',
                             'Сони' => 'count',
                             'Нархи' => 'price'
                         ])->fields([
-                            'id' => Select::make('id')->options(Cache::get('products'))->required(),
+                            'id' => Select::make('id')->options(CacheService::ProductsKeyValue())->required(),
                             'count' => Input::make('count')->type('number')->required(),
                             'price' => Select::make('price')
                                 ->options(['one' => 'Чакана нарх', 'discount' => 'Чегирма нарх'])->required()

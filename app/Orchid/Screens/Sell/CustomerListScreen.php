@@ -16,7 +16,7 @@ class CustomerListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'customers' => Customer::query()->filters()->orderByDesc('id')->paginate(15),
+            'customers' => Customer::query()->with(['place'])->filters()->orderByDesc('id')->paginate(15),
         ];
     }
 

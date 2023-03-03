@@ -5,7 +5,7 @@ namespace App\Commands;
 use App\Models\Product;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
-use Illuminate\Support\Facades\Cache;
+
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Objects\CallbackQuery;

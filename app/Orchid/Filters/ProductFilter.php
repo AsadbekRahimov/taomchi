@@ -2,8 +2,9 @@
 
 namespace App\Orchid\Filters;
 
+use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Cache;
+
 use Orchid\Filters\Filter;
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Select;
@@ -52,7 +53,8 @@ class ProductFilter extends Filter
     public function display(): iterable
     {
         return [
-            Select::make('product_id')->title('Махсулот')->options(Cache::get('products'))->empty('', ''),
+            Select::make('product_id')->title('Махсулот')
+                ->options(CacheService::ProductsKeyValue())->empty('', ''),
         ];
     }
 }

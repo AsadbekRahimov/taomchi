@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Resources;
 
+use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
@@ -179,9 +180,7 @@ class Place extends Resource
     {
         $model->forceFill($request->all())->save();
         Cache::forget('places');
-        Cache::rememberForever('places', function () {
-            return \App\Models\Place::query()->pluck('name', 'id');
-        });
+        CacheService::getPlaces();
     }
 
     public function onDelete(Model $model)
@@ -191,9 +190,7 @@ class Place extends Resource
             Alert::error('Бу худудга бириктирилган мижозлар мавжудлиги сабабли худудни ўчира олмайсиз! Олдин мижозларнинг худудини ўзгартиринг.');
         }else {
             Cache::forget('places');
-            Cache::rememberForever('places', function () {
-                return \App\Models\Place::query()->pluck('name', 'id');
-            });
+            CacheService::getPlaces();
         }
     }
 }

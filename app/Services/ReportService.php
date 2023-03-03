@@ -7,7 +7,7 @@ use App\Models\Payment;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+
 use Illuminate\Support\Facades\DB;
 use OpenSpout\Writer\Common\Creator\Style\StyleBuilder;
 use Rap2hpoutre\FastExcel\FastExcel;
@@ -48,8 +48,8 @@ class ReportService
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
 
-        $customers = Cache::get('customers');
-        $products = Cache::get('products');
+        $customers = CacheService::getCustomers();
+        $products = CacheService::ProductsKeyValue();
 
         $sales = DB::select("SELECT customer_id, product_id, quantity, price FROM sales where created_at BETWEEN '" . $begin . "' AND '" .  $end . "'");
 
@@ -72,7 +72,7 @@ class ReportService
         $begin = $date['start'] . ' 00:00:00';
         $end = $date['end'] . ' 23:59:59';
 
-        $customers = Cache::get('customers');
+        $customers = CacheService::getCustomers();
 
         $payments = DB::select("SELECT customer_id, price, type FROM payments where created_at BETWEEN '" . $begin . "' AND '" .  $end . "'");
 
@@ -115,7 +115,7 @@ class ReportService
 
     public static function dutiesReport($for_sheet_collection = null)
     {
-        $customers = Cache::get('customers');
+        $customers = CacheService::getCustomers();
 
         $result = collect();
         $duties = DB::select("SELECT customer_id, duty, created_at FROM duties where customer_id is not null");

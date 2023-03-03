@@ -9,7 +9,7 @@ use App\Models\SalesParty;
 use App\Models\User;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
+
 use Illuminate\Support\Facades\DB;
 
 class ChartService
@@ -39,7 +39,7 @@ class ChartService
 
     public static function dutiesChart()
     {
-        $customers = Cache::get('customers');
+        $customers = CacheService::getCustomers();
 
         $duties = Duty::select('customer_id', DB::raw('sum(duty) as sum'))
             ->whereNotNull('customer_id')
@@ -61,7 +61,7 @@ class ChartService
 
     public static function SellChart($begin = null, $end = null)
     {
-        $product_names = Cache::get('products');
+        $product_names = CacheService::ProductsKeyValue();
 
         $products = Sale::select('product_id', 'quantity', 'price')
             ->when(Auth::user()->branch_id, function ($query){

@@ -2,7 +2,8 @@
 
 namespace App\Orchid\Layouts\Sell;
 
-use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
+
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
@@ -25,8 +26,6 @@ class CardList extends Rows
      */
     protected function fields(): iterable
     {
-        $products = Cache::get('products');
-
         return [
             Matrix::make('cards')
                 ->columns([
@@ -36,7 +35,7 @@ class CardList extends Rows
                     'Дона нархи' => 'price',
                 ])->fields([
                     'id' => Input::make('quantity')->type('number')->required()->hidden(),
-                    'product_id' => Select::make('product_id')->options($products),
+                    'product_id' => Select::make('product_id')->options(CacheService::ProductsKeyValue()),
                     'quantity' => Input::make('quantity')->type('number')->required(),
                     'price' => Input::make('price')->type('number')->required(),
                 ])->removableRows(false),

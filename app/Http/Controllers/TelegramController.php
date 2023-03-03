@@ -42,7 +42,7 @@ class TelegramController extends Controller
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
         $response = $telegram->setWebhook([
-            'url' => 'https://7d7b-185-139-137-124.eu.ngrok.io/bot'
+            'url' => 'https://f971-185-139-137-1.eu.ngrok.io/bot'
         ]);
 
         return $response;

@@ -3,7 +3,7 @@
 namespace App\Orchid\Resources;
 
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Support\Facades\Cache;
+
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
 use Orchid\Screen\Fields\Group;

@@ -2,7 +2,8 @@
 
 namespace App\Orchid\Layouts\Sell;
 
-use Illuminate\Support\Facades\Cache;
+use App\Services\CacheService;
+
 use Orchid\Screen\Field;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Matrix;
@@ -25,7 +26,7 @@ class PartyList extends Rows
      */
     protected function fields(): iterable
     {
-        $products = Cache::get('products');
+        $products = CacheService::ProductsKeyValue();
 
         return [
             Matrix::make('sales')

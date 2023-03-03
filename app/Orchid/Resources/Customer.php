@@ -2,6 +2,7 @@
 
 namespace App\Orchid\Resources;
 
+use App\Services\CacheService;
 use App\Services\HelperService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
@@ -36,7 +37,7 @@ class Customer extends Resource
             Group::make([
                 Input::make('name')->title('Исм')->required(),
                 Input::make('address')->title('Манзили')->required(),
-                Select::make('place_id')->title('Худуди')->options(Cache::get('places'))->required(),
+                Select::make('place_id')->title('Худуди')->options(CacheService::getPlaces())->required(),
             ]),
             Group::make([
                 Input::make('phone')->title('Телефон рақами 1')->mask('(99) 999-99-99')->required(),
@@ -65,8 +66,8 @@ class Customer extends Resource
             })->cantHide(),
             TD::make('address', 'Манзили'),
             TD::make('place_id', 'Худуди')->render(function ($model){
-                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
-            })->filter(Select::make('place_id')->title('Худуди')->options(Cache::get('places'))->empty('', '')),
+                return $model->place->name;
+            })->filter(Select::make('place_id')->title('Худуди')->options(CacheService::getPlaces())->empty('', '')),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
@@ -95,7 +96,7 @@ class Customer extends Resource
             }),
             Sight::make('address', 'Манзили'),
             Sight::make('place_id', 'Худуди')->render(function ($model) {
-                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
+                return $model->place->name;
             }),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
@@ -136,6 +137,11 @@ class Customer extends Resource
             'address.required' => 'Манзили киритилиши шарт!',
             'place_id.required' => 'Худуди киритилиши шарт!',
         ];
+    }
+
+    public function with(): array
+    {
+        return ['place'];
     }
 
     public static function icon(): string
@@ -233,9 +239,7 @@ class Customer extends Resource
     {
         $model->forceFill($request->all())->save();
         Cache::forget('customers');
-        Cache::rememberForever('customers', function () {
-            return \App\Models\Customer::query()->get()->pluck('all_name', 'id');
-        });
+        CacheService::getCustomers();
     }
 
     public function onDelete(Model $model)
@@ -254,9 +258,7 @@ class Customer extends Resource
             $model->orders()->delete();
             $model->delete();
             Cache::forget('customers');
-            Cache::rememberForever('customers', function () {
-                return \App\Models\Customer::query()->get()->pluck('all_name', 'id');
-            });
+            CacheService::getCustomers();
         }
     }
 

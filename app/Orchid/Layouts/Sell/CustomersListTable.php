@@ -2,8 +2,9 @@
 
 namespace App\Orchid\Layouts\Sell;
 
+use App\Services\CacheService;
 use App\Services\HelperService;
-use Illuminate\Support\Facades\Cache;
+
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
@@ -31,10 +32,10 @@ class CustomersListTable extends Table
         return [
             TD::make('id', 'Исм')->render(function ($model) {
                 return Link::make($model->name)->route('platform.sell_products', ['customer' => $model->id]);
-            })->filter(Select::make('id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
+            })->filter(Select::make('id')->options(CacheService::getCustomers())->empty('', ''))->cantHide(),
             TD::make('place_id', 'Худуд')->render(function ($model) {
-                return $model->place_id ? Cache::get('places')[$model->place_id] : '';
-            })->filter(Select::make('place_id')->options(Cache::get('places'))->empty('', ''))->cantHide(),
+                return $model->place->name;
+            })->filter(Select::make('place_id')->options(CacheService::getPlaces())->empty('', ''))->cantHide(),
             TD::make('address', 'Манзили'),
             TD::make('phone', 'Телефон рақам 1')->render(function ($model) {
                 return Link::make($model->phone)->href('tel:' . HelperService::telephone($model->phone));

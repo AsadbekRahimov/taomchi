@@ -2,8 +2,9 @@
 
 namespace App\Orchid\Layouts\Duties;
 
+use App\Services\CacheService;
 use App\Services\HelperService;
-use Illuminate\Support\Facades\Cache;
+
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
@@ -34,7 +35,7 @@ class CustomerDutiesTable extends Table
             TD::make('id', 'ID')->cantHide(),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
                 return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
-            })->filter(Select::make('customer_id')->options(Cache::get('customers'))->empty('', ''))->cantHide(),
+            })->filter(Select::make('customer_id')->options(CacheService::getCustomers())->empty('', ''))->cantHide(),
             TD::make('phone', 'Телефон рақами')->render(function ($model) {
                 return Link::make($model->customer->phone)->href('tel:' . HelperService::telephone($model->customer->phone));
             })->cantHide(),
