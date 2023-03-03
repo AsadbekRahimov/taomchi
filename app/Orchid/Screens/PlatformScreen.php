@@ -18,6 +18,7 @@ use App\Orchid\Layouts\Charts\PaymentChart;
 use App\Orchid\Layouts\Charts\SellChart;
 use App\Orchid\Layouts\FilterSelections\StatisticSelection;
 use App\Orchid\Layouts\Main\ExpenceModal;
+use App\Services\CacheService;
 use App\Services\ChartService;
 use App\Services\HelperService;
 use App\Services\ReportService;
@@ -81,9 +82,7 @@ class PlatformScreen extends Screen
             return [
                 'statistic' => [
                     'all' => [
-                        'products' => (!Cache::has('products')) ? Cache::rememberForever('products', function () {
-                            return \App\Models\Product::query()->pluck('name', 'id');
-                        })->count() : Cache::get('products')->count(),
+                        'products' => CacheService::ProductsKeyValue()->count(),
                         'customers' => (!Cache::has('customers')) ? Cache::rememberForever('customers', function () {
                             return \App\Models\Customer::query()->pluck('name', 'id');
                         })->count() : Cache::get('customers')->count(),

@@ -3,6 +3,7 @@
 namespace App\Orchid\Resources;
 
 use App\Models\Branch;
+use App\Services\CacheService;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
@@ -226,10 +227,8 @@ class Product extends Resource
         foreach (Branch::all() as $branch) {
             Cache::forget('stock_' . $branch->id);
         }
-        Cache::forget('products');
-        Cache::rememberForever('products', function () {
-            return \App\Models\Product::query()->pluck('name', 'id');
-        });
+        Cache::forget('product_key_value');
+        CacheService::ProductsKeyValue();
     }
 
     public function onDelete(Model $model)
@@ -240,10 +239,8 @@ class Product extends Resource
         }else {
             $model->cards()->delete();
             $model->delete();
-            Cache::forget('products');
-            Cache::rememberForever('products', function () {
-                return \App\Models\Product::query()->pluck('name', 'id');
-            });
+            Cache::forget('product_key_value');
+            CacheService::ProductsKeyValue();
         }
     }
 }

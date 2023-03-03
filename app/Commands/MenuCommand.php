@@ -32,9 +32,7 @@ class MenuCommand extends Command
 
         $text = 'Махсулотни танланг: ';
         $keyboard = [];
-        $products = Cache::rememberForever('products', function () {
-            return \App\Models\Product::query()->get();
-        });
+        $products = Product::query()->get();
 
         foreach ($products as $product) {
             $keyboard[] = [

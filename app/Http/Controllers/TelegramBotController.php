@@ -126,9 +126,7 @@ class TelegramBotController extends Controller
 
     protected function listProducts($chat_id)
     {
-        $products = Cache::rememberForever('products', function () {
-            return \App\Models\Product::query()->get();
-        });
+        $products = \App\Models\Product::query()->get();
 
         if ($products->count() > 0) {
             $text = "Махсулотлар рўйҳати: \n";
