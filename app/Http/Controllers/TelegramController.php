@@ -7,6 +7,7 @@ use App\Commands\CheckoutCommand;
 use App\Commands\MenuCommand;
 use App\Commands\StartCommand;
 use App\Models\TelegramUser;
+use Telegram\Bot\Objects\Update;
 use Telegram\Bot\Api;
 
 
@@ -18,7 +19,6 @@ class TelegramController extends Controller
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
         $this->saveContact($telegram);
-        $this->proccessMessages($telegram->getWebhookUpdate()->getMessage()->getText());
         $this->proccessCallbackData($telegram);
 
         $commands = [
@@ -67,16 +67,6 @@ class TelegramController extends Controller
             }
         }
 
-    }
-
-    private function proccessMessages($text)
-    {
-        /*if (!str_starts_with($text, '/')) {
-             switch ($text) {
-                 case 'Savatcha':
-
-             }
-        }*/
     }
 
     private function proccessCallbackData(Api $telegram)

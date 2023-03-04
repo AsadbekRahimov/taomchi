@@ -56,24 +56,8 @@ class StartCommand extends Command
     {
         $this->telegram->sendMessage([
             'chat_id' => $chat_id,
-            'text' => 'Телефон рақамингизни киритинг.',
-            'parse_mode' => 'HTML',
-            'reply_markup' => json_encode([
-                'keyboard' => [
-                    [
-                        [
-                            'text' => "<a href='\menu'>Maxsulotlarni korsatish</a>",
-                        ],
-                    ],
-                    [
-                        [
-                            'text' => 'Бекор қилиш',
-                        ],
-                    ],
-                ],
-                'resize_keyboard' => true,
-                'one_time_keyboard' => true,
-            ]),
+            'text' => 'Таомчига хуш келибсиз. Менюдан керакли амални танланг!',
         ]);
     }
 }
+//
