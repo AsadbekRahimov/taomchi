@@ -17,7 +17,7 @@ use Telegram\Bot\Api;
 class TelegramController extends Controller
 {
 
-    protected $telegram;
+    protected $telegram, $user, $chat_id;
 
     public function setWebHook()
     {
@@ -33,6 +33,9 @@ class TelegramController extends Controller
     public function run()
     {
         $this->telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
+        $this->chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
+        $this->user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
+
         $this->saveContact();
         $this->proccessCallbackData();
         $this->proccessCommands();
@@ -48,21 +51,36 @@ class TelegramController extends Controller
             $this->startCommand();
         elseif (in_array($text, ['/menu', 'Махсулотлар рўйҳатини кўриш']))
             $this->menuCommand();
+        elseif (in_array($text, ['/cart', 'Саватни кўриш']))
+            $this->cardCommand();
+        elseif (in_array($text, ['/checkout', 'Буюртмани якунлаш']))
+            $this->checkoutCommand();
     }
 
     private function startCommand()
     {
-        $chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
-        $this->telegram->sendChatAction(['chat_id' => $chat_id, 'action' => Actions::TYPING]);
-        $this->startChat($chat_id);
+        $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
+        $this->startChat();
     }
 
     private function menuCommand()
     {
-        $chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
-        $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
-        $this->telegram->sendChatAction(['chat_id' => $chat_id, 'action' => Actions::TYPING]);
-        $user ? $this->replyMenuList($chat_id) : $this->replyContactNumber($chat_id);
+        $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
+        $this->user ? $this->replyMenuList() : $this->replyContactNumber();
+    }
+
+    private function cardCommand()
+    {
+        $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
+        $this->user ? '' : $this->replyContactNumber();
+        $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Savatni korish']);
+    }
+
+    private function checkoutCommand()
+    {
+        $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
+        $this->user ? '' : $this->replyContactNumber();
+        $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Buyurtmani yakunlash']);
     }
 
     private function saveContact()
@@ -71,18 +89,17 @@ class TelegramController extends Controller
         if ($message->has('contact'))
         {
             $number = $message->contact->phone_number;
-            $chat_id = $message->contact->user_id;
 
-            $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
+            $user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
             if ($user) {
-                $this->telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
+                $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
             }elseif (strlen($number) != 13)
             {
-                $this->telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
+                $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
-                TelegramUser::createNewUser($chat_id, $message->from, substr($number, 4));
-                $this->telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
-                $this->startChat($chat_id);
+                TelegramUser::createNewUser($this->chat_id, $message->from, substr($number, 4));
+                $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
+                $this->startChat();
             }
         }
 
@@ -91,8 +108,6 @@ class TelegramController extends Controller
     private function proccessCallbackData()
     {
         if($this->telegram->getWebhookUpdate()->has('callback_query')) {
-            $chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
-            $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
             $callBackData = $this->telegram->getWebhookUpdate()->callbackQuery->data;
 
             if (str_starts_with($callBackData, 'product_')) {
@@ -111,11 +126,12 @@ class TelegramController extends Controller
                     $cart->increment('count');
                 }*/
             }
+
             $countKeyboard = $this->getCountKeyboard($callBackData);
 
             $this->telegram->sendMessage([
-                'chat_id' => $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId(),
-                'text' => $this->telegram->getWebhookUpdate()->callbackQuery->data,
+                'chat_id' => $this->chat_id,
+                'text' => $callBackData,
                 'reply_markup' => json_encode([
                     'inline_keyboard' => $countKeyboard,
                 ]),
@@ -171,10 +187,10 @@ class TelegramController extends Controller
         ];
     }
 
-    private function replyContactNumber($chat_id)
+    private function replyContactNumber()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $chat_id,
+            'chat_id' => $this->chat_id,
             'text' => 'Телефон рақамингизни киритинг.',
             'reply_markup' => json_encode([
                 'keyboard' => [
@@ -196,10 +212,10 @@ class TelegramController extends Controller
         ]);
     }
 
-    private function startChat($chat_id)
+    private function startChat()
     {
         $this->telegram->sendMessage([
-            'chat_id' => $chat_id,
+            'chat_id' => $this->chat_id,
             'text' => 'Таомчига хуш келибсиз. Менюдан керакли амални танланг!',
             'reply_markup' => json_encode([
                 'keyboard' => [
@@ -223,7 +239,7 @@ class TelegramController extends Controller
         ]);
     }
 
-    private function replyMenuList($chat_id)
+    private function replyMenuList()
     {
         $text = 'Махсулотни танланг: ';
         $keyboard = [];
@@ -238,7 +254,7 @@ class TelegramController extends Controller
         }
 
         $this->telegram->sendMessage([
-            'chat_id' => $chat_id,
+            'chat_id' => $this->chat_id,
             'text' => $text,
             'reply_markup' => json_encode([
                 'inline_keyboard' => $keyboard,
