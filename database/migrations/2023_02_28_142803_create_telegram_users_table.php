@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('telegram_id')->unique();
             $table->string('phone')->nullable();
+            $table->string('name')->nullable();
+            $table->string('username')->nullable();
             $table->integer('customer_id')->nullable();
             $table->timestamps();
         });

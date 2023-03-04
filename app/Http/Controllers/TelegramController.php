@@ -42,7 +42,7 @@ class TelegramController extends Controller
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
         $response = $telegram->setWebhook([
-            'url' => 'https://f971-185-139-137-1.eu.ngrok.io/bot'
+            'url' => 'https://iceboy.agro.uz/bot'
         ]);
 
         return $response;
@@ -63,7 +63,7 @@ class TelegramController extends Controller
             {
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
-                TelegramUser::createNewUser($chat_id, substr($number, 4));
+                TelegramUser::createNewUser($chat_id, $message->from, substr($number, 4));
                 $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
             }
         }
