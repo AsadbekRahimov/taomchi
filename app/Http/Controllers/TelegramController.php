@@ -2,15 +2,10 @@
 
 namespace App\Http\Controllers;
 
-use App\Commands\CartCommand;
-use App\Commands\CheckoutCommand;
-use App\Commands\MenuCommand;
-use App\Commands\StartCommand;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
 use App\Services\CacheService;
 use Telegram\Bot\Actions;
-use Telegram\Bot\Answers\Answerable;
 use Telegram\Bot\Api;
 
 
@@ -19,20 +14,20 @@ class TelegramController extends Controller
 
     protected $telegram, $user, $chat_id;
 
+    public function __construct()
+    {
+        $this->telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
+    }
+
     public function setWebHook()
     {
-        $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
-
-        $response = $telegram->setWebhook([
-            'url' => 'https://9d96-188-113-206-162.in.ngrok.io/bot'
+        return $this->telegram->setWebhook([
+            'url' => env('APP_URL') . '/bot'
         ]);
-
-        return $response;
     }
 
     public function run()
     {
-        $this->telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
         $this->chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
         $this->user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
 
