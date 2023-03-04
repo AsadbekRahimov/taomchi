@@ -7,6 +7,8 @@ use App\Commands\CheckoutCommand;
 use App\Commands\MenuCommand;
 use App\Commands\StartCommand;
 use App\Models\TelegramUser;
+use App\Models\TelegramUserCard;
+use App\Services\CacheService;
 use Telegram\Bot\Objects\Update;
 use Telegram\Bot\Api;
 
@@ -72,9 +74,26 @@ class TelegramController extends Controller
     private function proccessCallbackData(Api $telegram)
     {
         if($telegram->getWebhookUpdate()->has('callback_query')) {
-
+            $chat_id = $telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
+            $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
             $callBackData = $telegram->getWebhookUpdate()->callbackQuery->data;
 
+            if (str_starts_with($callBackData, 'product_')) {
+                $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
+
+                /*$cart = TelegramUserCard::query()->where('telegram_user_id', $user->id)
+                    ->where('product_id', $product_id)->first();
+
+                if (!$cart) {
+                    TelegramUserCard::query()->create([
+                        'telegram_user_id' => $user->id,
+                        'product_id' => $product_id,
+                        'count' => 1
+                    ]);
+                } else {
+                    $cart->increment('count');
+                }*/
+            }
             $countKeyboard = $this->getCountKeyboard($callBackData);
 
             $telegram->sendMessage([

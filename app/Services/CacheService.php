@@ -14,6 +14,13 @@ class CacheService
         });
     }
 
+    public static function getProducts()
+    {
+        return Cache::rememberForever('products', function () {
+            return \App\Models\Product::query()->get();
+        });
+    }
+
     public static function getCustomers()
     {
         return Cache::rememberForever('customers', function () {

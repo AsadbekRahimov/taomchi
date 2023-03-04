@@ -5,7 +5,7 @@ namespace App\Commands;
 use App\Models\Product;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
-
+use App\Services\CacheService;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Commands\Command;
 use Telegram\Bot\Objects\CallbackQuery;
@@ -32,9 +32,8 @@ class MenuCommand extends Command
 
         $text = 'Махсулотни танланг: ';
         $keyboard = [];
-        $products = Product::query()->get();
 
-        foreach ($products as $product) {
+        foreach (CacheService::getProducts() as $product) {
             $keyboard[] = [
                 [
                     'text' => $product->name . ' - ' . number_format($product->one_price) . ' сўм',
