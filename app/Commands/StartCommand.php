@@ -24,10 +24,7 @@ class StartCommand extends Command
         if (!$user) {
             $this->replyContactNumber();
         } else {
-            $this->telegram->sendMessage([
-                'chat_id' => $chat_id,
-                'text' => 'Таомчига хуш келибсиз.'
-            ]);
+            $this->startChat();
         }
     }
 
@@ -41,6 +38,30 @@ class StartCommand extends Command
                         [
                             'text' => 'Телефон рақамни юбориш',
                             'request_contact' => true,
+                        ],
+                    ],
+                    [
+                        [
+                            'text' => 'Бекор қилиш',
+                        ],
+                    ],
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]),
+        ]);
+    }
+
+    private function startChat()
+    {
+        $this->replyWithMessage([
+            'text' => 'Телефон рақамингизни киритинг.',
+            'parse_mode' => 'HTML',
+            'reply_markup' => json_encode([
+                'keyboard' => [
+                    [
+                        [
+                            'text' => '<a href="\menu">Maxsulotlarni korsatish</a>',
                         ],
                     ],
                     [

@@ -43,8 +43,7 @@ class MenuCommand extends Command
             ];
         }
 
-        $this->telegram->sendMessage([
-            'chat_id' => $chat_id,
+        $this->replyWithMessage([
             'text' => $text,
             'reply_markup' => json_encode([
                 'inline_keyboard' => $keyboard,

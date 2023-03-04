@@ -16,7 +16,7 @@ class CheckoutCommand extends Command
 {
     protected $name = 'checkout';
 
-    protected $description = 'Саватчани кўрсатиш';
+    protected $description = 'Буюртмани якунлаб юбориш.';
 
     public function handle()
     {

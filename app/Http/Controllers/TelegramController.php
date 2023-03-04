@@ -17,8 +17,9 @@ class TelegramController extends Controller
     {
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
-        $this->proccessCallbackData($telegram);
         $this->saveContact($telegram);
+        $this->proccessMessages($telegram->getWebhookUpdate()->getMessage()->getText());
+        $this->proccessCallbackData($telegram);
 
         $commands = [
             StartCommand::class,
@@ -68,6 +69,16 @@ class TelegramController extends Controller
 
     }
 
+    private function proccessMessages($text)
+    {
+        /*if (!str_starts_with($text, '/')) {
+             switch ($text) {
+                 case 'Savatcha':
+
+             }
+        }*/
+    }
+
     private function proccessCallbackData(Api $telegram)
     {
         if($telegram->getWebhookUpdate()->has('callback_query')) {
@@ -115,6 +126,20 @@ class TelegramController extends Controller
                 [
                     'text' => '6',
                     'callback_data' => 'add_6_' . $callBackData
+                ],
+            ],
+            [
+                [
+                    'text' => '7',
+                    'callback_data' => 'add_7_' . $callBackData
+                ],
+                [
+                    'text' => '8',
+                    'callback_data' => 'add_8_'. $callBackData
+                ],
+                [
+                    'text' => '8',
+                    'callback_data' => 'add_8_' . $callBackData
                 ],
             ]
         ];
