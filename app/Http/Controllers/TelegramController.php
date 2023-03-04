@@ -2,7 +2,6 @@
 
 namespace App\Http\Controllers;
 
-use App\Commands\CancelCommand;
 use App\Commands\CartCommand;
 use App\Commands\CheckoutCommand;
 use App\Commands\MenuCommand;
@@ -23,7 +22,6 @@ class TelegramController extends Controller
 
         $commands = [
             StartCommand::class,
-            CancelCommand::class,
             MenuCommand::class,
             CartCommand::class,
             CheckoutCommand::class,
