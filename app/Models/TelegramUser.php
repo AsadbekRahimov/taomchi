@@ -30,4 +30,15 @@ class TelegramUser extends Model
             'username' => $username,
         ]);
     }
+
+    public function updateUserInfo($from)
+    {
+        $first_name = $from->has('first_name') ? $from->first_name : '';
+        $last_name = $from->has('last_name') ? $from->last_name : '';
+        $username = $from->has('username') ? $from->username : null;
+        $this->query()->update([
+            'name' => $first_name . ' ' . $last_name,
+            'username' => $username,
+        ]);
+    }
 }

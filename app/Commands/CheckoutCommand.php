@@ -65,6 +65,8 @@ class CheckoutCommand extends Command
             $cart->delete();
         }
 
+        $user->updateUserInfo($message->from);
+
         $this->telegram->sendMessage([
             'chat_id' => $chat_id,
             'text' => 'Буюртма расмийлаштирилди!'
