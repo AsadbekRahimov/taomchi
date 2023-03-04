@@ -9,49 +9,65 @@ use App\Commands\StartCommand;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
 use App\Services\CacheService;
-use Telegram\Bot\Objects\Update;
+use Telegram\Bot\Actions;
+use Telegram\Bot\Answers\Answerable;
 use Telegram\Bot\Api;
 
 
 class TelegramController extends Controller
 {
 
-    public function run()
-    {
-        $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
-
-        $this->saveContact($telegram);
-        $this->proccessCallbackData($telegram);
-
-        $commands = [
-            StartCommand::class,
-            MenuCommand::class,
-            CartCommand::class,
-            CheckoutCommand::class,
-        ];
-
-        foreach ($commands as $command)
-        {
-            $telegram->addCommand(new $command);
-        }
-
-        $telegram->commandsHandler(true);
-    }
+    protected $telegram;
 
     public function setWebHook()
     {
         $telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
 
         $response = $telegram->setWebhook([
-            'url' => 'https://iceboy.agro.uz/bot'
+            'url' => 'https://9d96-188-113-206-162.in.ngrok.io/bot'
         ]);
 
         return $response;
     }
 
-    private function saveContact($telegram)
+    public function run()
     {
-        $message = $telegram->getWebhookUpdate()->getMessage();
+        $this->telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
+        $this->saveContact();
+        $this->proccessCallbackData();
+        $this->proccessCommands();
+
+        $this->telegram->commandsHandler(true);
+    }
+
+    private function proccessCommands()
+    {
+        $text = $this->telegram->getWebhookUpdate()->getMessage()->getText();
+
+        if (in_array($text, ['/start', 'Бошига қайтиш']))
+            $this->startCommand();
+        elseif (in_array($text, ['/menu', 'Махсулотлар рўйҳатини кўриш']))
+            $this->menuCommand();
+    }
+
+    private function startCommand()
+    {
+        $chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
+        $this->telegram->sendChatAction(['chat_id' => $chat_id, 'action' => Actions::TYPING]);
+        $this->startChat($chat_id);
+    }
+
+    private function menuCommand()
+    {
+        $chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
+        $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
+        $this->telegram->sendChatAction(['chat_id' => $chat_id, 'action' => Actions::TYPING]);
+        $user ? $this->replyMenuList($chat_id) : $this->replyContactNumber($chat_id);
+    }
+
+    private function saveContact()
+    {
+        $message = $this->telegram->getWebhookUpdate()->getMessage();
         if ($message->has('contact'))
         {
             $number = $message->contact->phone_number;
@@ -59,24 +75,25 @@ class TelegramController extends Controller
 
             $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
             if ($user) {
-                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
+                $this->telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
             }elseif (strlen($number) != 13)
             {
-                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
+                $this->telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
                 TelegramUser::createNewUser($chat_id, $message->from, substr($number, 4));
-                $telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
+                $this->telegram->sendMessage(['chat_id' => $chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
+                $this->startChat($chat_id);
             }
         }
 
     }
 
-    private function proccessCallbackData(Api $telegram)
+    private function proccessCallbackData()
     {
-        if($telegram->getWebhookUpdate()->has('callback_query')) {
-            $chat_id = $telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
+        if($this->telegram->getWebhookUpdate()->has('callback_query')) {
+            $chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
             $user = TelegramUser::query()->where('telegram_id', $chat_id)->first();
-            $callBackData = $telegram->getWebhookUpdate()->callbackQuery->data;
+            $callBackData = $this->telegram->getWebhookUpdate()->callbackQuery->data;
 
             if (str_starts_with($callBackData, 'product_')) {
                 $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
@@ -96,9 +113,9 @@ class TelegramController extends Controller
             }
             $countKeyboard = $this->getCountKeyboard($callBackData);
 
-            $telegram->sendMessage([
-                'chat_id' => $telegram->getWebhookUpdate()->getMessage()->getChat()->getId(),
-                'text' => $telegram->getWebhookUpdate()->callbackQuery->data,
+            $this->telegram->sendMessage([
+                'chat_id' => $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId(),
+                'text' => $this->telegram->getWebhookUpdate()->callbackQuery->data,
                 'reply_markup' => json_encode([
                     'inline_keyboard' => $countKeyboard,
                 ]),
@@ -152,6 +169,81 @@ class TelegramController extends Controller
                 ],
             ]
         ];
+    }
+
+    private function replyContactNumber($chat_id)
+    {
+        $this->telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => 'Телефон рақамингизни киритинг.',
+            'reply_markup' => json_encode([
+                'keyboard' => [
+                    [
+                        [
+                            'text' => 'Телефон рақамни юбориш',
+                            'request_contact' => true,
+                        ]
+                    ],
+                    [
+                        [
+                            'text' => 'Бошига қайтиш',
+                        ]
+                    ]
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]),
+        ]);
+    }
+
+    private function startChat($chat_id)
+    {
+        $this->telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => 'Таомчига хуш келибсиз. Менюдан керакли амални танланг!',
+            'reply_markup' => json_encode([
+                'keyboard' => [
+                    [
+                        [
+                            'text' => 'Махсулотлар рўйҳатини кўриш',
+                        ]
+                    ],
+                    [
+                        [
+                            'text' => 'Саватни кўриш'
+                        ],
+                        [
+                            'text' => 'Буюртмани якунлаш'
+                        ]
+                    ]
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]),
+        ]);
+    }
+
+    private function replyMenuList($chat_id)
+    {
+        $text = 'Махсулотни танланг: ';
+        $keyboard = [];
+
+        foreach (CacheService::getProducts() as $product) {
+            $keyboard[] = [
+                [
+                    'text' => $product->name . ' - ' . number_format($product->one_price) . ' сўм',
+                    'callback_data' => 'product_' . $product->id,
+                ],
+            ];
+        }
+
+        $this->telegram->sendMessage([
+            'chat_id' => $chat_id,
+            'text' => $text,
+            'reply_markup' => json_encode([
+                'inline_keyboard' => $keyboard,
+            ]),
+        ]);
     }
 
 }
