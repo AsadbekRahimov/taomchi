@@ -16,7 +16,7 @@ class TelegramController extends Controller
 
     public function __construct()
     {
-        $this->telegram = new Api('6019873449:AAFRex1zM2BltwZOigWq8aMOAKL5qUwFDHk');
+        $this->telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
     }
 
     public function setWebHook()
@@ -104,11 +104,18 @@ class TelegramController extends Controller
         if($this->telegram->getWebhookUpdate()->has('callback_query')) {
             $callBackData = $this->telegram->getWebhookUpdate()->callbackQuery->data;
 
-            if (str_starts_with($callBackData, 'product_')) {
+            if (str_starts_with($callBackData, 'product_'))
                 $this->selectProduct($callBackData);
-            } elseif (str_starts_with($callBackData, 'add_')) {
+            elseif (str_starts_with($callBackData, 'add_'))
                 $this->addProductToCart($callBackData);
-            }
+            elseif ($callBackData == 'checkout')
+                $this->checkoutCommand();
+            elseif ($callBackData == 'cart_clear')
+                $this->cartClear();
+            elseif ($callBackData == 'delete_product')
+                $this->cartProductsList();
+            elseif (str_starts_with($callBackData, 'clear_'))
+                $this->deleteProductFromCard($callBackData);
 
             /*$this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
@@ -258,24 +265,106 @@ class TelegramController extends Controller
                 'chat_id' => $this->chat_id,
                 'text' => 'Саватда махсулотлар мавжуд эмас!',
             ]);
-            return;
+        } else {
+            $message = "Саватдаги махсулотлар:  \n\n";
+            $total_price = 0;
+            foreach ($carts as $cart) {
+                $product_price = $cart->product->one_price * $cart->count;
+                $message .= $cart->product->name . ' (' . number_format($cart->product->one_price) .  ') x ' .
+                    $cart->count . ' = ' . number_format($product_price) . "\n";
+                $total_price += $product_price;
+            }
+
+            $message .= "\nУмумий суммаси: " . number_format($total_price);
+
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $message,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => 'Буюртмани якунлаш',
+                                'callback_data' => 'checkout'
+                            ]
+                        ],
+                        [
+                            [
+                                'text' => 'Саватдаги махсулотни ўчириш',
+                                'callback_data' => 'delete_product'
+                            ]
+                        ],
+                        [
+                            [
+                                'text' => 'Саватни тўлиқ тозалаш',
+                                'callback_data' => 'cart_clear'
+                            ]
+                        ]
+                    ]
+                ]),
+            ]);
         }
 
-        $message = "Саватдаги махсулотлар:  \n\n";
-        $total_price = 0;
+    }
+
+    private function cartClear()
+    {
+        $carts = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->get();
+
+        if ($carts->isEmpty()) {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Саватда махсулотлар мавжуд эмас!',
+            ]);
+        } else {
+            TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->delete();
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Саватдаги махсулотлар ўчирилди.',
+            ]);
+        }
+    }
+
+    private function cartProductsList()
+    {
+        $carts = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->get();
+        $keyboard = [];
+
         foreach ($carts as $cart) {
-            $product_price = $cart->product->one_price * $cart->count;
-            $message .= $cart->product->name . ' (' . number_format($cart->product->one_price) .  ') x ' .
-                $cart->count . ' = ' . number_format($product_price) . "\n";
-            $total_price += $product_price;
+            $keyboard[] = [
+                [
+                    'text' => $cart->product->name . ' - ' . $cart->count . ' дона',
+                    'callback_data' => 'clear_' . $cart->id,
+                ],
+            ];
         }
-
-        $message .= "\nУмумий суммаси: " . number_format($total_price);
 
         $this->telegram->sendMessage([
             'chat_id' => $this->chat_id,
-            'text' => $message,
+            'text' => 'Ўчириладиган махсулотни танланг: ',
+            'reply_markup' => json_encode([
+                'inline_keyboard' => $keyboard,
+            ]),
         ]);
+    }
+
+    private function deleteProductFromCard($callBackData)
+    {
+        $cart = TelegramUserCard::query()->find(explode('_', $callBackData)[1]);
+
+        if ($cart) {
+            $product_name = $cart->product->name;
+            $cart->delete();
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $product_name . ' саватдан ўчирилди.',
+            ]);
+        } else {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Саватда бундай махсулот топилмади!',
+            ]);
+        }
     }
 
     private function getCountKeyboard($callBackData)
