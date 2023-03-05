@@ -228,7 +228,9 @@ class Product extends Resource
             Cache::forget('stock_' . $branch->id);
         }
         Cache::forget('product_key_value');
+        Cache::forget('products');
         CacheService::ProductsKeyValue();
+        CacheService::getProducts();
     }
 
     public function onDelete(Model $model)
@@ -240,7 +242,9 @@ class Product extends Resource
             $model->cards()->delete();
             $model->delete();
             Cache::forget('product_key_value');
+            Cache::forget('products');
             CacheService::ProductsKeyValue();
+            CacheService::getProducts();
         }
     }
 }

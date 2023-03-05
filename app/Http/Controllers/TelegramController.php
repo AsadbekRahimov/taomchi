@@ -67,8 +67,7 @@ class TelegramController extends Controller
     private function cardCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->user ? '' : $this->replyContactNumber();
-        $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Savatni korish']);
+        $this->user ? $this->showCartList() : $this->replyContactNumber();
     }
 
     private function checkoutCommand()
@@ -106,80 +105,16 @@ class TelegramController extends Controller
             $callBackData = $this->telegram->getWebhookUpdate()->callbackQuery->data;
 
             if (str_starts_with($callBackData, 'product_')) {
-                $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
-
-                /*$cart = TelegramUserCard::query()->where('telegram_user_id', $user->id)
-                    ->where('product_id', $product_id)->first();
-
-                if (!$cart) {
-                    TelegramUserCard::query()->create([
-                        'telegram_user_id' => $user->id,
-                        'product_id' => $product_id,
-                        'count' => 1
-                    ]);
-                } else {
-                    $cart->increment('count');
-                }*/
+                $this->selectProduct($callBackData);
+            } elseif (str_starts_with($callBackData, 'add_')) {
+                $this->addProductToCart($callBackData);
             }
 
-            $countKeyboard = $this->getCountKeyboard($callBackData);
-
-            $this->telegram->sendMessage([
+            /*$this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => $callBackData,
-                'reply_markup' => json_encode([
-                    'inline_keyboard' => $countKeyboard,
-                ]),
-            ]);
+            ]);*/
         }
-    }
-
-    private function getCountKeyboard($callBackData)
-    {
-        return  [
-            [
-                [
-                    'text' => '1',
-                    'callback_data' => 'add_1_' . $callBackData
-                ],
-                [
-                    'text' => '2',
-                    'callback_data' => 'add_2_' . $callBackData
-                ],
-                [
-                    'text' => '3',
-                    'callback_data' => 'add_3_' .$callBackData
-                ],
-            ],
-            [
-                [
-                    'text' => '4',
-                    'callback_data' => 'add_4_' . $callBackData
-                ],
-                [
-                    'text' => '5',
-                    'callback_data' => 'add_5_'. $callBackData
-                ],
-                [
-                    'text' => '6',
-                    'callback_data' => 'add_6_' . $callBackData
-                ],
-            ],
-            [
-                [
-                    'text' => '7',
-                    'callback_data' => 'add_7_' . $callBackData
-                ],
-                [
-                    'text' => '8',
-                    'callback_data' => 'add_8_'. $callBackData
-                ],
-                [
-                    'text' => '8',
-                    'callback_data' => 'add_8_' . $callBackData
-                ],
-            ]
-        ];
     }
 
     private function replyContactNumber()
@@ -255,6 +190,140 @@ class TelegramController extends Controller
                 'inline_keyboard' => $keyboard,
             ]),
         ]);
+    }
+
+    private function selectProduct($callBackData)
+    {
+        $countKeyboard = $this->getCountKeyboard($callBackData);
+        $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
+        if ($product) {
+            $product_name = $product->name . ' - ' .
+                number_format($product->one_price) . " сўм/дона\nМиқдорини киритинг:";
+
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $product_name,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => $countKeyboard,
+                ]),
+            ]);
+        } else {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Бундай махсулот топилмади!',
+            ]);
+        }
+    }
+
+    private function addProductToCart($callBackData)
+    {
+        $product = CacheService::getProducts()->find(explode('_', $callBackData)[3]);
+        $product_count = explode('_', $callBackData)[1];
+        $cart = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)
+                        ->where('product_id', $product->id)->first();
+
+        if (!$cart) {
+            TelegramUserCard::query()->create([
+                'telegram_user_id' => $this->user->id,
+                'product_id' => $product->id,
+                'count' => $product_count
+            ]);
+            $text = $product_count . ' дона ' . $product->name . ' саватга қўшилди';
+        } else {
+            $cart->increment('count', $product_count);
+            $text = $product_count . ' дона ' . $product->name . " саватга қўшилди \n" .
+                'Саватдаги миқдори: ' . $cart->count . ' дона ';
+        }
+
+        if ($product) {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $text,
+            ]);
+        } else {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Бундай махсулот топилмади!',
+            ]);
+        }
+    }
+
+    private function showCartList()
+    {
+        $carts = TelegramUserCard::query()->with(['product'])
+            ->where('telegram_user_id', $this->user->id)->get();
+
+        if ($carts->isEmpty()) {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Саватда махсулотлар мавжуд эмас!',
+            ]);
+            return;
+        }
+
+        $message = "Саватдаги махсулотлар:  \n\n";
+        $total_price = 0;
+        foreach ($carts as $cart) {
+            $product_price = $cart->product->one_price * $cart->count;
+            $message .= $cart->product->name . ' (' . number_format($cart->product->one_price) .  ') x ' .
+                $cart->count . ' = ' . number_format($product_price) . "\n";
+            $total_price += $product_price;
+        }
+
+        $message .= "\nУмумий суммаси: " . number_format($total_price);
+
+        $this->telegram->sendMessage([
+            'chat_id' => $this->chat_id,
+            'text' => $message,
+        ]);
+    }
+
+    private function getCountKeyboard($callBackData)
+    {
+        return  [
+            [
+                [
+                    'text' => '1',
+                    'callback_data' => 'add_1_' . $callBackData
+                ],
+                [
+                    'text' => '2',
+                    'callback_data' => 'add_2_' . $callBackData
+                ],
+                [
+                    'text' => '3',
+                    'callback_data' => 'add_3_' .$callBackData
+                ],
+            ],
+            [
+                [
+                    'text' => '4',
+                    'callback_data' => 'add_4_' . $callBackData
+                ],
+                [
+                    'text' => '5',
+                    'callback_data' => 'add_5_'. $callBackData
+                ],
+                [
+                    'text' => '6',
+                    'callback_data' => 'add_6_' . $callBackData
+                ],
+            ],
+            [
+                [
+                    'text' => '7',
+                    'callback_data' => 'add_7_' . $callBackData
+                ],
+                [
+                    'text' => '8',
+                    'callback_data' => 'add_8_'. $callBackData
+                ],
+                [
+                    'text' => '9',
+                    'callback_data' => 'add_9_' . $callBackData
+                ],
+            ]
+        ];
     }
 
 }
