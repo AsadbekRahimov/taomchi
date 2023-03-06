@@ -17,6 +17,7 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->bigInteger('price');
+            $table->string('state')->default('send_order');
             $table->timestamps();
         });
     }

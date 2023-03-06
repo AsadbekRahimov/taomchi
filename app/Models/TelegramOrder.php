@@ -12,5 +12,6 @@ class TelegramOrder extends Model
     protected $fillable = [
         'user_id',
         'price',
+        'state',
     ];
 }

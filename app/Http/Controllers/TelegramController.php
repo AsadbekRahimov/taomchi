@@ -73,8 +73,7 @@ class TelegramController extends Controller
     private function checkoutCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->user ? '' : $this->replyContactNumber();
-        $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Buyurtmani yakunlash']);
+        $this->user ? $this->finishOrder() : $this->replyContactNumber();
     }
 
     private function saveContact()
@@ -413,6 +412,25 @@ class TelegramController extends Controller
                 ],
             ]
         ];
+    }
+
+    private function finishOrder()
+    {
+        $carts = TelegramUserCard::query()->with(['product'])
+            ->where('telegram_user_id', $this->user->id)->get();
+
+        if ($carts->isEmpty()) {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
+            ]);
+        } else {
+
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Буюртма якунланди.',
+            ]);
+        }
     }
 
 }
