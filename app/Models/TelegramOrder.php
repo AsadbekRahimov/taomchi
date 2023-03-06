@@ -14,4 +14,14 @@ class TelegramOrder extends Model
         'price',
         'state',
     ];
+
+    public const TYPE = [
+        'send_order' => 'Буюртма юборилган',
+        'accepted_order' => 'Буюртма қабул қилинган',
+    ];
+
+    public function products()
+    {
+        return $this->hasMany(TelegramOrderItem::class, 'order_id', 'id');
+    }
 }
