@@ -94,7 +94,7 @@ class TelegramController extends Controller
         $message = $this->telegram->getWebhookUpdate()->getMessage();
         if ($message->has('contact'))
         {
-            $number = $message->contact->phone_number;
+            $number = preg_replace('/\s+/', '', $message->contact->phone_number);
 
             $user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
             if ($user) {
