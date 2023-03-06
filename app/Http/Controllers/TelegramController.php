@@ -7,6 +7,7 @@ use App\Models\TelegramOrderItem;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
 use App\Services\CacheService;
+use App\Services\SendMessageService;
 use Telegram\Bot\Actions;
 use Telegram\Bot\Api;
 
@@ -478,8 +479,9 @@ class TelegramController extends Controller
                 $order->products()->delete();
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chat_id,
-                    'text' => '#' . $order_id . ' рақамли буюртма ўчирилди.',
+                    'text' => '#' . $order_id . ' рақамли буюртма бекор қилинди.',
                 ]);
+                SendMessageService::deleteOrder($order_id);
             } else {
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chat_id,
@@ -529,6 +531,8 @@ class TelegramController extends Controller
                 'chat_id' => $this->chat_id,
                 'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id,
             ]);
+
+            SendMessageService::sendTelegramOrder($order->id);
         }
     }
 

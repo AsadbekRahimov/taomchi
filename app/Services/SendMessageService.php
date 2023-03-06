@@ -6,6 +6,8 @@ use App\Models\Expence;
 use App\Models\Order;
 use App\Models\PurchaseParty;
 use App\Models\Sale;
+use App\Models\TelegramOrder;
+use App\Models\TelegramOrderItem;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -16,7 +18,7 @@ class SendMessageService
     {
         $user = Auth::user()->name;
         $message = 'Сотувчи: #' . Str::slug($user, '_') . "\r\n"
-            . 'Мижоз: #' . $order->customer->name . "\r\n";
+            . 'Мижоз: #' . Str::slug($order->customer->name) . "\r\n";
 
         if ($cards->count())
         {
@@ -30,7 +32,7 @@ class SendMessageService
                      . 'Сана: ' . $order->created_at->toDateTimeString();
         }
 
-        TelegramNotify::sendMessage($message);
+        TelegramNotify::sendMessage($message, 'order');
     }
 
     public static function sendReport()
@@ -47,5 +49,35 @@ class SendMessageService
         else
             $message .= 'Бугунги зарар: ' . number_format($day_profit);
         TelegramNotify::sendReport($message);
+    }
+
+    public static function sendTelegramOrder($order_id)
+    {
+        $order = TelegramOrder::query()->find($order_id);
+        $order_items = TelegramOrderItem::query()->where('order_id', $order->id)->get();
+        $message = 'Буюртма: #' . $order->id . "\r\nТелефон: " . $order->user->phone . "\r\n\r\n";
+
+        if (!$order_items->isEmpty())
+        {
+            $total_price = 0;
+            $message .= 'Махсулотлар: '. "\r\n" . '—————————————————' . "\r\n\r\n";
+            foreach ($order_items as $item) {
+                $item_price = $item->price * $item->count;
+                $total_price += $item_price;
+                $message .=  'Махсулот: ' . $item->product->name . "\r\n"
+                    . 'Микдори: ' . $item->count . "\r\n"
+                    . 'Суммаси: ' . number_format($item->price) . ' | ' . number_format($item_price) . "\r\n\r\n";
+            }
+            $message .= '—————————————————' . "\r\n" . 'Умумий суммаси: ' . number_format($total_price) . "\r\n"
+                . 'Сана: ' . $order->created_at->toDateTimeString();
+        }
+
+        TelegramNotify::sendMessage($message, 'tg_order');
+    }
+
+    public static function deleteOrder($order_id)
+    {
+        $message = '#' . $order_id . ' рақамли буюртма бекор қилинди.';
+        TelegramNotify::sendMessage($message, 'tg_order');
     }
 }

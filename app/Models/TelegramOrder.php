@@ -24,4 +24,9 @@ class TelegramOrder extends Model
     {
         return $this->hasMany(TelegramOrderItem::class, 'order_id', 'id');
     }
+
+    public function user()
+    {
+        return $this->belongsTo(TelegramUser::class, 'user_id', 'id');
+    }
 }

@@ -21,9 +21,9 @@ class TelegramUserObserver
             $telegramUser->update([
                 'customer_id' => $client->id
             ]);
-            TelegramNotify::registerClient($client);
+            TelegramNotify::registerClient($telegramUser, 'old_client');
         } else {
-            TelegramNotify::newClient($telegramUser->phone);
+            TelegramNotify::registerClient($telegramUser, 'new_client');
         }
     }
 }

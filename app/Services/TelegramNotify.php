@@ -2,6 +2,7 @@
 
 namespace App\Services;
 
+use App\Models\TelegramUser;
 use Carbon\Carbon;
 
 class TelegramNotify
@@ -12,15 +13,12 @@ class TelegramNotify
         'tg_order' => '1803552911',
     ];
 
-    public static function sendMessage($text, $caption = null)
+    public static function sendMessage($text, $chat)
     {
-        $chat_id = self::CHAT_TYPE['order'];
+        $chat_id = self::CHAT_TYPE[$chat];
         $url = "https://api.telegram.org/bot5092164055:AAERH5aY3eVnfZucYrK-z63af-2MI5o2IQ8/sendMessage?chat_id=-100" . $chat_id;
 
         $message = $text . "\r\n";
-
-        if (!is_null($caption))
-            $message .= "\r\n" . '#' . $caption;
 
         $post_fields = [
             'chat_id' => '-100' . $chat_id,
@@ -45,6 +43,28 @@ class TelegramNotify
         return self::send($url, $post_fields);
     }
 
+    public static function registerClient(TelegramUser $user, $type)
+    {
+        $message = '';
+        if ($type == 'new_client')
+            $message = "Янги мижоз ботга уланди. \r\n";
+        elseif($type == 'old_client')
+            $message = "Мижозимиз бот га уланди. \r\n";
+
+        $url = "https://api.telegram.org/bot5092164055:AAERH5aY3eVnfZucYrK-z63af-2MI5o2IQ8/sendMessage?chat_id=-100" . self::CHAT_TYPE['tg_order'];
+        $message .= 'Телефон раками: ' . $user->phone . "\r\n";
+        if(!is_null($user->name)) $message .= 'Исми: ' . $user->name . "\r\n";
+        if(!is_null($user->username)) $message .= 'Telegram: @' . $user->username . "\r\n";
+
+        $post_fields = [
+            'chat_id' => '-100' . self::CHAT_TYPE['tg_order'],
+            'text' => $message,
+            'parse_mode' => "HTML",
+        ];
+
+        return self::send($url, $post_fields);
+    }
+
     private static function send(string $url, array $post_fields)
     {
         $ch = curl_init();
@@ -57,35 +77,5 @@ class TelegramNotify
         curl_setopt($ch, CURLOPT_POSTFIELDS, $post_fields);
         $output = curl_exec($ch);
         return $output;
-    }
-
-    public static function newClient($number)
-    {
-        $url = "https://api.telegram.org/bot5092164055:AAERH5aY3eVnfZucYrK-z63af-2MI5o2IQ8/sendMessage?chat_id=-100" . self::CHAT_TYPE['tg_order'];
-        $message = 'Янги мижоз ботга уланди!' . "\r\n" . 'Телефон раками: ' . $number;
-
-        $post_fields = [
-            'chat_id' => '-100' . self::CHAT_TYPE['tg_order'],
-            'text' => $message,
-            'parse_mode' => "HTML",
-        ];
-
-        return self::send($url, $post_fields);
-    }
-
-    public static function registerClient($client)
-    {
-        $url = "https://api.telegram.org/bot5092164055:AAERH5aY3eVnfZucYrK-z63af-2MI5o2IQ8/sendMessage?chat_id=-100" . self::CHAT_TYPE['tg_order'];
-        $message = 'Мижозимиз бот га уланди.' .
-            "\r\n" . 'Исми: ' . $client->name .
-            "\r\n" . 'Телефон раками: ' . $client->phone;
-
-        $post_fields = [
-            'chat_id' => '-100' . self::CHAT_TYPE['tg_order'],
-            'text' => $message,
-            'parse_mode' => "HTML",
-        ];
-
-        return self::send($url, $post_fields);
     }
 }
