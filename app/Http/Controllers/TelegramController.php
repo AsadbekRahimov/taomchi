@@ -2,6 +2,8 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\TelegramOrder;
+use App\Models\TelegramOrderItem;
 use App\Models\TelegramUser;
 use App\Models\TelegramUserCard;
 use App\Services\CacheService;
@@ -366,6 +368,43 @@ class TelegramController extends Controller
         }
     }
 
+    private function finishOrder()
+    {
+        $carts = TelegramUserCard::query()->with(['product'])
+            ->where('telegram_user_id', $this->user->id)->get();
+
+        if ($carts->isEmpty()) {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
+            ]);
+        } else {
+            $total_price = 0;
+            foreach ($carts as $cart) {
+                $total_price += $cart->product->one_price * $cart->count;
+            }
+
+            $order = TelegramOrder::query()->create([
+                'user_id' => $this->user->id,
+                'price' => $total_price,
+            ]);
+
+            foreach ($carts as $cart) {
+                TelegramOrderItem::query()->create([
+                    'order_id' => $order->id,
+                    'product_id' => $cart->product->id,
+                    'count' => $cart->count,
+                    'price' => $cart->product->one_price,
+                ]);
+                $cart->delete();
+            }
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id,
+            ]);
+        }
+    }
+
     private function getCountKeyboard($callBackData)
     {
         return  [
@@ -380,7 +419,7 @@ class TelegramController extends Controller
                 ],
                 [
                     'text' => '3',
-                    'callback_data' => 'add_3_' .$callBackData
+                    'callback_data' => 'add_3_' . $callBackData
                 ],
             ],
             [
@@ -412,25 +451,6 @@ class TelegramController extends Controller
                 ],
             ]
         ];
-    }
-
-    private function finishOrder()
-    {
-        $carts = TelegramUserCard::query()->with(['product'])
-            ->where('telegram_user_id', $this->user->id)->get();
-
-        if ($carts->isEmpty()) {
-            $this->telegram->sendMessage([
-                'chat_id' => $this->chat_id,
-                'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
-            ]);
-        } else {
-
-            $this->telegram->sendMessage([
-                'chat_id' => $this->chat_id,
-                'text' => 'Буюртма якунланди.',
-            ]);
-        }
     }
 
 }
