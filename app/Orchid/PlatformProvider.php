@@ -45,6 +45,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->permission('platform.stock.orders')
                 ->title('Сотув'),
 
+            Menu::make('Телеграм')
+                ->icon('paper-plane')
+                ->route('platform.telegram-orders')
+                ->permission('platform.stock.telegram-orders'),
+
             Menu::make('Тўловлар')
                 ->icon('dollar')
                 ->route('platform.payments')
@@ -100,6 +105,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.stock.sell_parties', 'Сотилган партиялар')
                 ->addPermission('platform.stock.sales', 'Сотилган махсулотлар')
                 ->addPermission('platform.stock.orders', 'Буюртмалар')
+                ->addPermission('platform.stock.telegram-orders', 'Телеграм ботдан буюртмалар')
                 ->addPermission('platform.stock.payments', 'Тўловлар')
                 ->addPermission('platform.stock.expences', 'Чиқимлар')
                 ->addPermission('platform.stock.customer_duties', 'Қарздорлар')

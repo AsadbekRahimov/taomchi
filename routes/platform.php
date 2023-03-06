@@ -142,6 +142,15 @@ Route::screen('orders', \App\Orchid\Screens\Order\OrderListScreen::class)
             ->push('Буюртмалар');
     });
 
+// Telegramdan Buyurtmalar
+Route::screen('telegram-orders', \App\Orchid\Screens\Order\TelegramOrderListScreen::class)
+    ->name('platform.telegram-orders')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Телеграмдан буюртмалар');
+    });
+
 // Buyurtmalar
 Route::screen('payments', \App\Orchid\Screens\Payment\PaymentListScreen::class)
     ->name('platform.payments')
