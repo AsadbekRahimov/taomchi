@@ -3,12 +3,18 @@
 namespace App\Orchid\Screens\Order;
 
 
+use App\Models\Customer;
 use App\Models\TelegramOrder;
+use App\Models\TelegramUser;
+use App\Orchid\Layouts\TelegramOrder\addUserModal;
 use App\Orchid\Layouts\TelegramOrder\fullPaymentModal;
 use App\Orchid\Layouts\TelegramOrder\OrderListTable;
 use App\Orchid\Layouts\TelegramOrder\partPaymentModal;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -69,10 +75,42 @@ class TelegramOrderListScreen extends Screen
     {
         return [
             OrderListTable::class,
-            Layout::modal('fullPaymentModal', [fullPaymentModal::class])->applyButton('Тўлаш')->closeButton('Ёпиш'),
-            Layout::modal('partPaymentModal', [partPaymentModal::class])->applyButton('Тўлаш')->closeButton('Ёпиш'),
+            Layout::modal('addUserModal', [addUserModal::class])->async('asyncGetUser')
+                ->applyButton('қўшиш')->closeButton('Ёпиш')->size(Modal::SIZE_LG),
+            Layout::modal('fullPaymentModal', [fullPaymentModal::class])
+                ->applyButton('Тўлаш')->closeButton('Ёпиш'),
+            Layout::modal('partPaymentModal', [partPaymentModal::class])
+                ->applyButton('Тўлаш')->closeButton('Ёпиш'),
         ];
     }
+
+    public function asyncGetUser(TelegramUser $user)
+    {
+        return [
+            'name' => $user->name,
+            'phone' => $user->phone,
+        ];
+    }
+
+    public function saveUser(TelegramUser $user, Request $request)
+    {
+        $customer = Customer::query()->create([
+            'name' => $request->name,
+            'phone' => $request->phone,
+            'telephone' => $request->telephone,
+            'address' => $request->address,
+            'place_id' => $request->place_id
+        ]);
+
+        $user->update([
+           'customer_id' => $customer->id
+        ]);
+
+        Cache::forget('customers');
+        CacheService::getCustomers();
+        Alert::success('Янги мижоз қўшилди');
+    }
+
 
 
     /*public function duty(Request $request)
