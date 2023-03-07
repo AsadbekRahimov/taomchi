@@ -106,7 +106,7 @@ class TelegramController extends Controller
             {
                 $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
-                TelegramUser::createNewUser($this->chat_id, $message->from, substr($number, 4));
+                TelegramUser::createNewUser($this->chat_id, $message->from, substr($number, 3));
                 $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сиз муаффақиятли рўйҳатдан ўтдингиз.']);
                 $this->startChat();
             }
