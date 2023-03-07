@@ -94,12 +94,15 @@ class TelegramController extends Controller
         $message = $this->telegram->getWebhookUpdate()->getMessage();
         if ($message->has('contact'))
         {
-            $number = preg_replace('/\s+/', '', $message->contact->phone_number);
+            $number = $message->contact->phone_number;
+            if (str_starts_with($number, '+')) {
+                $number = substr($number, 1);
+            }
 
             $user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
             if ($user) {
                 $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сиз телефон рақаминигизни киритиб бўлганисиз!']);
-            }elseif (strlen($number) != 13)
+            }elseif (strlen($number) != 12)
             {
                 $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
