@@ -111,7 +111,14 @@ class TelegramOrderListScreen extends Screen
         Alert::success('Янги мижоз қўшилди');
     }
 
+    public function acceptOrder(TelegramOrder $order)
+    {
+        $order->update([
+            'state' => 'accepted_order',
+        ]);
 
+        Alert::success('Буюртма муффақиятли қабул қилинди.');
+    }
 
     /*public function duty(Request $request)
     {

@@ -2,11 +2,13 @@
 
 namespace App\Orchid\Layouts\TelegramOrder;
 
+use App\Models\TelegramOrder;
 use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\DropDown;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Color;
@@ -47,15 +49,29 @@ class OrderListTable extends Table
             TD::make('total_price', 'Умумий суммаси')->render(function ($model) {
                 return number_format($model->price);
             }),
+            TD::make('state', 'Буюртма холати')->render(function ($model) {
+                return $model->state == 'send_order' ?
+                    Button::make(TelegramOrder::TYPE[$model->state])
+                        ->type(Color::WARNING())
+                        ->method('acceptOrder')
+                        ->icon('check')
+                        ->parameters([
+                            'id' => $model->id,
+                        ])->confirm('Сиз #' . $model->id . ' рақамли буюртмани қабул қилмоқчимисиз?') :
+                    Button::make(TelegramOrder::TYPE[$model->state])
+                        ->type(Color::SUCCESS())
+                        ->icon('check')->disabled();
+            }),
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
             TD::make('action', 'Aмаллар')->render(function ($model) use ($call_center, $superadmin, $payment) {
                 $is_customer = (bool)$model->user->customer_id;
                 $customer_name = $model->user->customer_id ? $model->user->customer->name : $model->user->phone;
-                return $is_customer ? DropDown::make('')->icon('list')->list([
+                $accepted = $model->state == 'accepted_order';
+                return $is_customer? DropDown::make('')->icon('list')->list([
                     Link::make('Тўлов чеки')->icon('printer')
-                        ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($superadmin || $call_center),
+                        ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($accepted && ($superadmin || $call_center)),
                     Button::make('Қарзга бериш')
                         ->method('duty')
                         ->icon('clock')
@@ -63,7 +79,7 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->confirm($customer_name . ' - Қарз суммаси: ' . number_format($model->price))
-                        ->canSee($payment),
+                        ->canSee($accepted && $payment),
                     ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
@@ -72,7 +88,7 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
-                        ->canSee($payment),
+                        ->canSee($accepted && $payment),
                     ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
@@ -81,7 +97,7 @@ class OrderListTable extends Table
                             'id' => $model->id,
                             'customer_id' => $model->customer_id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
-                        ->canSee($payment),
+                        ->canSee($accepted && $payment),
                     Button::make('Буюртмани бекор қилиш')
                         ->method('deleteCard')
                         ->icon('trash')
