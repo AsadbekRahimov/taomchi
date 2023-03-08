@@ -77,7 +77,6 @@ class OrderListTable extends Table
                         ->icon('clock')
                         ->parameters([
                             'id' => $model->id,
-                            'customer_id' => $model->customer_id,
                         ])->confirm($customer_name . ' - Қарз суммаси: ' . number_format($model->price))
                         ->canSee($accepted && $payment),
                     ModalToggle::make('Тўлиқ тўлов қилиш')

@@ -4,6 +4,9 @@ namespace App\Orchid\Screens\Order;
 
 
 use App\Models\Customer;
+use App\Models\Duty;
+use App\Models\Sale;
+use App\Models\SalesParty;
 use App\Models\TelegramOrder;
 use App\Models\TelegramUser;
 use App\Orchid\Layouts\TelegramOrder\addUserModal;
@@ -124,21 +127,19 @@ class TelegramOrderListScreen extends Screen
     public function deleteOrder(TelegramOrder $order)
     {
         $order_id = $order->id;
-        $order->products()->delete();
-        $order->delete();
+        $this->deleteOrderWithItem($order);
         BotUserNotify::deleteOrder($order->user->telegram_id, $order_id);
         Alert::success('Буюртма муффақиятли бекор қилинди');
     }
 
-    /*public function duty(Request $request)
+    public function duty(TelegramOrder $order)
     {
-        $order = Order::query()->find($request->id);
-        $party = SalesParty::createParty($request->customer_id, $order->discount);
-        Duty::duty($party->id, $order);
-        Sale::createSales($party->id, $request->id, $party->branch_id);
-        $this->deleteCard($request);
+        $party = SalesParty::createParty($order->user->customer_id, 0);
+        Duty::tgUserDuty($party->id, $order);
+        Sale::createTgSales($party->id, $order->id, $party->branch_id, $order->user->customer_id);
+        $this->deleteOrderWithItem($order);
         Alert::success('Махсулотлар муаффақиятли сотилди');
-    }*/
+    }
 
     /*public function fullPayment(Request $request)
     {
@@ -165,4 +166,10 @@ class TelegramOrderListScreen extends Screen
             Alert::success('Махсулотлар муаффақиятли сотилди');
         }
     }*/
+
+    private function deleteOrderWithItem(TelegramOrder $order)
+    {
+        $order->products()->delete();
+        $order->delete();
+    }
 }

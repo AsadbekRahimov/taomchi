@@ -64,6 +64,22 @@ class Sale extends Model
         }
     }
 
+    public static function createTgSales($party_id, $order_id, $branch_id, $customer_id)
+    {
+        $cards = TelegramOrderItem::query()->where('order_id', $order_id)->get();
+        foreach ($cards as $item)
+        {
+            self::query()->create([
+                'customer_id' => $customer_id,
+                'product_id' => $item->product_id,
+                'quantity' => $item->count,
+                'price' => $item->price,
+                'branch_id' => $branch_id,
+                'party_id' => $party_id,
+            ]);
+        }
+    }
+
     public function getTotalAttribute($value)
     {
         return $this->price * $this->quantity;
