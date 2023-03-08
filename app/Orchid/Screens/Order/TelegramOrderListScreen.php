@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Order;
 
 use App\Models\Customer;
 use App\Models\Duty;
+use App\Models\Payment;
 use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Models\TelegramOrder;
@@ -141,31 +142,29 @@ class TelegramOrderListScreen extends Screen
         Alert::success('Махсулотлар муаффақиятли сотилди');
     }
 
-    /*public function fullPayment(Request $request)
+    public function fullPayment(TelegramOrder $order, Request $request)
     {
-        $order = Order::query()->find($request->id);
-        $party = SalesParty::createParty($request->customer_id, $order->discount);
-        Payment::addPayment($party->id, $order, $request->type);
-        Sale::createSales($party->id, $request->id, $party->branch_id);
-        $this->deleteCard($request);
+        $party = SalesParty::createParty($order->user->customer_id, 0);
+        Payment::addTgOrderPayment($party->id, $order, $request->type);
+        Sale::createTgSales($party->id, $order->id, $party->branch_id, $order->user->customer_id);
+        $this->deleteOrderWithItem($order);
         Alert::success('Махсулотлар муаффақиятли сотилди');
-    }*/
+    }
 
-    /*public function partPayment(Request $request)
+    public function partPayment(TelegramOrder $order, Request $request)
     {
-        $order = Order::query()->find($request->id);
-        if ($request->price >= ($order->cardsSum() - $order->discount))
+        if ($request->price >= ($order->cardsSum()))
         {
             Alert::error('Қисман тўлаш учун тўлов суммаси махсулот суммасидан кам болиши керак!');
         } else {
-            $party = SalesParty::createParty($request->customer_id, $order->discount);
-            Payment::addPartPayment($party->id, $order, $request->type, $request->price);
-            Duty::paymentDuty($party->id, $order, $request->price);
-            Sale::createSales($party->id, $request->id, $party->branch_id);
-            $this->deleteCard($request);
+            $party = SalesParty::createParty($order->user->customer_id, 0);
+            Payment::addTgOrderPartPayment($party->id, $order, $request->type, $request->price);
+            Duty::tgUserPaymentDuty($party->id, $order, $request->price);
+            Sale::createTgSales($party->id, $order->id, $party->branch_id, $order->user->customer_id);
+            $this->deleteOrderWithItem($order);
             Alert::success('Махсулотлар муаффақиятли сотилди');
         }
-    }*/
+    }
 
     private function deleteOrderWithItem(TelegramOrder $order)
     {

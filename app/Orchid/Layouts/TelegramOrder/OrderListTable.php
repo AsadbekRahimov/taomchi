@@ -85,7 +85,6 @@ class OrderListTable extends Table
                         ->icon('dollar')
                         ->parameters([
                             'id' => $model->id,
-                            'customer_id' => $model->customer_id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
                         ->canSee($accepted && $payment),
                     ModalToggle::make('Қисман тўлов қилиш')
@@ -94,7 +93,6 @@ class OrderListTable extends Table
                         ->icon('book-open')
                         ->parameters([
                             'id' => $model->id,
-                            'customer_id' => $model->customer_id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
                         ->canSee($accepted && $payment),
                     Button::make('Буюртмани бекор қилиш')

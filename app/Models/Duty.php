@@ -52,6 +52,17 @@ class Duty extends Model
         ]);
     }
 
+    public static function tgUserPaymentDuty($party_id, TelegramOrder $order, $price)
+    {
+        return self::query()->create([
+            'customer_id' => $order->user->customer_id,
+            'duty' => $order->cardsSum() - $price,
+            'branch_id' => 1,
+            'party_id' => $party_id,
+            'for_today' => 0,
+        ]);
+    }
+
     public static function duty($party_id, Order $order)
     {
         return self::query()->create([

@@ -72,6 +72,18 @@ class Payment extends Model
         ]);
     }
 
+    public static function addTgOrderPayment($party_id, TelegramOrder $order, $type)
+    {
+        return self::query()->create([
+            'customer_id' => $order->user->customer_id,
+            'price' => $order->cardsSum(),
+            'type' => $type,
+            'branch_id' => 1,
+            'party_id' => $party_id,
+            'user_id' => Auth::user()->id
+        ]);
+    }
+
     public static function addPartPayment($party_id, Order $order, $type, $price)
     {
         if ($price != '0')
@@ -81,6 +93,21 @@ class Payment extends Model
                 'price' => $price,
                 'type' => $type,
                 'branch_id' => $order->branch_id,
+                'party_id' => $party_id,
+                'user_id' => Auth::user()->id,
+            ]);
+        }
+    }
+
+    public static function addTgOrderPartPayment($party_id, TelegramOrder $order, $type, $price)
+    {
+        if ($price != '0')
+        {
+            return self::query()->create([
+                'customer_id' => $order->user->customer_id,
+                'price' => $price,
+                'type' => $type,
+                'branch_id' => 1,
                 'party_id' => $party_id,
                 'user_id' => Auth::user()->id,
             ]);
