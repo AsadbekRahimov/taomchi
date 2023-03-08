@@ -19,10 +19,8 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::get('/checkPrint/{id}', function ($id){
-    $order = \App\Models\Order::query()->with(['cards.product.measure', 'customer'])->find($id);
-    return view('printCheck', compact('order'));
-})->name('printCheck');
+Route::get('/checkPrint/{id}', [\App\Http\Controllers\Controller::class, 'orderCheck'])->name('printCheck');
+Route::get('/print-tg-order/{id}', [\App\Http\Controllers\Controller::class, 'tgOrderCheck'])->name('print-tg-order');
 
 
 Route::get('/bot/webhook', [TelegramController::class, 'setWebHook']);

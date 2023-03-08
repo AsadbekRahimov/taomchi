@@ -91,11 +91,11 @@
     <img  src="{{ asset('/vendor/orchid/icon/ta1.png') }}" alt="">
     <p class="centered">Тел: +998917070907, +998770150907 <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
     <p></p>
-    <p><b>Мижоз: {{ $order->customer->all_name }}</b>
-    @if($order->customer->duties->sum('duty'))
-        <p><b>Эски карздорлик: {{ number_format($order->customer->duties->sum('duty')) }}</b>
+    <p><b>Мижоз: {{ $order->user->customer->all_name }}</b>
+    @if($order->user->customer->duties->sum('duty'))
+        <p><b>Эски карздорлик: {{ number_format($order->user->customer->duties->sum('duty')) }}</b>
     @endif
-    <table class="table table-bordered" >
+    <table class="table table-bordered">
         <thead>
         <tr>
             <th style="border: 1px solid black;">№</th>
@@ -106,14 +106,14 @@
         </thead>
         <tbody>
 
-        @foreach($order->cards as $card)
+        @foreach($order->products as $product)
             <tr>
                 <td style="border: 1px solid black;" >1</td>
-                <td style="border: 1px solid black;" class="description"> {{ $card->product->name }} </td>
+                <td style="border: 1px solid black;" class="description"> {{ $product->product->name }} </td>
 
-                <td style="border: 1px solid black;  white-space: nowrap; padding: 0 2px;">{{ number_format($card->price) }}
-                    <b>x</b> {{ $card->quantity }}</td>
-                <td style="border: 1px solid black;" class="price"> {{ number_format($card->price * $card->quantity) }}</td>
+                <td style="border: 1px solid black;  white-space: nowrap; padding: 0 2px;">{{ number_format($product->price) }}
+                    <b>x</b> {{ $product->count }}</td>
+                <td style="border: 1px solid black;" class="price"> {{ number_format($product->price * $product->count) }}</td>
             </tr>
         @endforeach
 
@@ -126,7 +126,7 @@
         <tr>
             <td style="border: 1px solid black;"></td>
             <td style="border: 1px solid black;" colspan="2" class="description"><b>Жами карздорлик</b></td>
-            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum() - $order->discount + $order->customer->duties->sum('duty')) }}</b></td>
+            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum() + $order->user->customer->duties->sum('duty')) }}</b></td>
         </tr>
 
         </tbody>
@@ -135,7 +135,6 @@
 
 </div>
 <button id="btnPrint" class="hidden-print">Print</button>
-<a href="http://metal.edokon.ru/admin/orders"><button class="hidden-print">Back</button></a>
 <script>
     window.onload = function() { window.print(); }
     const $btnPrint = document.querySelector("#btnPrint");

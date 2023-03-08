@@ -33,4 +33,13 @@ class TelegramOrder extends Model
     {
         return $this->belongsTo(TelegramUser::class, 'user_id', 'id');
     }
+
+    public function cardsSum()
+    {
+        $sum = 0;
+        foreach ($this->products as $product) {
+            $sum += ($product->price * $product->count);
+        }
+        return $sum;
+    }
 }

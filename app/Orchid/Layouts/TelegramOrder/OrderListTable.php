@@ -35,7 +35,9 @@ class OrderListTable extends Table
         $superadmin = Auth::user()->inRole('super_admin') ? 1 : 0;
         $payment = ($user->inRole('courier') or $superadmin) ? 1 : 0;
         return [
-            TD::make('id', 'ID'),
+            TD::make('id', 'ID')->render(function ($model) {
+                return '#' . $model->id;
+            })->cantHide(),
             TD::make('user_id', 'Мижоз')->render(function ($model) {
                 if ($model->user->customer_id)
                     return Link::make($model->user->customer->name)->route('platform.customer_info', ['customer' => $model->user->customer_id]);
@@ -53,7 +55,7 @@ class OrderListTable extends Table
                 $customer_name = $model->user->customer_id ? $model->user->customer->name : $model->user->phone;
                 return $is_customer ? DropDown::make('')->icon('list')->list([
                     Link::make('Тўлов чеки')->icon('printer')
-                        ->route('printCheck', ['id' => $model->id])->target('blank')->canSee($superadmin || $call_center),
+                        ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($superadmin || $call_center),
                     Button::make('Қарзга бериш')
                         ->method('duty')
                         ->icon('clock')
