@@ -99,7 +99,7 @@ class OrderListTable extends Table
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
                         ->canSee($accepted && $payment),
                     Button::make('Буюртмани бекор қилиш')
-                        ->method('deleteCard')
+                        ->method('deleteOrder')
                         ->icon('trash')
                         ->parameters([
                             'id' => $model->id,

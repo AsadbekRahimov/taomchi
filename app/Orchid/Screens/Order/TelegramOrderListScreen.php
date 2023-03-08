@@ -10,9 +10,9 @@ use App\Orchid\Layouts\TelegramOrder\addUserModal;
 use App\Orchid\Layouts\TelegramOrder\fullPaymentModal;
 use App\Orchid\Layouts\TelegramOrder\OrderListTable;
 use App\Orchid\Layouts\TelegramOrder\partPaymentModal;
+use App\Services\BotUserNotify;
 use App\Services\CacheService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
@@ -117,7 +117,17 @@ class TelegramOrderListScreen extends Screen
             'state' => 'accepted_order',
         ]);
 
+        BotUserNotify::acceptOrder($order->user->telegram_id, $order->id);
         Alert::success('Буюртма муффақиятли қабул қилинди.');
+    }
+
+    public function deleteOrder(TelegramOrder $order)
+    {
+        $order_id = $order->id;
+        $order->products()->delete();
+        $order->delete();
+        BotUserNotify::deleteOrder($order->user->telegram_id, $order_id);
+        Alert::success('Буюртма муффақиятли бекор қилинди');
     }
 
     /*public function duty(Request $request)
@@ -154,12 +164,5 @@ class TelegramOrderListScreen extends Screen
             $this->deleteCard($request);
             Alert::success('Махсулотлар муаффақиятли сотилди');
         }
-    }*/
-
-    /*public function deleteCard(Request $request)
-    {
-        Card::query()->where('order_id', $request->id)->delete();
-        Order::query()->where('id', $request->id)->delete();
-        Alert::success('Муаффақиятли тозаланди');
     }*/
 }

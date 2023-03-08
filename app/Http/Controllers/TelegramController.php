@@ -15,7 +15,7 @@ use Telegram\Bot\Api;
 class TelegramController extends Controller
 {
 
-    protected $telegram, $user, $chat_id, $run_command;
+    protected $telegram, $user, $chat_id;
 
     public function __construct()
     {
@@ -478,11 +478,11 @@ class TelegramController extends Controller
         if ($order) {
             $order_id = $order->id;
             if ($order->state == 'send_order') {
-                $order->delete();
                 $order->products()->delete();
+                $order->delete();
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chat_id,
-                    'text' => '#' . $order_id . ' рақамли буюртма бекор қилинди.',
+                    'text' => 'Сиз #' . $order_id . ' рақамли буюртмани бекор қилиндингиз.',
                 ]);
                 SendMessageService::deleteOrder($order_id);
             } else {
