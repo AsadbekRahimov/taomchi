@@ -230,6 +230,7 @@ class TelegramController extends Controller
         $countKeyboard = $this->getCountKeyboard($callBackData);
         $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
         if ($product) {
+            $this->sendProductImage($product->telegram_message_id);
             $product_name = $product->name . ' - ' .
                 number_format($product->one_price) . " сўм/дона\nМиқдорини киритинг:";
 
@@ -585,6 +586,12 @@ class TelegramController extends Controller
                 ],
             ]
         ];
+    }
+
+    private function sendProductImage($telegram_message_id)
+    {
+        $channel = -1001569082077; // https://t.me/c/1569082077/535
+        $this->telegram->forwardMessage(['chat_id' => $this->chat_id, 'from_chat_id' => $channel, 'message_id' => 535]);
     }
 
 }
