@@ -21,6 +21,7 @@ return new class extends Migration
             $table->integer('min');
             $table->integer('one_price');
             $table->integer('discount_price');
+            $table->tinyInteger('for_telegram')->default(0);
             $table->timestamps();
         });
     }

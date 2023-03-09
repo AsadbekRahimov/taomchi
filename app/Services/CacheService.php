@@ -21,6 +21,14 @@ class CacheService
         });
     }
 
+
+    public static function getTgProducts()
+    {
+        return Cache::rememberForever('tg_products', function () {
+            return \App\Models\Product::query()->where('for_telegram', 1)->get();
+        });
+    }
+
     public static function getCustomers()
     {
         return Cache::rememberForever('customers', function () {

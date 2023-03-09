@@ -9,11 +9,14 @@ use Illuminate\Support\Facades\Cache;
 use Orchid\Crud\Filters\DefaultSorted;
 use Orchid\Crud\Resource;
 use Orchid\Crud\ResourceRequest;
+use Orchid\Screen\Actions\Button;
+use Orchid\Screen\Fields\CheckBox;
 use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Sight;
 use Orchid\Screen\TD;
+use Orchid\Support\Color;
 use Orchid\Support\Facades\Alert;
 
 class Product extends Resource
@@ -41,6 +44,10 @@ class Product extends Resource
             Group::make([
                 Input::make('one_price')->type('number')->title('Чакана нарх')->required(),
                 Input::make('discount_price')->type('number')->title('Чегирма нарх')->required(),
+                Select::make('for_telegram')->options([
+                    '0' => 'Йўқ',
+                    '1' => 'Ха'
+                ])->title('Telegram'),
             ]),
         ];
     }
@@ -60,6 +67,11 @@ class Product extends Resource
             }),
             TD::make('one_price', 'Чакана нарх'),
             TD::make('discount_price', 'Чегирма нарх'),
+            TD::make('for_telegram', 'Telegram')->render(function ($model) {
+                return $model->for_telegram ? Button::make()->icon('check')
+                    ->type(Color::SUCCESS())->disabled() : Button::make()->icon('cross')
+                    ->type(Color::DANGER())->disabled();
+            }),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
@@ -85,6 +97,11 @@ class Product extends Resource
             }),
             Sight::make('one_price', 'Чакана нарх'),
             Sight::make('discount_price', 'Чегирма нарх'),
+            Sight::make('for_telegram', 'Telegram')->render(function ($model) {
+                return $model->for_telegram ? Button::make()->icon('check')
+                    ->type(Color::SUCCESS())->disabled() : Button::make()->icon('cross')
+                    ->type(Color::DANGER())->disabled();
+            }),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),
@@ -229,8 +246,10 @@ class Product extends Resource
         }
         Cache::forget('product_key_value');
         Cache::forget('products');
+        Cache::forget('tg_products');
         CacheService::ProductsKeyValue();
         CacheService::getProducts();
+        CacheService::getTgProducts();
     }
 
     public function onDelete(Model $model)
@@ -243,8 +262,10 @@ class Product extends Resource
             $model->delete();
             Cache::forget('product_key_value');
             Cache::forget('products');
+            Cache::forget('tg_products');
             CacheService::ProductsKeyValue();
             CacheService::getProducts();
+            CacheService::getTgProducts();
         }
     }
 }

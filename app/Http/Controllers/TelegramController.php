@@ -195,7 +195,7 @@ class TelegramController extends Controller
 
     private function replyMenuList()
     {
-        $products = CacheService::getProducts();
+        $products = CacheService::getTgProducts();
 
         if ($products->isEmpty()) {
             $this->telegram->sendMessage([
