@@ -40,4 +40,9 @@ class Product extends Model
     {
         return $this->hasMany(Sale::class, 'product_id', 'id');
     }
+
+    public function prices()
+    {
+        return $this->hasMany(ProductPrices::class, 'product_id', 'id');
+    }
 }

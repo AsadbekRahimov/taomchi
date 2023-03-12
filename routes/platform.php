@@ -178,6 +178,15 @@ Route::screen('customer_duties', \App\Orchid\Screens\Duties\CustomerDutiesListSc
             ->push('Қарздорлар');
     });
 
+// Maxsulotlar
+Route::screen('products', \App\Orchid\Screens\Product\ProductListScreen::class)
+    ->name('platform.products')
+    ->breadcrumbs(function (Trail $trail) {
+        return $trail
+            ->parent('platform.index')
+            ->push('Махсулотлар');
+    });
+
 // Mijoz haqida malumot
 Route::screen('/customer/{customer}', \App\Orchid\Screens\Customer\CustomerInfoScreen::class)
     ->name('platform.customer_info')

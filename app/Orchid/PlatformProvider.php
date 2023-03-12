@@ -65,6 +65,11 @@ class PlatformProvider extends OrchidServiceProvider
                 ->route('platform.customer_duties')
                 ->permission('platform.stock.customer_duties'),
 
+            Menu::make('Махсулотлар')
+                ->icon('dropbox')
+                ->route('platform.products')
+                ->permission('platform.stock.products'),
+
             Menu::make('Фойдаланувчилар')
                 ->icon('user')
                 ->route('platform.systems.users')
@@ -109,6 +114,7 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.stock.payments', 'Тўловлар')
                 ->addPermission('platform.stock.expences', 'Чиқимлар')
                 ->addPermission('platform.stock.customer_duties', 'Қарздорлар')
+                ->addPermission('platform.stock.products', 'Махсулотлар')
         ];
     }
 }
