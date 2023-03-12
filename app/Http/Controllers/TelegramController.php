@@ -591,11 +591,13 @@ class TelegramController extends Controller
     private function sendProductImage($telegram_message_id)
     {
         $channel = -1001361413476;
-        $this->telegram->forwardMessage([
-            'chat_id' => $this->chat_id,
-            'from_chat_id' => $channel,
-            'message_id' => $telegram_message_id
-        ]);
+        if (!is_null($telegram_message_id)) {
+            $this->telegram->forwardMessage([
+                'chat_id' => $this->chat_id,
+                'from_chat_id' => $channel,
+                'message_id' => $telegram_message_id
+            ]);
+        }
     }
 
 }
