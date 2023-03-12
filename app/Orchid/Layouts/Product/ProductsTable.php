@@ -2,13 +2,9 @@
 
 namespace App\Orchid\Layouts\Product;
 
-use App\Services\CacheService;
-
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\Actions\Button;
-use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
-use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Color;
@@ -40,9 +36,11 @@ class ProductsTable extends Table
             }),
             TD::make('one_price', 'Нарх'),
             TD::make('for_telegram', 'Telegram')->render(function ($model) {
-                return $model->for_telegram ? Button::make()->icon('check')
-                    ->type(Color::SUCCESS())->disabled() : Button::make()->icon('cross')
-                    ->type(Color::DANGER())->disabled();
+                return $model->for_telegram ?
+                    Button::make()->icon('check')
+                        ->type(Color::SUCCESS())->method('closeTelegram')->parameters(['id' => $model->id]) :
+                    Button::make()->icon('cross')
+                    ->type(Color::DANGER())->method('openTelegram')->parameters(['id' => $model->id]);
             }),
             TD::make('telegram_message_id', 'Телеграм хабар ID'),
             TD::make('created_at', 'Киритилган сана')

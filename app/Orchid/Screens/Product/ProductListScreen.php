@@ -3,14 +3,11 @@
 namespace App\Orchid\Screens\Product;
 
 use App\Models\Product;
-use App\Models\SalesParty;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
-use App\Orchid\Layouts\Sell\PartyList;
-use App\Orchid\Layouts\Sell\SalePartyTable;
-use Illuminate\Support\Facades\Auth;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
+use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
 
 class ProductListScreen extends Screen
@@ -83,5 +80,26 @@ class ProductListScreen extends Screen
             'telegram_message_id' => $product->telegram_message_id,
             'prices' => $product->prices,
         ];
+    }
+
+    public function closeTelegram(Product $product)
+    {
+        $product->update([
+            'for_telegram' => 0
+        ]);
+
+        Alert::success('Махсулот телеграм ботдан олинди!');
+    }
+
+    public function openTelegram(Product $product)
+    {
+        if (is_null($product->telegram_message_id)) {
+            Alert::error('Телеграм хабар ID киритилмаган!');
+        } else {
+            $product->update([
+                'for_telegram' => 1
+            ]);
+            Alert::success('Махсулот телеграм ботга қўшилди');
+        }
     }
 }

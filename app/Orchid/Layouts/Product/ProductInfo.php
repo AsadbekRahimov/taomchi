@@ -28,8 +28,17 @@ class ProductInfo extends Rows
     protected function fields(): iterable
     {
         $places = CacheService::getPlaces();
+        $max_count = $places->count();
 
         return [
+
+            Group::make([
+                Input::make('name')->title('Номи')->required(),
+                Select::make('measure_id')->title('Ўлчов бирлиги')
+                    ->fromModel(\App\Models\Measure::class, 'name')->required(),
+                Input::make('telegram_message_id')->title('Телеграм хабар ID'),
+            ]),
+
             Matrix::make('prices')
                 ->columns([
                     'Худуд' => 'place_id',
@@ -37,15 +46,7 @@ class ProductInfo extends Rows
                 ])->fields([
                     'place_id' => Select::make('place_id')->options($places),
                     'price' => Input::make('price')->type('number')->required(),
-                ])->removableRows(false)->maxRows(2),
-
-            Group::make([
-                Input::make('name')->title('Номи')->required(),
-                Select::make('measure_id')->title('Ўлчов бирлиги')
-                    ->fromModel(\App\Models\Measure::class, 'name')->required(),
-                Select::make('for_telegram')->options(\App\Models\Product::TYPE)->value('for_telegram')->title('Telegram'),
-                Input::make('telegram_message_id')->title('Телеграм хабар ID'),
-            ]),
+                ])->removableRows(false)->maxRows($max_count),
         ];
     }
 }
