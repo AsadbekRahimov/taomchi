@@ -33,10 +33,11 @@ class TelegramController extends Controller
     {
         $this->chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
         $this->user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
-
-        $this->saveContact();
-        $this->proccessCallbackData();
-        $this->proccessCommands();
+        if ($this->checkWorkingTime()){
+            $this->saveContact();
+            $this->proccessCallbackData();
+            $this->proccessCommands();
+        }
 
         $this->telegram->commandsHandler(true);
     }
@@ -591,12 +592,34 @@ class TelegramController extends Controller
     private function sendProductImage($telegram_message_id)
     {
         $channel = -1001361413476;
-        if (!is_null($telegram_message_id)) {
-            $this->telegram->forwardMessage([
+        try {
+            if (!is_null($telegram_message_id)) {
+                $this->telegram->forwardMessage([
+                    'chat_id' => $this->chat_id,
+                    'from_chat_id' => $channel,
+                    'message_id' => $telegram_message_id
+                ]);
+            }
+        } catch (\Exception $e) {}
+    }
+
+    private function checkWorkingTime()
+    {
+        $currentTime = date('H:i:s');
+        $startTime = '7:30:00';
+        $endTime = '12:30:00';
+        $dayWeek = date('N');
+
+        if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 1)
+        {
+            $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'from_chat_id' => $channel,
-                'message_id' => $telegram_message_id
+                'text' => 'Хизматларимиз сешанбадан якшанбагача 7:30 дан 15:30 гача ишайди!'
             ]);
+
+            return false;
+        } else {
+            return true;
         }
     }
 
