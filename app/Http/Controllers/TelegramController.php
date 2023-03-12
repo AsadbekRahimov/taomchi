@@ -606,15 +606,15 @@ class TelegramController extends Controller
     private function checkWorkingTime()
     {
         $currentTime = date('H:i:s');
-        $startTime = '7:30:00';
-        $endTime = '12:30:00';
+        $startTime = '07:30:00';
+        $endTime = '15:30:00';
         $dayWeek = date('N');
 
         if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 1)
         {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'text' => 'Хизматларимиз сешанбадан якшанбагача 7:30 дан 15:30 гача ишайди!'
+                'text' => 'Хизматларимиз сешанбадан - якшанбагача 7:30 дан 15:30 гача ишайди!'
             ]);
 
             return false;
