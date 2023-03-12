@@ -32,8 +32,8 @@ class TelegramController extends Controller
     public function run()
     {
         $this->chat_id = $this->telegram->getWebhookUpdate()->getMessage()->getChat()->getId();
-        $this->user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
         if ($this->checkWorkingTime()){
+            $this->user = TelegramUser::query()->where('telegram_id', $this->chat_id)->first();
             $this->saveContact();
             $this->proccessCallbackData();
             $this->proccessCommands();
