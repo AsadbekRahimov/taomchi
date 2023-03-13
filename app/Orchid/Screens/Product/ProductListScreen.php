@@ -5,6 +5,7 @@ namespace App\Orchid\Screens\Product;
 use App\Models\Product;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
+use Illuminate\Http\Request;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
@@ -67,7 +68,7 @@ class ProductListScreen extends Screen
             ProductsTable::class,
             Layout::modal('asyncGetProductModal', ProductInfo::class)
                 ->async('asyncGetProduct')->size(Modal::SIZE_LG)
-                ->withoutApplyButton(true)->closeButton('Ёпиш'),
+                ->applyButton('Сақлаш')->closeButton('Ёпиш'),
         ];
     }
 
@@ -101,5 +102,10 @@ class ProductListScreen extends Screen
             ]);
             Alert::success('Махсулот телеграм ботга қўшилди');
         }
+    }
+
+    public function saveProductInfo(Request $request)
+    {
+        // TODO: complate save method for product info
     }
 }

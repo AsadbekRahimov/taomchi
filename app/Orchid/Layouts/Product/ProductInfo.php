@@ -41,10 +41,12 @@ class ProductInfo extends Rows
 
             Matrix::make('prices')
                 ->columns([
+                    'ID' => 'id',
                     'Худуд' => 'place_id',
                     'Нархи' => 'price',
                 ])->fields([
-                    'place_id' => Select::make('place_id')->options($places),
+                    'id' => Input::make('id')->type('number')->hidden(),
+                    'place_id' => Select::make('place_id')->options($places)->disabled(),
                     'price' => Input::make('price')->type('number')->required(),
                 ])->removableRows(false)->maxRows($max_count),
         ];

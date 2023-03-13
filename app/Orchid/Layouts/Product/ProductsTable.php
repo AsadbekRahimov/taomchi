@@ -55,6 +55,7 @@ class ProductsTable extends Table
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetProductModal')
+                    ->method('saveProductInfo')
                     ->modalTitle($model->name)
                     ->asyncParameters([
                         'id' => $model->id,
