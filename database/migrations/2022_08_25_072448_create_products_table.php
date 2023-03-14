@@ -20,7 +20,6 @@ return new class extends Migration
             $table->integer('one_price');
             $table->integer('discount_price');
             $table->tinyInteger('for_telegram')->default(0);
-            $table->integer('telegram_message_id')->nullable();
             $table->timestamps();
         });
     }

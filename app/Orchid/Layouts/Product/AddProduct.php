@@ -11,7 +11,7 @@ use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Rows;
 
-class ProductInfo extends Rows
+class AddProduct extends Rows
 {
     /**
      * Used to create the title of a group of form elements.
@@ -28,26 +28,13 @@ class ProductInfo extends Rows
     protected function fields(): iterable
     {
         $places = CacheService::getPlaces();
-        $max_count = $places->count();
 
         return [
-
             Group::make([
                 Input::make('name')->title('Номи')->required(),
                 Select::make('measure_id')->title('Ўлчов бирлиги')
                     ->fromModel(\App\Models\Measure::class, 'name')->required(),
             ]),
-
-            Matrix::make('prices')
-                ->columns([
-                    'ID' => 'id',
-                    'Худуд' => 'place_id',
-                    'Нархи' => 'price',
-                ])->fields([
-                    'id' => Input::make('id')->type('number')->hidden(),
-                    'place_id' => Select::make('place_id')->options($places)->disabled(),
-                    'price' => Input::make('price')->type('number')->required(),
-                ])->removableRows(false)->maxRows($max_count),
         ];
     }
 }

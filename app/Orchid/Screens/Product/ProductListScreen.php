@@ -3,9 +3,11 @@
 namespace App\Orchid\Screens\Product;
 
 use App\Models\Product;
+use App\Orchid\Layouts\Product\AddProduct;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
 use Illuminate\Http\Request;
+use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
@@ -54,7 +56,13 @@ class ProductListScreen extends Screen
      */
     public function commandBar(): iterable
     {
-        return [];
+        return [
+            ModalToggle::make('')
+                ->icon('plus')
+                ->method('addNewProduct')
+                ->modal('addNewProductModal')
+                ->modalTitle('Янги махсулот қўшиш'),
+        ];
     }
 
     /**
@@ -66,6 +74,8 @@ class ProductListScreen extends Screen
     {
         return [
             ProductsTable::class,
+            Layout::modal('addNewProductModal', AddProduct::class)
+                ->applyButton('Сақлаш')->closeButton('Ёпиш'),
             Layout::modal('asyncGetProductModal', ProductInfo::class)
                 ->async('asyncGetProduct')->size(Modal::SIZE_LG)
                 ->applyButton('Сақлаш')->closeButton('Ёпиш'),
@@ -106,6 +116,11 @@ class ProductListScreen extends Screen
 
     public function saveProductInfo(Request $request)
     {
-        // TODO: complate save method for product info
+        // TODO: complete save method for product info
+    }
+
+    public function addNewProduct(Request $request)
+    {
+        // TODO: complete create method for product
     }
 }
