@@ -6,7 +6,9 @@ use App\Models\Product;
 use App\Orchid\Layouts\Product\AddProduct;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
@@ -87,8 +89,6 @@ class ProductListScreen extends Screen
         return [
             'name' => $product->name,
             'measure_id' => $product->measure_id,
-            'for_telegram' => $product->for_telegram,
-            'telegram_message_id' => $product->telegram_message_id,
             'prices' => $product->prices,
         ];
     }
@@ -98,20 +98,19 @@ class ProductListScreen extends Screen
         $product->update([
             'for_telegram' => 0
         ]);
-
+        Cache::forget('tg_products');
+        CacheService::getTgProducts();
         Alert::success('Махсулот телеграм ботдан олинди!');
     }
 
     public function openTelegram(Product $product)
     {
-        if (is_null($product->telegram_message_id)) {
-            Alert::error('Телеграм хабар ID киритилмаган!');
-        } else {
-            $product->update([
-                'for_telegram' => 1
-            ]);
-            Alert::success('Махсулот телеграм ботга қўшилди');
-        }
+        $product->update([
+            'for_telegram' => 1
+        ]);
+        Cache::forget('tg_products');
+        CacheService::getTgProducts();
+        Alert::success('Махсулот телеграм ботга қўшилди');
     }
 
     public function saveProductInfo(Request $request)
@@ -121,6 +120,12 @@ class ProductListScreen extends Screen
 
     public function addNewProduct(Request $request)
     {
-        // TODO: complete create method for product
+        Product::query()->create([
+            'name' => $request->name,
+            'measure_id' => $request->measure_id,
+        ]);
+        Cache::forget('product_key_value');
+        CacheService::ProductsKeyValue();
+        Alert::success('Янги махсулот қўшилди');
     }
 }

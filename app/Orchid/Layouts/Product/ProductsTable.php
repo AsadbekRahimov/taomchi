@@ -34,7 +34,6 @@ class ProductsTable extends Table
             TD::make('measure_id', 'Ўлчов бирлиги')->render(function (Model $model) {
                 return $model->measure->name;
             }),
-            TD::make('one_price', 'Нарх'),
             TD::make('for_telegram', 'Telegram')->render(function ($model) {
                 return $model->for_telegram ?
                     Button::make()->icon('check')
