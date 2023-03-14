@@ -17,8 +17,8 @@ return new class extends Migration
             $table->id();
             $table->string('name');
             $table->integer('measure_id');
-            $table->integer('one_price');
-            $table->integer('discount_price');
+            $table->integer('one_price')->default(0);
+            $table->integer('discount_price')->default(0);
             $table->tinyInteger('for_telegram')->default(0);
             $table->timestamps();
         });

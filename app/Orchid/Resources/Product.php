@@ -46,7 +46,6 @@ class Product extends Resource
                 Input::make('one_price')->type('number')->title('Чакана нарх')->required(),
                 Input::make('discount_price')->type('number')->title('Чегирма нарх')->required(),
                 Select::make('for_telegram')->options(\App\Models\Product::TYPE)->value('for_telegram')->title('Telegram'),
-                Input::make('telegram_message_id')->title('Телеграм хабар ID'),
             ]),
         ];
     }
@@ -71,7 +70,6 @@ class Product extends Resource
                     ->type(Color::SUCCESS())->disabled() : Button::make()->icon('cross')
                     ->type(Color::DANGER())->disabled();
             }),
-            TD::make('telegram_message_id', 'Телеграм хабар ID'),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
@@ -102,7 +100,6 @@ class Product extends Resource
                     ->type(Color::SUCCESS())->disabled() : Button::make()->icon('cross')
                     ->type(Color::DANGER())->disabled();
             }),
-            Sight::make('telegram_message_id', 'Телеграм хабар ID'),
             Sight::make('created_at', 'Киритилган сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             }),

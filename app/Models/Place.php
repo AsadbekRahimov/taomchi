@@ -15,6 +15,7 @@ class Place extends Model
 
     protected $fillable = [
         'name',
+        'telegram_message_id'
     ];
 
     public function customers()
