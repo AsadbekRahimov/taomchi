@@ -31,6 +31,7 @@ class Place extends Resource
     {
         return [
             Input::make('name')->title('Худуд номи')->required(),
+            Input::make('telegram_message_id')->title('Telegram ID')->required(),
         ];
     }
 
@@ -44,6 +45,7 @@ class Place extends Resource
         return [
             TD::make('id')->cantHide(),
             TD::make('name', 'Худуд номи')->cantHide(),
+            TD::make('telegram_message_id', 'Telegram ID')->cantHide(),
         ];
     }
 
@@ -56,6 +58,7 @@ class Place extends Resource
     {
         return [
             Sight::make('name', 'Худуд номи'),
+            Sight::make('telegram_message_id', 'Telegram ID'),
         ];
     }
 
@@ -75,6 +78,7 @@ class Place extends Resource
     {
         return [
             'name' => ['required'],
+            'telegram_message_id' => ['required'],
         ];
     }
 
@@ -82,6 +86,7 @@ class Place extends Resource
     {
         return [
             'name.required' => 'Худуд номи киритилиши шарт',
+            'telegram_message_id.required' => 'Telegram ID киритилиши шарт',
         ];
     }
 
