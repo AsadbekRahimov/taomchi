@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Services;
+use App\Models\Customer;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -32,15 +33,10 @@ class CacheService
     public static function getCustomers()
     {
         return Cache::rememberForever('customers', function () {
-            $result = array();
-            $data = DB::select("select c.id as id, CONCAT(c.name, ' | ', pl.name, ' ', c.address) as address
-                from customers c join places pl on c.place_id = pl.id");
-
-            foreach ($data as $item)
-            {
-                $result[$item->id] = $item->address;
-            }
-            return collect($result);
+            $data = Customer::with('place')->select('id', 'name', 'address', 'place_id')->get();
+            return  $data->mapWithKeys(function ($item) {
+                return [$item->id => $item->name . ' | ' . $item->place->name . ' ' . $item->address];
+            });
         });
     }
 
