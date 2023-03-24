@@ -16,12 +16,7 @@ class ProductObserver
      */
     public function created(Product $product)
     {
-        Cache::forget('product_key_value');
-        Cache::forget('products');
-        Cache::forget('tg_products');
-        CacheService::ProductsKeyValue();
-        CacheService::getProducts();
-        CacheService::getTgProducts();
+        $this->updateCache();
     }
 
     /**
@@ -32,12 +27,7 @@ class ProductObserver
      */
     public function updated(Product $product)
     {
-        Cache::forget('product_key_value');
-        Cache::forget('products');
-        Cache::forget('tg_products');
-        CacheService::ProductsKeyValue();
-        CacheService::getProducts();
-        CacheService::getTgProducts();
+        $this->updateCache();
     }
 
     /**
@@ -48,9 +38,16 @@ class ProductObserver
      */
     public function deleted(Product $product)
     {
-        if ($product->isDirty('for_telegram')) {
-            Cache::forget('tg_products');
-            CacheService::getTgProducts();
-        }
+        $this->updateCache();
+    }
+
+    private function updateCache()
+    {
+        Cache::forget('product_key_value');
+        Cache::forget('products');
+        Cache::forget('tg_products');
+        CacheService::ProductsKeyValue();
+        CacheService::getProducts();
+        CacheService::getTgProducts();
     }
 }

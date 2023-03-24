@@ -113,4 +113,16 @@ class ProductListScreen extends Screen
         Product::query()->create(['name' => $request->name, 'measure_id' => $request->measure_id]);
         Alert::success('Янги махсулот қўшилди');
     }
+
+    public function deleteProduct(Product $product)
+    {
+        if($product->sales()->count() || $product->telegramOrderItems()->count())
+        {
+            Alert::error('Сотилган махсулотлар ёки буюртмалар мавжудлиги учун бу махсулотни ўчира олмайсиз!');
+        }else {
+            $product->cards()->delete();
+            $product->telegramCards()->delete();
+            $product->delete();
+        }
+    }
 }

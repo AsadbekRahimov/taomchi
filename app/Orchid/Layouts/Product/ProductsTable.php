@@ -5,6 +5,7 @@ namespace App\Orchid\Layouts\Product;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\ModalToggle;
+use Orchid\Screen\Fields\Group;
 use Orchid\Screen\Layouts\Table;
 use Orchid\Screen\TD;
 use Orchid\Support\Color;
@@ -50,14 +51,23 @@ class ProductsTable extends Table
                     return $model->updated_at->toDateTimeString();
                 })->defaultHidden(),
             TD::make('')->render(function ($model){
-                return ModalToggle::make('')
-                    ->icon('eye')
-                    ->modal('asyncGetProductModal')
-                    ->method('saveProductInfo')
-                    ->modalTitle($model->name)
-                    ->asyncParameters([
-                        'id' => $model->id,
-                    ]);
+                return Group::make([
+                    ModalToggle::make('')
+                        ->icon('eye')
+                        ->modal('asyncGetProductModal')
+                        ->method('saveProductInfo')
+                        ->modalTitle($model->name)
+                        ->asyncParameters([
+                            'id' => $model->id,
+                        ]),
+                    Button::make('')
+                        ->icon('trash')
+                        ->parameters([
+                            'id' => $model->id
+                        ])
+                        ->method('deleteProduct')
+                        ->confirm('Махсулотни ўчирмоқчимисиз?'),
+                ]);
             })->cantHide(),
         ];
     }

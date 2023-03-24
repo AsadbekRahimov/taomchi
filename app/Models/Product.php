@@ -25,6 +25,7 @@ class Product extends Model
         0 => 'Йўқ',
         1 => 'Ха'
     ];
+
     public function measure()
     {
         return $this->belongsTo(Measure::class, 'measure_id', 'id');
@@ -35,9 +36,19 @@ class Product extends Model
         return $this->hasMany(Card::class, 'product_id', 'id');
     }
 
+    public function telegramCards()
+    {
+        return $this->hasMany(TelegramUserCard::class, 'product_id', 'id');
+    }
+
     public function sales()
     {
         return $this->hasMany(Sale::class, 'product_id', 'id');
+    }
+
+    public function telegramOrderItems()
+    {
+        return $this->hasMany(TelegramOrderItem::class, 'product_id', 'id');
     }
 
     public function prices()
