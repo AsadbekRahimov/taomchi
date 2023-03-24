@@ -3,6 +3,7 @@
 namespace App\Orchid\Screens\Product;
 
 use App\Models\Product;
+use App\Models\ProductPrices;
 use App\Orchid\Layouts\Product\AddProduct;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
@@ -103,9 +104,11 @@ class ProductListScreen extends Screen
         Alert::success('Махсулот телеграм ботга қўшилди');
     }
 
-    public function saveProductInfo(Request $request)
+    public function saveProductInfo(Product $product, Request $request)
     {
-        // TODO: complete save method for product info
+        $product->update(['name' => $request->name, 'measure_id' => $request->measure_id]);
+        $this->updateProductPrices($request->prices);
+        Alert::success('Махсулот малумотлари янгиланди.');
     }
 
     public function addNewProduct(Request $request)
@@ -123,6 +126,18 @@ class ProductListScreen extends Screen
             $product->cards()->delete();
             $product->telegramCards()->delete();
             $product->delete();
+        }
+    }
+
+    private function updateProductPrices($prices)
+    {
+        $productPrices = ProductPrices::query()->whereIn('id', array_column($prices, 'id'))->get()->keyBy('id');
+        $updateData = collect($prices)->filter(function ($price) use ($productPrices) {
+            return $productPrices->has($price['id']) && $productPrices[$price['id']]->price != $price['price'];
+        })->toArray();
+
+        foreach ($updateData as $data) {
+            ProductPrices::query()->find($data['id'])->update(['price' => $data['price']]);
         }
     }
 }
