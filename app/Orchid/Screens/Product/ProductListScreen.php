@@ -6,9 +6,7 @@ use App\Models\Product;
 use App\Orchid\Layouts\Product\AddProduct;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
-use App\Services\CacheService;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
@@ -95,21 +93,13 @@ class ProductListScreen extends Screen
 
     public function closeTelegram(Product $product)
     {
-        $product->update([
-            'for_telegram' => 0
-        ]);
-        Cache::forget('tg_products');
-        CacheService::getTgProducts();
+        $product->update(['for_telegram' => 0]);
         Alert::success('Махсулот телеграм ботдан олинди!');
     }
 
     public function openTelegram(Product $product)
     {
-        $product->update([
-            'for_telegram' => 1
-        ]);
-        Cache::forget('tg_products');
-        CacheService::getTgProducts();
+        $product->update(['for_telegram' => 1]);
         Alert::success('Махсулот телеграм ботга қўшилди');
     }
 
@@ -120,12 +110,7 @@ class ProductListScreen extends Screen
 
     public function addNewProduct(Request $request)
     {
-        Product::query()->create([
-            'name' => $request->name,
-            'measure_id' => $request->measure_id,
-        ]);
-        Cache::forget('product_key_value');
-        CacheService::ProductsKeyValue();
+        Product::query()->create(['name' => $request->name, 'measure_id' => $request->measure_id]);
         Alert::success('Янги махсулот қўшилди');
     }
 }
