@@ -20,6 +20,8 @@ return new class extends Migration
             $table->string('name')->nullable();
             $table->string('username')->nullable();
             $table->integer('customer_id')->nullable();
+            $table->integer('place_id')->nullable();
+            $table->text('address')->nullable();
             $table->timestamps();
         });
     }

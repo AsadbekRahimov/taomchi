@@ -190,7 +190,7 @@ class Place extends Resource
 
     public function onDelete(Model $model)
     {
-        if ($model->customers()->count())
+        if ($model->customers()->count() || $model->telegramUsers()->count())
         {
             Alert::error('Бу худудга бириктирилган мижозлар мавжудлиги сабабли худудни ўчира олмайсиз! Олдин мижозларнинг худудини ўзгартиринг.');
         }else {

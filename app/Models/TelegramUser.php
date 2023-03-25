@@ -15,6 +15,8 @@ class TelegramUser extends Model
         'name',
         'username',
         'customer_id',
+        'place_id',
+        'address'
     ];
 
     public static function createNewUser($chat_id, $from, $number)
@@ -45,5 +47,10 @@ class TelegramUser extends Model
     public function customer()
     {
         return $this->belongsTo(Customer::class, 'customer_id', 'id');
+    }
+
+    public function place()
+    {
+        return $this->belongsTo(Place::class, 'place_id', 'id');
     }
 }

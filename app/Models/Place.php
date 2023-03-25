@@ -22,4 +22,9 @@ class Place extends Model
     {
         return $this->hasMany(Customer::class, 'place_id', 'id');
     }
+
+    public function telegramUsers()
+    {
+        return $this->hasMany(TelegramUser::class, 'place_id', 'id');
+    }
 }
