@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Place;
 use App\Models\TelegramOrder;
 use App\Models\TelegramOrderItem;
 use App\Models\TelegramUser;
@@ -119,6 +120,7 @@ class TelegramController extends Controller
     {
         if($this->telegram->getWebhookUpdate()->has('callback_query')) {
             $callBackData = $this->telegram->getWebhookUpdate()->callbackQuery->data;
+            $message_id = $this->telegram->getWebhookUpdate()->callbackQuery->message->message_id;
 
             if (str_starts_with($callBackData, 'product_'))
                 $this->selectProduct($callBackData);
@@ -136,6 +138,8 @@ class TelegramController extends Controller
                 $this->orderButtons();
             elseif (str_starts_with($callBackData, 'rollback_'))
                 $this->deleteOrder($callBackData);
+            elseif (str_starts_with($callBackData, 'place_'))
+                $this->savePlace($callBackData, $message_id);
         }
     }
 
@@ -196,22 +200,45 @@ class TelegramController extends Controller
 
     private function replyMenuList()
     {
-        $products = CacheService::getTgProducts();
+        if($this->user->place_id)
+        {
+            $products = CacheService::getTgProducts();
+            if ($products->isEmpty()) {
+                $this->telegram->sendMessage([
+                    'chat_id' => $this->chat_id,
+                    'text' => 'Махсулотлар мавжуд эмас!',
+                ]);
+            } else {
+                $text = 'Махсулотни танланг: ';
+                $keyboard = [];
 
-        if ($products->isEmpty()) {
-            $this->telegram->sendMessage([
-                'chat_id' => $this->chat_id,
-                'text' => 'Махсулотлар мавжуд эмас!',
-            ]);
+                foreach ($products as $product) {
+                    $keyboard[] = [
+                        [
+                            'text' => $product->name . ' - ' . number_format($product->one_price) . ' сўм',
+                            'callback_data' => 'product_' . $product->id,
+                        ],
+                    ];
+                }
+
+                $this->telegram->sendMessage([
+                    'chat_id' => $this->chat_id,
+                    'text' => $text,
+                    'reply_markup' => json_encode([
+                        'inline_keyboard' => $keyboard,
+                    ]),
+                ]);
+            }
         } else {
-            $text = 'Махсулотни танланг: ';
+            $places = CacheService::getPlaces();
+            $text = 'Худудни танланг: ';
             $keyboard = [];
 
-            foreach ($products as $product) {
+            foreach ($places as $id => $place) {
                 $keyboard[] = [
                     [
-                        'text' => $product->name . ' - ' . number_format($product->one_price) . ' сўм',
-                        'callback_data' => 'product_' . $product->id,
+                        'text' => $place,
+                        'callback_data' => 'place_' . $id,
                     ],
                 ];
             }
@@ -502,6 +529,20 @@ class TelegramController extends Controller
         }
     }
 
+    private function savePlace($callBackData, $message_id)
+    {
+        $place = Place::query()->find(explode('_', $callBackData)[1]);
+        $this->user->place_id = $place->id;
+        $this->user->save();
+
+        $this->telegram->editMessageText([
+            'chat_id' => $this->chat_id,
+            'message_id' => $message_id,
+            'text' => 'Худуд муаффақиятли сақланди.' . PHP_EOL . 'Сизнинг худудингиз: ' . $place->name,
+        ]);
+        $this->replyMenuList();
+    }
+
     private function finishOrder()
     {
         $carts = TelegramUserCard::query()->with(['product'])
@@ -606,7 +647,7 @@ class TelegramController extends Controller
     private function checkWorkingTime()
     {
         $currentTime = date('H:i:s');
-        $startTime = '07:30:00';
+        $startTime = '00:30:00';
         $endTime = '15:30:00';
         $dayWeek = date('N');
 
@@ -622,5 +663,6 @@ class TelegramController extends Controller
             return true;
         }
     }
+
 
 }
