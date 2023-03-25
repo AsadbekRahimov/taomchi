@@ -31,8 +31,6 @@ class PlatformProvider extends OrchidServiceProvider
             Menu::make('Сотув')
                 ->icon('handbag')
                 ->list([
-                    /*Menu::make('Мижозлар')->icon('people')
-                        ->route('platform.customers')->permission('platform.stock.sell'),*/
                     Menu::make('Сотилган партиялар')->icon('call-out')
                         ->route('platform.sell_parties')->permission('platform.stock.sell_parties'),
                     Menu::make('Сотилган махсулотлар')->icon('action-redo')
@@ -106,7 +104,6 @@ class PlatformProvider extends OrchidServiceProvider
                 ->addPermission('platform.systems.users', 'Фойдаланувчилар'),
 
             ItemPermission::group('Омбор (Филиал фойдаланувчилари учун)')
-                ->addPermission('platform.stock.sell', 'Сотиш')
                 ->addPermission('platform.stock.sell_parties', 'Сотилган партиялар')
                 ->addPermission('platform.stock.sales', 'Сотилган махсулотлар')
                 ->addPermission('platform.stock.orders', 'Буюртмалар')
