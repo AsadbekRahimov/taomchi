@@ -2,13 +2,6 @@
 
 declare(strict_types=1);
 
-use App\Orchid\Screens\Examples\ExampleCardsScreen;
-use App\Orchid\Screens\Examples\ExampleChartsScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsAdvancedScreen;
-use App\Orchid\Screens\Examples\ExampleFieldsScreen;
-use App\Orchid\Screens\Examples\ExampleLayoutsScreen;
-use App\Orchid\Screens\Examples\ExampleScreen;
-use App\Orchid\Screens\Examples\ExampleTextEditorsScreen;
 use App\Orchid\Screens\PlatformScreen;
 use App\Orchid\Screens\Role\RoleEditScreen;
 use App\Orchid\Screens\Role\RoleListScreen;
@@ -95,25 +88,6 @@ Route::screen('roles', RoleListScreen::class)
             ->parent('platform.index')
             ->push(__('Roles'), route('platform.systems.roles'));
     });
-
-// Мижозлар
-Route::screen('stock/customers', \App\Orchid\Screens\Sell\CustomerListScreen::class)
-    ->name('platform.customers')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Мижозлар');
-    });
-
-// Ombordagi maxsulotlarni sotish
-Route::screen('stock/sell/{customer}', \App\Orchid\Screens\Sell\MainSellScreen::class)
-    ->name('platform.sell_products')
-    ->breadcrumbs(function (Trail $trail) {
-        return $trail
-            ->parent('platform.index')
-            ->push('Махсулот сотиш');
-    });
-
 
 // Sotilgan  partiyalar
 Route::screen('sell/parties', \App\Orchid\Screens\Sell\SalesPartyScreen::class)
