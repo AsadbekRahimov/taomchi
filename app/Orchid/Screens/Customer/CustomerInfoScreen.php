@@ -34,7 +34,7 @@ class CustomerInfoScreen extends Screen
                'debt' => $this->getAllDebtAmount($customer->id),
             ],
 
-            'payments' => Payment::query()->where('customer_id', $customer->id)->filters()->with(['customer'])->orderByDesc('id')->paginate(15),
+            'payments' => Payment::query()->where('customer_id', $customer->id)->filters()->with(['customer', 'user'])->orderByDesc('id')->paginate(15),
             'parties' => SalesParty::query()->filters()->where('customer_id', $customer->id)->with(['customer', 'user', 'sales', 'payments', 'duties'])->orderByDesc('id')->paginate(15),
         ];
     }
