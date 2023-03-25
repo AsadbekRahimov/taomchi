@@ -8,11 +8,12 @@ use Illuminate\Database\Eloquent\Model;
 class ProductPrices extends Model
 {
     use HasFactory;
+    public $timestamps = true;
 
     protected $fillable = [
         'product_id',
         'place_id',
-        'price'
+        'price',
     ];
 
     public function product()
