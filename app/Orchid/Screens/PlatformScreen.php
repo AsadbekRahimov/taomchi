@@ -179,12 +179,9 @@ class PlatformScreen extends Screen
                         ->columns([
                             'Махсулот' => 'id',
                             'Сони' => 'count',
-                            'Нархи' => 'price'
                         ])->fields([
                             'id' => Select::make('id')->options(CacheService::ProductsKeyValue())->required(),
                             'count' => Input::make('count')->type('number')->required(),
-                            'price' => Select::make('price')
-                                ->options(['one' => 'Чакана нарх', 'discount' => 'Чегирма нарх'])->required()
                         ]),
                     Button::make('Сақлаш')->method('saveOrder')->type(Color::INFO()),
                 ]),
