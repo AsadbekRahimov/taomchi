@@ -29,13 +29,18 @@ class HelperCommand extends Command
      */
     public function handle()
     {
-        $insertData = CacheService::getPlaces()->keys()->map(function ($key) {
-            return [
-                'product_id' => rand(1, 30),
-                'place_id' => $key
-            ];
-        })->toArray();
+        $products = CacheService::getProducts();
 
-        dd($insertData);
+        foreach ($products as $key => $product) {
+            $insertData = CacheService::getPlaces()->keys()->map(function ($key) use ($product) {
+                return [
+                    'product_id' => $product->id,
+                    'place_id' => $key,
+                    'price' => $product->one_price,
+                ];
+            })->toArray();
+            ProductPrices::query()->insert($insertData);
+            $this->info($key+1 . ') Product: ' . $product->name . ' inserted');
+        }
     }
 }
