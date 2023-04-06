@@ -65,19 +65,19 @@ class TelegramController extends Controller
     private function startCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->startChat();
+        $this->user ? $this->startChat() : $this->replyUserQuestions();
     }
 
     private function menuCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->checkUserInfo() ? $this->replyMenuList() : $this->replyUserQuestions();
+        $this->user ? $this->replyMenuList() : $this->replyUserQuestions();
     }
 
     private function cardCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->checkUserInfo() ? $this->showCartList() : $this->replyUserQuestions();
+        $this->user ? $this->showCartList() : $this->replyUserQuestions();
     }
 
     private function checkoutCommand()
@@ -89,7 +89,7 @@ class TelegramController extends Controller
     private function ordersListCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->checkUserInfo() ? $this->showOrdersList() : $this->replyUserQuestions();
+        $this->user ? $this->showOrdersList() : $this->replyUserQuestions();
     }
 
     // commands methods
@@ -111,9 +111,8 @@ class TelegramController extends Controller
                 $this->telegram->sendMessage(['chat_id' => $this->chat_id, 'text' => 'Сизнинг телефон рақамингиз текширувдан ўтмади!']);
             } else {
                 TelegramUser::createNewUser($this->chat_id, $message->from, substr($number, 3));
+                $this->startChat();
             }
-
-            $this->replyUserQuestions();
         }
 
     }
@@ -190,7 +189,7 @@ class TelegramController extends Controller
         {
             if(!$this->user->place_id) {
                 $places = CacheService::getPlaces();
-                $text = 'Худудни танланг: ';
+                $text = "Буюртмани якунлаш учун аввал манзилни киритиш талаб қилинади. Худудни танланг: ";
                 $keyboard = [];
 
                 foreach ($places as $id => $place) {
@@ -219,7 +218,7 @@ class TelegramController extends Controller
         } else {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'text' => 'Телефон рақамингизни киритинг.',
+                'text' => 'Таомчига хуш келибсиз. Aввал рўйҳатдан ўтишингиз керак!',
                 'reply_markup' => json_encode([
                     'keyboard' => [
                         [
@@ -244,41 +243,32 @@ class TelegramController extends Controller
 
     private function startChat()
     {
-        if ($this->checkUserInfo())
-        {
-            $this->telegram->sendMessage([
-                'chat_id' => $this->chat_id,
-                'text' => 'Таомчига хуш келибсиз. Менюдан керакли амални танланг!',
-                'reply_markup' => json_encode([
-                    'keyboard' => [
+        $this->telegram->sendMessage([
+            'chat_id' => $this->chat_id,
+            'text' => 'Таомчига хуш келибсиз. Менюдан керакли амални танланг!',
+            'reply_markup' => json_encode([
+                'keyboard' => [
+                    [
                         [
-                            [
-                                'text' => 'Махсулотлар рўйҳатини кўриш',
-                            ],
-                            [
-                                'text' => 'Саватни кўриш'
-                            ]
+                            'text' => 'Махсулотлар рўйҳатини кўриш',
                         ],
                         [
-                            [
-                                'text' => 'Буюртмани якунлаш'
-                            ],
-                            [
-                                'text' => 'Буюртмаларни кўриш'
-                            ]
+                            'text' => 'Саватни кўриш'
                         ]
                     ],
-                    'resize_keyboard' => true,
-                    'one_time_keyboard' => true,
-                ]),
-            ]);
-        } else {
-            $this->telegram->sendMessage([
-                'chat_id' => $this->chat_id,
-                'text' => 'Таомчига хуш келибсиз. Aввал рўйҳатдан ўтишингиз керак!!',
-            ]);
-            $this->replyUserQuestions();
-        }
+                    [
+                        [
+                            'text' => 'Буюртмани якунлаш'
+                        ],
+                        [
+                            'text' => 'Буюртмаларни кўриш'
+                        ]
+                    ]
+                ],
+                'resize_keyboard' => true,
+                'one_time_keyboard' => true,
+            ]),
+        ]);
     }
 
     private function replyMenuList()
@@ -691,7 +681,7 @@ class TelegramController extends Controller
 
     private function checkUserInfo(): bool
     {
-        return $this->user && $this->user->place_id && $this->user->address;
+        return $this->user->place_id && $this->user->address;
     }
 
     private function checkWorkingTime(): bool
