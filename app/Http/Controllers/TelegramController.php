@@ -280,7 +280,7 @@ class TelegramController extends Controller
                 'text' => 'Махсулотлар мавжуд эмас!',
             ]);
         } else {
-            $text = 'Махсулотни танланг: ';
+            $text = 'Махсулотларни танланг: ';
             $keyboard = [];
 
             foreach ($products as $product) {
@@ -292,6 +292,7 @@ class TelegramController extends Controller
                 ];
             }
 
+            $this->sendProductsImage($this->user->place_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => $text,
@@ -307,7 +308,6 @@ class TelegramController extends Controller
         $countKeyboard = $this->getCountKeyboard($callBackData);
         $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
         if ($product) {
-            $this->sendProductImage($product->telegram_message_id);
             $product_name = $product->name . ' - ' .
                 number_format($product->one_price) . " сўм/дона\nМиқдорини киритинг:";
 
@@ -670,15 +670,16 @@ class TelegramController extends Controller
         ];
     }
 
-    private function sendProductImage($telegram_message_id)
+    private function sendProductsImage($place_id)
     {
         $channel = -1001361413476;
+        $place = Place::query()->find($place_id);
         try {
-            if (!is_null($telegram_message_id)) {
+            if (!is_null($place_id)) {
                 $this->telegram->forwardMessage([
                     'chat_id' => $this->chat_id,
                     'from_chat_id' => $channel,
-                    'message_id' => $telegram_message_id
+                    'message_id' => $place->telegram_message_id
                 ]);
             }
         } catch (\Exception $e) {}
