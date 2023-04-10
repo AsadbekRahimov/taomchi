@@ -62,6 +62,12 @@ class OrderListTable extends Table
                         ->type(Color::SUCCESS())
                         ->icon('check')->disabled();
             }),
+            TD::make('place', 'Худуд')->render(function ($model) {
+                return $model->user->place->name;
+            }),
+            TD::make('address', 'Манзил')->render(function ($model) {
+                return $model->user->address;
+            }),
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
