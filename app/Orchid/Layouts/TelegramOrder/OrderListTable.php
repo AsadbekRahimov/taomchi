@@ -47,7 +47,10 @@ class OrderListTable extends Table
                     return Button::make($model->user->phone)->type(Color::PRIMARY())->disabled();
             })->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model) {
-                return number_format($model->price);
+                return $model->user->username ?
+                    Link::make(number_format($model->price))->type(Color::SUCCESS())->target('_blank')
+                        ->icon('cursor')->href('https://t.me/' . $model->user->username)
+                    : number_format($model->price);
             })->cantHide(),
             TD::make('state', 'Буюртма холати')->render(function ($model) {
                 return $model->state == 'send_order' ?
