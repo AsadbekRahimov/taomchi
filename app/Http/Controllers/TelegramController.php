@@ -71,7 +71,7 @@ class TelegramController extends Controller
     private function menuCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->user ? $this->replyMenuList() : $this->replyUserQuestions();
+        $this->checkUserInfo() ? $this->replyMenuList() : $this->replyUserQuestions();
     }
 
     private function cardCommand()
@@ -80,10 +80,10 @@ class TelegramController extends Controller
         $this->user ? $this->showCartList() : $this->replyUserQuestions();
     }
 
-    private function checkoutCommand()
+    private function checkoutCommand($message_id)
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->checkUserInfo() ? $this->finishOrder() : $this->replyUserQuestions();
+        $this->checkUserInfo() ? $this->finishOrder($message_id) : $this->replyUserQuestions();
     }
 
     private function ordersListCommand()
@@ -167,7 +167,7 @@ class TelegramController extends Controller
             elseif (str_starts_with($callBackData, 'add_'))
                 $this->addProductToCart($callBackData, $message_id);
             elseif ($callBackData == 'checkout')
-                $this->checkoutCommand();
+                $this->checkoutCommand($message_id);
             elseif ($callBackData == 'cart_clear')
                 $this->cartClear($message_id);
             elseif ($callBackData == 'delete_product')
@@ -583,14 +583,15 @@ class TelegramController extends Controller
         }
     }
 
-    private function finishOrder(): void
+    private function finishOrder($message_id): void
     {
         $carts = TelegramUserCard::query()->with(['product'])
             ->where('telegram_user_id', $this->user->id)->get();
 
         if ($carts->isEmpty()) {
-            $this->telegram->sendMessage([
+            $this->telegram->editMessageText([
                 'chat_id' => $this->chat_id,
+                'message_id' => $message_id,
                 'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
             ]);
         } else {
@@ -613,8 +614,9 @@ class TelegramController extends Controller
                 ]);
                 $cart->delete();
             }
-            $this->telegram->sendMessage([
+            $this->telegram->editMessageText([
                 'chat_id' => $this->chat_id,
+                'message_id' => $message_id,
                 'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id,
             ]);
 
