@@ -48,7 +48,7 @@ class OrderListTable extends Table
             })->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model) {
                 return number_format($model->price);
-            }),
+            })->cantHide(),
             TD::make('state', 'Буюртма холати')->render(function ($model) {
                 return $model->state == 'send_order' ?
                     Button::make(TelegramOrder::TYPE[$model->state])
@@ -61,7 +61,7 @@ class OrderListTable extends Table
                     Button::make(TelegramOrder::TYPE[$model->state])
                         ->type(Color::SUCCESS())
                         ->icon('check')->disabled();
-            }),
+            })->cantHide(),
             TD::make('place', 'Худуд')->render(function ($model) {
                 return $model->user->place->name;
             }),
