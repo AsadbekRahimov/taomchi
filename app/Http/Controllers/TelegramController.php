@@ -71,7 +71,6 @@ class TelegramController extends Controller
     private function menuCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        //$this->checkUserInfo() ? $this->replyMenuList() : $this->replyUserQuestions();
         $this->checkUserInfo() ? $this->replyAddressQuestion() : $this->replyUserQuestions();
     }
 
@@ -124,9 +123,9 @@ class TelegramController extends Controller
         $this->user->place_id = $place->id;
         $this->user->save();
 
-        $this->telegram->editMessageText([
+        $this->deleteMessage($message_id);
+        $this->telegram->sendMessage([
             'chat_id' => $this->chat_id,
-            'message_id' => $message_id,
             'text' => "Худуд муаффақиятли сақланди. \nСизнинг худудингиз: " . $place->name . "\nУшбу худуддаги аниқ манзилингизни киритинг",
         ]);
 
@@ -308,9 +307,9 @@ class TelegramController extends Controller
         $this->user->update(['address' => null, 'place_id' => null]);
         TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->delete();
 
-        $this->telegram->editMessageText([
+        $this->deleteMessage($message_id);
+        $this->telegram->sendMessage([
             'chat_id' => $this->chat_id,
-            'message_id' => $message_id,
             'text' => 'Эски манзилингиз ўчирилди, давом этишингиз мумкин!',
         ]);
 
@@ -338,10 +337,7 @@ class TelegramController extends Controller
                 ];
             }
 
-            $this->telegram->deleteMessage([
-                'chat_id' => $this->chat_id,
-                'message_id' => $message_id,
-            ]);
+            $this->deleteMessage($message_id);
 
             $this->sendProductsImage($this->user->place_id);
             $this->telegram->sendMessage([
@@ -399,9 +395,9 @@ class TelegramController extends Controller
                     'Саватдаги миқдори: ' . $cart->count . ' дона ';
             }
 
-            $this->telegram->editMessageText([
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'message_id' => $message_id,
                 'text' => $text,
                 'reply_markup' => json_encode([
                     'inline_keyboard' => [
@@ -491,9 +487,9 @@ class TelegramController extends Controller
             ]);
         } else {
             TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->delete();
-            $this->telegram->editMessageText([
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'message_id' => $message_id,
                 'text' => 'Саватдаги махсулотлар ўчирилди.',
             ]);
         }
@@ -588,9 +584,9 @@ class TelegramController extends Controller
                 ];
             }
 
-            $this->telegram->editMessageText([
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'message_id' => $message_id,
                 'text' => 'Ўчириладиган буюртмани танланг: ',
                 'reply_markup' => json_encode([
                     'inline_keyboard' => $keyboard,
@@ -628,21 +624,22 @@ class TelegramController extends Controller
             if ($order->state == 'send_order') {
                 $order->products()->delete();
                 $order->delete();
-                $this->telegram->editMessageText([
+                $this->deleteMessage($message_id);
+                $this->telegram->sendMessage([
                     'chat_id' => $this->chat_id,
-                    'message_id' => $message_id,
                     'text' => 'Сиз #' . $order_id . ' рақамли буюртмани бекор қилиндингиз.',
                 ]);
                 SendMessageService::deleteOrder($order_id);
             } else {
-                $this->telegram->editMessageText([
+                $this->deleteMessage($message_id);
+                $this->telegram->sendMessage([
                     'chat_id' => $this->chat_id,
-                    'message_id' => $message_id,
                     'text' => '#' . $order_id . " рақамли буюртма қабул қилинган ва тайёрлаш жараёнида бўлгани учун қайтариб бўлмайди. Мурожат учун телефон раками: \n" .
                         "+998917070907 +998770150907",
                 ]);
             }
         } else {
+            $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Бундай буюртма топилмади!',
@@ -656,9 +653,9 @@ class TelegramController extends Controller
             ->where('telegram_user_id', $this->user->id)->get();
 
         if ($carts->isEmpty()) {
-            $this->telegram->editMessageText([
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'message_id' => $message_id,
                 'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
             ]);
         } else {
@@ -681,9 +678,10 @@ class TelegramController extends Controller
                 ]);
                 $cart->delete();
             }
-            $this->telegram->editMessageText([
+
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'message_id' => $message_id,
                 'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id,
             ]);
 
@@ -752,6 +750,14 @@ class TelegramController extends Controller
                 ]);
             }
         } catch (\Exception $e) {}
+    }
+
+    private function deleteMessage($message_id)
+    {
+        $this->telegram->deleteMessage([
+            'chat_id' => $this->chat_id,
+            'message_id' => $message_id
+        ]);
     }
 
     private function checkUserInfo(): bool
