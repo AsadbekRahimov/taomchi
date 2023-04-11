@@ -169,6 +169,8 @@ class TelegramController extends Controller
                 $this->addProductToCart($callBackData, $message_id);
             elseif ($callBackData == 'checkout')
                 $this->checkoutCommand($message_id);
+            elseif ($callBackData == 'show_cart')
+                $this->showCartList();
             elseif ($callBackData == 'cart_clear')
                 $this->cartClear($message_id);
             elseif ($callBackData == 'delete_product')
@@ -276,7 +278,6 @@ class TelegramController extends Controller
         ]);
     }
 
-
     private function replyAddressQuestion()
     {
         $this->telegram->sendMessage([
@@ -301,7 +302,6 @@ class TelegramController extends Controller
             ]),
         ]);
     }
-
 
     private function resetUserAddress($message_id)
     {
@@ -403,6 +403,22 @@ class TelegramController extends Controller
                 'chat_id' => $this->chat_id,
                 'message_id' => $message_id,
                 'text' => $text,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => 'Буюртмани якунлаш',
+                                'callback_data' => 'checkout'
+                            ]
+                        ],
+                        [
+                            [
+                                'text' => 'Саватни кўриш',
+                                'callback_data' => 'show_cart'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         } else {
             $this->telegram->sendMessage([
