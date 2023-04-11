@@ -305,9 +305,8 @@ class TelegramController extends Controller
 
     private function resetUserAddress($message_id)
     {
-        $this->user->address = null;
-        $this->user->place_id = null;
-        $this->user->save();
+        $this->user->update(['address' => null, 'place_id' => null]);
+        TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->delete();
 
         $this->telegram->editMessageText([
             'chat_id' => $this->chat_id,
