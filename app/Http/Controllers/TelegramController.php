@@ -71,7 +71,8 @@ class TelegramController extends Controller
     private function menuCommand()
     {
         $this->telegram->sendChatAction(['chat_id' => $this->chat_id, 'action' => Actions::TYPING]);
-        $this->checkUserInfo() ? $this->replyMenuList() : $this->replyUserQuestions();
+        //$this->checkUserInfo() ? $this->replyMenuList() : $this->replyUserQuestions();
+        $this->checkUserInfo() ? $this->replyAddressQuestion() : $this->replyUserQuestions();
     }
 
     private function cardCommand()
@@ -180,6 +181,10 @@ class TelegramController extends Controller
                 $this->deleteOrder($callBackData, $message_id);
             elseif (str_starts_with($callBackData, 'place_'))
                 $this->savePlace($callBackData, $message_id);
+            elseif ($callBackData == 'continue')
+                $this->replyMenuList($message_id);
+            elseif ($callBackData == 'reset_address')
+                $this->resetUserAddress($message_id);
         }
     }
 
@@ -189,7 +194,7 @@ class TelegramController extends Controller
         {
             if(!$this->user->place_id) {
                 $places = CacheService::getPlaces();
-                $text = "Буюртмани якунлаш учун аввал манзилни киритиш талаб қилинади. Худудни танланг: ";
+                $text = "Давом этишингиз учун аввал манзилни киритиш талаб қилинади. Худудни танланг: ";
                 $keyboard = [];
 
                 foreach ($places as $id => $place) {
@@ -271,7 +276,49 @@ class TelegramController extends Controller
         ]);
     }
 
-    private function replyMenuList()
+
+    private function replyAddressQuestion()
+    {
+        $this->telegram->sendMessage([
+            'chat_id' => $this->chat_id,
+            'text' => "Ҳудуд: " . $this->user->place->name . "\nМанзил: " . $this->user->address
+                . "\nБуюртма бермоқчи бўлган манзилингиз тўгрими?",
+            'reply_markup' => json_encode([
+                'inline_keyboard' => [
+                    [
+                        [
+                            'text' => 'Ха, давом этиш.',
+                            'callback_data' => 'continue'
+                        ]
+                    ],
+                    [
+                        [
+                            'text' => 'Йўқ, бошқа манзил.',
+                            'callback_data' => 'reset_address'
+                        ]
+                    ]
+                ]
+            ]),
+        ]);
+    }
+
+
+    private function resetUserAddress($message_id)
+    {
+        $this->user->address = null;
+        $this->user->place_id = null;
+        $this->user->save();
+
+        $this->telegram->editMessageText([
+            'chat_id' => $this->chat_id,
+            'message_id' => $message_id,
+            'text' => 'Эски манзилингиз ўчирилди, давом этишингиз мумкин!',
+        ]);
+
+        $this->replyUserQuestions();
+    }
+
+    private function replyMenuList($message_id)
     {
         $products = CacheService::getTgProducts();
         if ($products->isEmpty()) {
@@ -291,6 +338,11 @@ class TelegramController extends Controller
                     ],
                 ];
             }
+
+            $this->telegram->deleteMessage([
+                'chat_id' => $this->chat_id,
+                'message_id' => $message_id,
+            ]);
 
             $this->sendProductsImage($this->user->place_id);
             $this->telegram->sendMessage([
