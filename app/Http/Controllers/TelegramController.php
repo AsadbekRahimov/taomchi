@@ -318,7 +318,7 @@ class TelegramController extends Controller
 
     private function replyMenuList($message_id)
     {
-        $products = CacheService::getTgProducts();
+        $products = CacheService::getPlaceProducts($this->user->place_id);
         if ($products->isEmpty()) {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
@@ -331,8 +331,8 @@ class TelegramController extends Controller
             foreach ($products as $product) {
                 $keyboard[] = [
                     [
-                        'text' => $product->name . ' - ' . number_format($product->one_price) . ' сўм',
-                        'callback_data' => 'product_' . $product->id,
+                        'text' => $product->product->name . ' - ' . number_format($product->price) . ' сўм',
+                        'callback_data' => 'product_' . $product->product_id,
                     ],
                 ];
             }

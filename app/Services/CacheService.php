@@ -2,6 +2,7 @@
 
 namespace App\Services;
 use App\Models\Customer;
+use App\Models\ProductPrices;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\DB;
 
@@ -27,6 +28,15 @@ class CacheService
     {
         return Cache::rememberForever('tg_products', function () {
             return \App\Models\Product::query()->where('for_telegram', 1)->get();
+        });
+    }
+
+    public static function getPlaceProducts($place_id)
+    {
+        return Cache::rememberForever('place_products_' . $place_id, function () use ($place_id) {
+            return ProductPrices::query()->with('product')->whereHas('product', function ($query) {
+                $query->where('for_telegram', 1);
+            })->where('place_id', $place_id)->get();
         });
     }
 
