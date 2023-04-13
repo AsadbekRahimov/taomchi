@@ -175,7 +175,7 @@ class TelegramController extends Controller
             elseif ($callBackData == 'delete_product')
                 $this->cartProductButtons();
             elseif (str_starts_with($callBackData, 'clear_'))
-                $this->deleteProductFromCard($callBackData);
+                $this->deleteProductFromCard($callBackData, $message_id);
             elseif ($callBackData == 'cancel_orders')
                 $this->orderButtons($message_id);
             elseif (str_starts_with($callBackData, 'rollback_'))
@@ -596,10 +596,11 @@ class TelegramController extends Controller
 
     }
 
-    private function deleteProductFromCard($callBackData)
+    private function deleteProductFromCard($callBackData, $message_id)
     {
         $cart = TelegramUserCard::query()->find(explode('_', $callBackData)[1]);
 
+        $this->deleteMessage($message_id);
         if ($cart) {
             $product_name = $cart->product->name;
             $cart->delete();
