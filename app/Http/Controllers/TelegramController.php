@@ -55,8 +55,6 @@ class TelegramController extends Controller
             $this->menuCommand();
         elseif (in_array($text, ['/cart', 'Саватни кўриш']))
             $this->cardCommand();
-        elseif (in_array($text, ['/checkout', 'Буюртмани якунлаш']))
-            $this->checkoutCommand();
         elseif (in_array($text, ['/orders', 'Буюртмаларни кўриш']))
             $this->ordersListCommand();
     }
@@ -257,17 +255,14 @@ class TelegramController extends Controller
                     [
                         [
                             'text' => 'Махсулотлар рўйҳатини кўриш',
-                        ],
-                        [
-                            'text' => 'Саватни кўриш'
                         ]
                     ],
                     [
                         [
-                            'text' => 'Буюртмани якунлаш'
+                            'text' => 'Буюртмаларни кўриш'
                         ],
                         [
-                            'text' => 'Буюртмаларни кўриш'
+                            'text' => 'Саватни кўриш'
                         ]
                     ]
                 ],
