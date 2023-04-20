@@ -48,10 +48,8 @@ class ProductObserver
     {
         Cache::forget('product_key_value');
         Cache::forget('products');
-        Cache::forget('tg_products');
         CacheService::ProductsKeyValue();
         CacheService::getProducts();
-        CacheService::getTgProducts();
     }
 
     private function createPlacePrices($product_id): void

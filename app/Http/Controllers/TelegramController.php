@@ -350,8 +350,7 @@ class TelegramController extends Controller
         $countKeyboard = $this->getCountKeyboard($callBackData);
         $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
         if ($product) {
-            $product_name = $product->name . ' - ' .
-                number_format($product->one_price) . " сўм/дона\nМиқдорини киритинг:";
+            $product_name = "Махсулот: " . $product->name . "\nМиқдорини киритинг:";
 
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
@@ -432,9 +431,12 @@ class TelegramController extends Controller
         } else {
             $message = "Саватдаги махсулотлар:  \n\n";
             $total_price = 0;
+            $prices = CacheService::getPlaceProducts($this->user->place_id)->mapWithKeys(function ($item) {
+                return [$item->product_id => $item->price];
+            });
             foreach ($carts as $cart) {
-                $product_price = $cart->product->one_price * $cart->count;
-                $message .= $cart->product->name . ' (' . number_format($cart->product->one_price) .  ') x ' .
+                $product_price = $prices[$cart->product_id] * $cart->count;
+                $message .= $cart->product->name . ' (' . number_format($prices[$cart->product_id]) .  ') x ' .
                     $cart->count . ' = ' . number_format($product_price) . "\n";
                 $total_price += $product_price;
             }

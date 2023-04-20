@@ -244,10 +244,8 @@ class Product extends Resource
         }
         Cache::forget('product_key_value');
         Cache::forget('products');
-        Cache::forget('tg_products');
         CacheService::ProductsKeyValue();
         CacheService::getProducts();
-        CacheService::getTgProducts();
     }
 
     public function onDelete(Model $model)
@@ -260,10 +258,8 @@ class Product extends Resource
             $model->delete();
             Cache::forget('product_key_value');
             Cache::forget('products');
-            Cache::forget('tg_products');
             CacheService::ProductsKeyValue();
             CacheService::getProducts();
-            CacheService::getTgProducts();
         }
     }
 }
