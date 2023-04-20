@@ -7,7 +7,9 @@ use App\Models\ProductPrices;
 use App\Orchid\Layouts\Product\AddProduct;
 use App\Orchid\Layouts\Product\ProductInfo;
 use App\Orchid\Layouts\Product\ProductsTable;
+use App\Services\CacheService;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Cache;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
@@ -139,5 +141,9 @@ class ProductListScreen extends Screen
         foreach ($updateData as $data) {
             ProductPrices::query()->find($data['id'])->update(['price' => $data['price']]);
         }
+
+        CacheService::getPlaces()->keys()->map(function ($key) {
+            Cache::forget('place_products_' . $key);
+        });
     }
 }
