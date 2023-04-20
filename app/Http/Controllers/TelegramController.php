@@ -657,9 +657,13 @@ class TelegramController extends Controller
                 'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
             ]);
         } else {
+
+            $prices = CacheService::getPlaceProducts($this->user->place_id)->mapWithKeys(function ($item) {
+                return [$item->product_id => $item->price];
+            });
             $total_price = 0;
             foreach ($carts as $cart) {
-                $total_price += $cart->product->one_price * $cart->count;
+                $total_price += $prices[$cart->product_id] * $cart->count;
             }
 
             $order = TelegramOrder::query()->create([
@@ -672,7 +676,7 @@ class TelegramController extends Controller
                     'order_id' => $order->id,
                     'product_id' => $cart->product->id,
                     'count' => $cart->count,
-                    'price' => $cart->product->one_price,
+                    'price' => $prices[$cart->product_id],
                 ]);
                 $cart->delete();
             }
