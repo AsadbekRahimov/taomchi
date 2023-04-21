@@ -66,10 +66,10 @@ class OrderListTable extends Table
                         ->icon('check')->disabled();
             })->cantHide(),
             TD::make('place', 'Худуд')->render(function ($model) {
-                return $model->user->place->name;
+                return $model->place->name;
             }),
             TD::make('address', 'Манзил')->render(function ($model) {
-                return $model->user->address;
+                return $model->address;
             }),
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();

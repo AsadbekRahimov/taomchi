@@ -669,6 +669,8 @@ class TelegramController extends Controller
             $order = TelegramOrder::query()->create([
                 'user_id' => $this->user->id,
                 'price' => $total_price,
+                'place_id' => $this->user->place_id,
+                'address' => $this->user->address
             ]);
 
             foreach ($carts as $cart) {

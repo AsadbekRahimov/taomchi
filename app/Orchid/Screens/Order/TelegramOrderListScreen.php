@@ -33,7 +33,7 @@ class TelegramOrderListScreen extends Screen
     public function query(): iterable
     {
         return [
-            'orders' => TelegramOrder::query()->with(['user.customer', 'user.place', 'products'])
+            'orders' => TelegramOrder::query()->with(['user.customer', 'user.place', 'products', 'place'])
                 ->orderByDesc('id')->paginate(15),
         ];
     }
