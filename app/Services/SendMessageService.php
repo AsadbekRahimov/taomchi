@@ -8,6 +8,7 @@ use App\Models\PurchaseParty;
 use App\Models\Sale;
 use App\Models\TelegramOrder;
 use App\Models\TelegramOrderItem;
+use App\Models\TelegramUser;
 use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
@@ -55,7 +56,10 @@ class SendMessageService
     {
         $order = TelegramOrder::query()->find($order_id);
         $order_items = TelegramOrderItem::query()->where('order_id', $order->id)->get();
-        $message = 'Буюртма: #' . $order->id . "\r\nТелефон: " . $order->user->phone . "\r\n\r\n";
+        $user = TelegramUser::query()->find($order->user_id);
+
+        $message = 'Буюртма: #' . $order->id . "\r\nТелефон: " . $order->user->phone .
+            "\r\nМанзил: " . $user->place->name . "\r\n" . $user->address . "\r\n\r\n";
 
         if (!$order_items->isEmpty())
         {
