@@ -16,6 +16,8 @@ class TelegramOrder extends Model
     protected $fillable = [
         'user_id',
         'price',
+        'place_id',
+        'address',
         'state',
     ];
 
@@ -32,6 +34,11 @@ class TelegramOrder extends Model
     public function user()
     {
         return $this->belongsTo(TelegramUser::class, 'user_id', 'id');
+    }
+
+    public function place()
+    {
+        return $this->belongsTo(Place::class, 'place_id', 'id');
     }
 
     public function cardsSum()

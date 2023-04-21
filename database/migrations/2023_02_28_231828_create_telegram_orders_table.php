@@ -17,6 +17,8 @@ return new class extends Migration
             $table->id();
             $table->integer('user_id');
             $table->bigInteger('price');
+            $table->integer('place_id');
+            $table->string('address');
             $table->string('state')->default('send_order');
             $table->timestamps();
         });
