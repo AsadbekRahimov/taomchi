@@ -17,13 +17,15 @@ class BotUserNotify
         ]);
     }
 
-    public static function deleteOrder($telegram_user_id,  $order_id)
+    public static function deleteOrder($telegram_user_id,  $order_id, $reason)
     {
         $telegram = new Api(env('TELEGRAM_BOT_TOKEN'));
+        $text = 'Сизнинг #' . $order_id . ' рақамли буюртмангиз админ томонидан бекор қилинди. ';
+        if (!is_null($reason)) $text .= "\nБекор қилиш сабаби: " . $reason . "\n";
+        $text .= "Мурожат учун телефон раками: \n+998917070907 +998770150907";
         return $telegram->sendMessage([
             'chat_id' => $telegram_user_id,
-            'text' => 'Сизнинг #' . $order_id . ' рақамли буюртмангиз админ томонидан бекор қилинди. ' .
-            "Мурожат учун телефон раками: \n +998917070907 +998770150907",
+            'text' => $text,
         ]);
     }
 }

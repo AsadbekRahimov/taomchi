@@ -103,12 +103,13 @@ class OrderListTable extends Table
                             'id' => $model->id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
                         ->canSee($accepted),
-                    Button::make('Буюртмани бекор қилиш')
+                    ModalToggle::make('Буюртмани бекор қилиш')
                         ->method('deleteOrder')
+                        ->modal('deleteOrderModal')
                         ->icon('trash')
                         ->parameters([
                             'id' => $model->id,
-                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?'),
+                        ]),
                 ])->canSee($is_customer) : DropDown::make('')->icon('list')->list([
                     ModalToggle::make('Мижоз')
                         ->icon('plus')->method('saveUser')->modal('addUserModal')
@@ -125,12 +126,13 @@ class OrderListTable extends Table
                             'id' => $model->id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
                         ->canSee($accepted),
-                    Button::make('Буюртмани бекор қилиш')
+                    ModalToggle::make('Буюртмани бекор қилиш')
                         ->method('deleteOrder')
+                        ->modal('deleteOrderModal')
                         ->icon('trash')
                         ->parameters([
                             'id' => $model->id,
-                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?'),
+                        ]),
                 ]);
             })->cantHide(),
         ];

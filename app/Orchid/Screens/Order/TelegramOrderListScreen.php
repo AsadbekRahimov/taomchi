@@ -16,8 +16,10 @@ use App\Orchid\Layouts\TelegramOrder\OrderListTable;
 use App\Orchid\Layouts\TelegramOrder\partPaymentModal;
 use App\Services\BotUserNotify;
 use App\Services\CacheService;
+use App\Services\TelegramNotify;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Cache;
+use Orchid\Screen\Fields\Input;
 use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
@@ -85,6 +87,9 @@ class TelegramOrderListScreen extends Screen
                 ->applyButton('Тўлаш')->closeButton('Ёпиш'),
             Layout::modal('partPaymentModal', [partPaymentModal::class])
                 ->applyButton('Тўлаш')->closeButton('Ёпиш'),
+            Layout::modal('deleteOrderModal', [Layout::rows([
+                Input::make('reason')->title('Бекор қилиш сабаби'),
+            ])])->applyButton('Сақлаш')->closeButton('Ёпиш'),
         ];
     }
 
@@ -127,11 +132,14 @@ class TelegramOrderListScreen extends Screen
         Alert::success('Буюртма муффақиятли қабул қилинди.');
     }
 
-    public function deleteOrder(TelegramOrder $order)
+    public function deleteOrder(TelegramOrder $order, Request $request)
     {
         $order_id = $order->id;
         $this->deleteOrderWithItem($order);
-        BotUserNotify::deleteOrder($order->user->telegram_id, $order_id);
+        BotUserNotify::deleteOrder($order->user->telegram_id, $order_id, $request->reason);
+        $text = '#' . $order_id . ' рақамли буюртмангиз админ томонидан бекор қилинди. ';
+        if (!is_null($request->reason)) $text .= "\nБекор қилиш сабаби: " . $request->reason . "\n";
+        TelegramNotify::sendMessage($text, 'tg_order');
         Alert::success('Буюртма муффақиятли бекор қилинди');
     }
 
