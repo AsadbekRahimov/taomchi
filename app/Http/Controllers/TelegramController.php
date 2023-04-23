@@ -658,13 +658,20 @@ class TelegramController extends Controller
             ]);
         } else {
 
+            $message = "Махсулотлар:  \n\n";
             $prices = CacheService::getPlaceProducts($this->user->place_id)->mapWithKeys(function ($item) {
                 return [$item->product_id => $item->price];
             });
             $total_price = 0;
-            foreach ($carts as $cart) {
-                $total_price += $prices[$cart->product_id] * $cart->count;
+
+            foreach ($carts as $item) {
+                $product_price = $prices[$item->product_id] * $item->count;
+                $message .= $item->product->name . ' (' . number_format($prices[$item->product_id]) .  ') x ' .
+                    $item->count . ' = ' . number_format($product_price) . "\n";
+                $total_price += $product_price;
             }
+
+            $message .= "\nУмумий суммаси: " . number_format($total_price);
 
             $order = TelegramOrder::query()->create([
                 'user_id' => $this->user->id,
@@ -686,7 +693,7 @@ class TelegramController extends Controller
             $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id,
+                'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id . "\n\n" . $message,
             ]);
 
             SendMessageService::sendTelegramOrder($order->id);
