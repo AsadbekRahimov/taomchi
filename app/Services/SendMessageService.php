@@ -58,8 +58,9 @@ class SendMessageService
         $order_items = TelegramOrderItem::query()->where('order_id', $order->id)->get();
         $user = TelegramUser::query()->find($order->user_id);
 
-        $message = 'Буюртма: #' . $order->id . "\r\nТелефон: " . $order->user->phone .
-            "\r\nМанзил: " . $user->place->name . "\r\n" . $user->address . "\r\n\r\n";
+        $message = 'Буюртма: #' . $order->id . "\r\nТелефон: " . $order->user->phone;
+        if(!is_null($order->user->username)) $message .= 'Telegram: @' . $order->user->username . "\r\n";
+        $message .= "\r\nМанзил: " . $user->place->name . "\r\n" . $user->address . "\r\n\r\n";
 
         if (!$order_items->isEmpty())
         {
