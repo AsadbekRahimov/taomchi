@@ -175,9 +175,13 @@ class TelegramController extends Controller
             elseif (str_starts_with($callBackData, 'clear_'))
                 $this->deleteProductFromCard($callBackData, $message_id);
             elseif ($callBackData == 'cancel_orders')
-                $this->orderButtons($message_id);
+                $this->orderButtons($message_id, 'rollback_');
+            elseif ($callBackData == 'info_orders')
+                $this->orderButtons($message_id, 'info_');
             elseif (str_starts_with($callBackData, 'rollback_'))
                 $this->deleteOrder($callBackData, $message_id);
+            elseif (str_starts_with($callBackData, 'info_'))
+                $this->infoOrder($callBackData, $message_id);
             elseif (str_starts_with($callBackData, 'place_'))
                 $this->savePlace($callBackData, $message_id);
             elseif ($callBackData == 'continue')
@@ -553,6 +557,12 @@ class TelegramController extends Controller
                                 'text' => 'Буюртмани қайтариш',
                                 'callback_data' => 'cancel_orders'
                             ]
+                        ],
+                        [
+                            [
+                                'text' => 'Буюртма маълумотлари',
+                                'callback_data' => 'info_orders'
+                            ]
                         ]
                     ]
                 ]),
@@ -560,7 +570,7 @@ class TelegramController extends Controller
         }
     }
 
-    private function orderButtons($message_id)
+    private function orderButtons($message_id, $type)
     {
         $orders = TelegramOrder::query()->where('user_id', $this->user->id)->get();
 
@@ -576,7 +586,7 @@ class TelegramController extends Controller
                 $keyboard[] = [
                     [
                         'text' => '#' . $order->id . ' рақамли буюртма',
-                        'callback_data' => 'rollback_' . $order->id,
+                        'callback_data' => $type . $order->id, // rollback or info
                     ],
                 ];
             }
@@ -584,7 +594,7 @@ class TelegramController extends Controller
             $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'text' => 'Ўчириладиган буюртмани танланг: ',
+                'text' => 'Буюртмани танланг: ',
                 'reply_markup' => json_encode([
                     'inline_keyboard' => $keyboard,
                 ]),
@@ -609,6 +619,48 @@ class TelegramController extends Controller
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Саватда бундай махсулот топилмади!',
+            ]);
+        }
+    }
+
+    private function infoOrder($callBackData, $message_id)
+    {
+        $order = TelegramOrder::query()->find(explode('_', $callBackData)[1]);
+
+        if ($order)
+        {
+            $order_items = TelegramOrderItem::query()->with(['product'])
+                ->where('order_id', $order->id)->get();
+
+            $message = "Буюртма махсулотлари:  \n\n";
+            $total_price = 0;
+
+            foreach ($order_items as $item) {
+                $message .=  $item->count .  ' x ' . $item->product->name   . ' = ' . number_format($item->price) . "\n";
+                $total_price += $item->price;
+            }
+
+            $message .= "\nУмумий суммаси: " . number_format($total_price);
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $message,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => 'Буюртмани қайтариш',
+                                'callback_data' => 'rollback_' . $order->id
+                            ]
+                        ]
+                    ]
+                ]),
+            ]);
+        } else {
+            $this->deleteMessage($message_id);
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Бундай буюртма топилмади!',
             ]);
         }
     }
