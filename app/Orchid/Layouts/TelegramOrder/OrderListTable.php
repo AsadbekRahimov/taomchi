@@ -35,7 +35,6 @@ class OrderListTable extends Table
         $user = Auth::user();
         $call_center = $user->inRole('call_center') ? 1 : 0;
         $superadmin = Auth::user()->inRole('super_admin') ? 1 : 0;
-        $payment = ($user->inRole('courier') or $superadmin) ? 1 : 0;
         return [
             TD::make('id', 'ID')->render(function ($model) {
                 return '#' . $model->id;
@@ -74,7 +73,7 @@ class OrderListTable extends Table
             TD::make('created_at', 'Сана')->render(function ($model) {
                 return $model->created_at->toDateTimeString();
             })->cantHide(),
-            TD::make('action', 'Aмаллар')->render(function ($model) use ($call_center, $superadmin, $payment) {
+            TD::make('action', 'Aмаллар')->render(function ($model) use ($call_center, $superadmin) {
                 $is_customer = (bool)$model->user->customer_id;
                 $customer_name = $model->user->customer_id ? $model->user->customer->name : $model->user->phone;
                 $accepted = $model->state == 'accepted_order';
@@ -87,7 +86,7 @@ class OrderListTable extends Table
                         ->parameters([
                             'id' => $model->id,
                         ])->confirm($customer_name . ' - Қарз суммаси: ' . number_format($model->price))
-                        ->canSee($accepted && $payment),
+                        ->canSee($accepted),
                     ModalToggle::make('Тўлиқ тўлов қилиш')
                         ->method('fullPayment')
                         ->modal('fullPaymentModal')
@@ -95,7 +94,7 @@ class OrderListTable extends Table
                         ->parameters([
                             'id' => $model->id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
-                        ->canSee($accepted && $payment),
+                        ->canSee($accepted),
                     ModalToggle::make('Қисман тўлов қилиш')
                         ->method('partPayment')
                         ->modal('partPaymentModal')
@@ -103,18 +102,36 @@ class OrderListTable extends Table
                         ->parameters([
                             'id' => $model->id,
                         ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
-                        ->canSee($accepted && $payment),
+                        ->canSee($accepted),
                     Button::make('Буюртмани бекор қилиш')
                         ->method('deleteOrder')
                         ->icon('trash')
                         ->parameters([
                             'id' => $model->id,
-                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?')->canSee($superadmin),
-                ])->canSee($is_customer) : ModalToggle::make('Мижоз')
-                    ->icon('plus')->method('saveUser')->modal('addUserModal')
-                    ->asyncParameters([
-                        'user' => $model->user_id,
-                    ])->modalTitle('Янги мижозни базага қўшиш')->type(Color::SUCCESS());
+                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?'),
+                ])->canSee($is_customer) : DropDown::make('')->icon('list')->list([
+                    ModalToggle::make('Мижоз')
+                        ->icon('plus')->method('saveUser')->modal('addUserModal')
+                        ->asyncParameters([
+                            'user' => $model->user_id,
+                        ])->modalTitle('Янги мижозни базага қўшиш')->type(Color::SUCCESS()),
+                    Link::make('Тўлов чеки')->icon('printer')
+                        ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($accepted && ($superadmin || $call_center)),
+                    ModalToggle::make('Тўлиқ тўлов қилиш')
+                        ->method('fullPayment')
+                        ->modal('fullPaymentModal')
+                        ->icon('dollar')
+                        ->parameters([
+                            'id' => $model->id,
+                        ])->modalTitle($customer_name . ' | Тўлов суммаси: ' . number_format($model->price))
+                        ->canSee($accepted),
+                    Button::make('Буюртмани бекор қилиш')
+                        ->method('deleteOrder')
+                        ->icon('trash')
+                        ->parameters([
+                            'id' => $model->id,
+                        ])->confirm('Сиз ростдан ҳам ушбу буюртмани ўчирмоқчимисиз?'),
+                ]);
             })->cantHide(),
         ];
     }
