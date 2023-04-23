@@ -59,7 +59,7 @@ class SendMessageService
         $user = TelegramUser::query()->find($order->user_id);
 
         $message = 'Буюртма: #' . $order->id . "\r\nТелефон: " . $order->user->phone;
-        if(!is_null($order->user->username)) $message .= 'Telegram: @' . $order->user->username . "\r\n";
+        if(!is_null($order->user->username)) $message .= "\nTelegram: @" . $order->user->username . "\r\n";
         $message .= "\r\nМанзил: " . $user->place->name . "\r\n" . $user->address . "\r\n\r\n";
 
         if (!$order_items->isEmpty())

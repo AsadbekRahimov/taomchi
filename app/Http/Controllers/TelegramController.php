@@ -632,12 +632,13 @@ class TelegramController extends Controller
             $order_items = TelegramOrderItem::query()->with(['product'])
                 ->where('order_id', $order->id)->get();
 
-            $message = "Буюртма махсулотлари:  \n\n";
+            $message = "Буюртма рақами: #" . $order->id . "\nБуюртма холати: " . TelegramOrder::TYPE[$order->state] . "\n\n";
             $total_price = 0;
 
             foreach ($order_items as $item) {
-                $message .=  $item->count .  ' x ' . $item->product->name   . ' = ' . number_format($item->price) . "\n";
-                $total_price += $item->price;
+                $product_price = $item->price * $item->count;
+                $message .=  $item->count .  ' x ' . $item->product->name   . ' = ' . number_format($product_price) . "\n";
+                $total_price += $product_price;
             }
 
             $message .= "\nУмумий суммаси: " . number_format($total_price);
