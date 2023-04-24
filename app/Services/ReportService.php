@@ -57,7 +57,7 @@ class ReportService
         foreach($sales as $sale)
         {
             $result->push([
-                'Мижоз' => $customers[$sale->customer_id],
+                'Мижоз' => $sale->customer_id ? $customers[$sale->customer_id] : 'Телеграм мижоз',
                 'Махсулот' => $products[$sale->product_id],
                 'Микдори' => $sale->quantity,
                 'Сотилган нарх' => $sale->price,
@@ -81,7 +81,7 @@ class ReportService
         foreach($payments as $payment)
         {
             $result->push([
-                'Мижоз' => $customers[$payment->customer_id],
+                'Мижоз' => $payment->customer_id ? $customers[$payment->customer_id] : 'Телеграм мижоз',
                 'Тўлов суммаси' => $payment->price,
                 'Тўлов тури' => Payment::TYPE[$payment->type],
             ]);
