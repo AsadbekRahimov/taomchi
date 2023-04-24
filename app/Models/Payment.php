@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCustomer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Orchid\Screen\AsSource;
 
 class Payment extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCustomer;
     use AsSource, Filterable, Attachable;
 
     protected $fillable = [
@@ -35,11 +36,6 @@ class Payment extends Model
         3 => 'Click/Payme/...',
         4 => 'Банк ўтказма',
     ];
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
-    }
 
     public function branch()
     {

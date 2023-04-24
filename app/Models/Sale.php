@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCustomer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Orchid\Attachment\Attachable;
@@ -10,7 +11,7 @@ use Orchid\Screen\AsSource;
 
 class Sale extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCustomer;
     use AsSource, Filterable, Attachable;
 
     protected $fillable = [
@@ -27,11 +28,6 @@ class Sale extends Model
         'customer_id',
         'product_id',
     ];
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
-    }
 
     public function product()
     {

@@ -21,7 +21,7 @@ class SalesPartyScreen extends Screen
     {
         $branch_id = Auth::user()->branch_id ?: 0;
         return [
-            'parties' => SalesParty::query()->filters()->with(['customer', 'user', 'sales', 'payments', 'duties'])
+            'parties' => SalesParty::query()->filters()->with(['customer', 'telegram', 'user', 'sales', 'payments', 'duties'])
                 ->where('branch_id', $branch_id)->orderByDesc('id')->paginate(15),
         ];
     }

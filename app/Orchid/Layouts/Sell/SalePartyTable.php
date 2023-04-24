@@ -4,6 +4,7 @@ namespace App\Orchid\Layouts\Sell;
 
 use App\Services\CacheService;
 
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Select;
@@ -36,7 +37,10 @@ class SalePartyTable extends Table
                 return $model->user->name;
             })->cantHide(),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
-                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
+                if ($model->customer_id)
+                    return Link::make($model->customer_name)->route('platform.customer_info', ['customer' => $model->customer_id]);
+                else
+                    return Button::make($model->customer_name)->type(Color::PRIMARY())->disabled();
             })->filter(Select::make('customer_id')->options(CacheService::getCustomers())->empty('', ''))->cantHide(),
             TD::make('total_price', 'Умумий суммаси')->render(function ($model){
                 return Link::make(number_format($model->salesSum()))->type(Color::INFO());
@@ -61,7 +65,7 @@ class SalePartyTable extends Table
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Партия: №' . $model->id . ' | Мижоз: ' . $model->customer->name)
+                    ->modalTitle('Партия: №' . $model->id . ' | Мижоз: ' . $model->customer_name)
                     ->asyncParameters([
                         'salesParty' => $model->id,
                     ]);

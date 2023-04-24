@@ -5,6 +5,7 @@ namespace App\Orchid\Layouts\Payment;
 use App\Models\Payment;
 use App\Services\CacheService;
 
+use Orchid\Screen\Actions\Button;
 use Orchid\Screen\Actions\Link;
 use Orchid\Screen\Actions\ModalToggle;
 use Orchid\Screen\Fields\Select;
@@ -34,7 +35,10 @@ class PaymentListTable extends Table
         return [
             TD::make('id', 'ID'),
             TD::make('customer_id', 'Мижоз')->render(function ($model) {
-                return Link::make($model->customer->name)->route('platform.customer_info', ['customer' => $model->customer_id]);
+                if ($model->customer_id)
+                    return Link::make($model->customer_name)->route('platform.customer_info', ['customer' => $model->customer_id]);
+                else
+                    return Button::make($model->customer_name)->type(Color::PRIMARY())->disabled();
             })->filter(Select::make('customer_id')->options(CacheService::getCustomers())->empty('', ''))->cantHide(),
             TD::make('price', 'Миқдори')->render(function ($model) {
                 return Link::make(number_format($model->price))->type(Color::SUCCESS());
@@ -52,7 +56,7 @@ class PaymentListTable extends Table
                 return ModalToggle::make('')
                     ->icon('eye')
                     ->modal('asyncGetPartyModal')
-                    ->modalTitle('Партия: №' . $model->party_id . ' | Мижоз: ' . $model->customer->name)
+                    ->modalTitle('Партия: №' . $model->party_id . ' | Мижоз: ' . $model->customer_name)
                     ->asyncParameters([
                         'salesParty' => $model->party_id,
                     ]);

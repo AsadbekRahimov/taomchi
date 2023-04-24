@@ -2,6 +2,7 @@
 
 namespace App\Models;
 
+use App\Traits\HasCustomer;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Auth;
@@ -11,7 +12,7 @@ use Orchid\Screen\AsSource;
 
 class SalesParty extends Model
 {
-    use HasFactory;
+    use HasFactory, HasCustomer;
     use AsSource, Filterable, Attachable;
 
     protected $fillable = [
@@ -25,11 +26,6 @@ class SalesParty extends Model
     protected $allowedFilters = [
         'customer_id'
     ];
-
-    public function customer()
-    {
-        return $this->belongsTo(Customer::class, 'customer_id', 'id');
-    }
 
     public function user()
     {
