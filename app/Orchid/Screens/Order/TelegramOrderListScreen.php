@@ -165,9 +165,9 @@ class TelegramOrderListScreen extends Screen
 
     public function fullPayment(TelegramOrder $order, Request $request)
     {
-        $party = SalesParty::createParty($order->user->customer_id, 0);
+        $party = SalesParty::createParty($order->user->customer_id, 0, $order->user_id);
         Payment::addTgOrderPayment($party->id, $order, $request->type);
-        Sale::createTgSales($party->id, $order->id, $party->branch_id, $order->user->customer_id);
+        Sale::createTgSales($party->id, $order->id, $party->branch_id, $order->user->customer_id, $order->user_id);
         $this->deleteOrderWithItem($order);
         Alert::success('Махсулотлар муаффақиятли сотилди');
     }

@@ -21,6 +21,7 @@ class Payment extends Model
         'branch_id',
         'party_id',
         'user_id',
+        'telegram_user_id'
     ];
 
     protected $allowedFilters = [
@@ -80,7 +81,8 @@ class Payment extends Model
             'type' => $type,
             'branch_id' => 1,
             'party_id' => $party_id,
-            'user_id' => Auth::user()->id
+            'user_id' => Auth::user()->id,
+            'telegram_user_id' => $order->user_id
         ]);
     }
 

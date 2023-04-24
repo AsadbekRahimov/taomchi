@@ -19,7 +19,8 @@ class Sale extends Model
        'quantity',
        'price',
        'branch_id',
-       'party_id'
+       'party_id',
+       'telegram_user_id'
     ];
 
     protected $allowedFilters = [
@@ -64,7 +65,7 @@ class Sale extends Model
         }
     }
 
-    public static function createTgSales($party_id, $order_id, $branch_id, $customer_id)
+    public static function createTgSales($party_id, $order_id, $branch_id, $customer_id, $telegram_user_id)
     {
         $cards = TelegramOrderItem::query()->where('order_id', $order_id)->get();
         foreach ($cards as $item)
@@ -76,6 +77,7 @@ class Sale extends Model
                 'price' => $item->price,
                 'branch_id' => $branch_id,
                 'party_id' => $party_id,
+                'telegram_user_id' => $telegram_user_id
             ]);
         }
     }

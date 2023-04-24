@@ -19,6 +19,7 @@ class SalesParty extends Model
         'discount',
         'user_id',
         'branch_id',
+        'telegram_user_id'
     ];
 
     protected $allowedFilters = [
@@ -65,7 +66,7 @@ class SalesParty extends Model
         return $sum;
     }
 
-    public static function createParty($customer_id, $discount)
+    public static function createParty($customer_id, $discount, $telegram_user_id = null)
     {
         $user = Auth::user();
         return self::query()->create([
@@ -73,6 +74,7 @@ class SalesParty extends Model
             'user_id' => $user->id,
             'branch_id' => $user->branch_id,
             'discount' => $discount,
+            'telegram_user_id' => $telegram_user_id
         ]);
     }
 }

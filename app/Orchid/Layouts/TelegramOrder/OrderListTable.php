@@ -81,7 +81,7 @@ class OrderListTable extends Table
                     ModalToggle::make('Махсулотлар')
                         ->icon('eye')
                         ->modal('asyncGetProductsModal')
-                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $model->user->phone)
+                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $customer_name)
                         ->asyncParameters([
                             'telegramOrder' => $model->id,
                         ]),
@@ -126,7 +126,7 @@ class OrderListTable extends Table
                     ModalToggle::make('Махсулотлар')
                         ->icon('eye')
                         ->modal('asyncGetProductsModal')
-                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $model->user->phone)
+                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $customer_name)
                         ->asyncParameters([
                             'telegramOrder' => $model->id,
                         ]),
