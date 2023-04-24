@@ -18,6 +18,9 @@ class Controller extends BaseController
 
     public function tgOrderCheck($id) {
         $order = \App\Models\TelegramOrder::query()->with(['products.product.measure', 'user.customer.duties'])->find($id);
-        return view('print.printTgCheck', compact('order'));
+        if ($order->user->customer_id)
+            return view('print.printTgCustomerCheck', compact('order'));
+        else
+            return view('print.printTgCheck', compact('order'));
     }
 }

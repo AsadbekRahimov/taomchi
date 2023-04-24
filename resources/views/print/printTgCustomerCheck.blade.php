@@ -91,9 +91,11 @@
     <img  src="{{ asset('/vendor/orchid/icon/ta1.png') }}" alt="">
     <p class="centered">Тел: +998917070907, +998770150907 <br>Сана: {{ $order->created_at->format('Y-m-d H:i') }}</b>
     <p></p>
-    <p><b>Мижоз: {{ $order->user->phone }}</b>
+    <p><b>Мижоз: {{ $order->user->customer->name }}</b>
     <p><b>Манзил: {{ $order->place->name . ' - ' . $order->address }}</b>
-
+    @if($order->user->customer->duties->sum('duty'))
+        <p><b>Эски карздорлик: {{ number_format($order->user->customer->duties->sum('duty')) }}</b>
+    @endif
     <table class="table table-bordered">
         <thead>
         <tr>
@@ -118,8 +120,14 @@
 
         <tr>
             <td style="border: 1px solid black;"></td>
-            <td style="border: 1px solid black;" colspan="2" class="description"><b>Жами</b></td>
-            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum()) }}</b></td>
+            <td style="border: 1px solid black;" colspan="2" class="description"><b>Олинган махсулотар суммаси</b></td>
+            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum() - $order->discount) }}</b></td>
+        </tr>
+
+        <tr>
+            <td style="border: 1px solid black;"></td>
+            <td style="border: 1px solid black;" colspan="2" class="description"><b>Жами карздорлик</b></td>
+            <td style="border: 1px solid black;" class="price"><b>{{ number_format($order->cardsSum() + $order->user->customer->duties->sum('duty')) }}</b></td>
         </tr>
 
         </tbody>
