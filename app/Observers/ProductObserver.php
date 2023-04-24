@@ -41,6 +41,9 @@ class ProductObserver
     public function deleted(Product $product)
     {
         ProductPrices::query()->where('product_id', $product->id)->delete();
+        CacheService::getPlaces()->keys()->map(function ($key) {
+            Cache::forget('place_products_' . $key);
+        });
         $this->updateCache();
     }
 
