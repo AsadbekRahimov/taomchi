@@ -10,7 +10,7 @@ use App\Models\Sale;
 use App\Models\SalesParty;
 use App\Models\TelegramOrder;
 use App\Models\TelegramUser;
-use App\Orchid\Layouts\Order\PartyList;
+use App\Orchid\Layouts\Order\TelegramOrderProductsList;
 use App\Orchid\Layouts\TelegramOrder\addUserModal;
 use App\Orchid\Layouts\TelegramOrder\fullPaymentModal;
 use App\Orchid\Layouts\TelegramOrder\OrderListTable;
@@ -82,7 +82,7 @@ class TelegramOrderListScreen extends Screen
     {
         return [
             OrderListTable::class,
-            Layout::modal('asyncGetProductsModal', PartyList::class)
+            Layout::modal('asyncGetProductsModal', TelegramOrderProductsList::class)
                 ->async('asyncGetProducts')->size(Modal::SIZE_LG)
                 ->withoutApplyButton(true)->closeButton('Ёпиш'),
             Layout::modal('addUserModal', [addUserModal::class])->async('asyncGetUser')

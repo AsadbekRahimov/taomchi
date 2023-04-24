@@ -54,6 +54,13 @@ class OrderListTable extends Table
             })->cantHide(),
             TD::make('action', 'Aмаллар')->render(function ($model) use ($call_center, $superadmin, $payment) {
                 return DropDown::make('')->icon('list')->list([
+                    ModalToggle::make('Махсулотлар')
+                        ->icon('eye')
+                        ->modal('asyncGetProductsModal')
+                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $model->customer->all_name)
+                        ->asyncParameters([
+                            'order' => $model->id,
+                        ]),
                     Link::make('Тўлов чеки')->icon('printer')
                         ->route('printCheck', ['id' => $model->id])->target('blank')->canSee($superadmin || $call_center),
                     Button::make('Қарзга бериш')

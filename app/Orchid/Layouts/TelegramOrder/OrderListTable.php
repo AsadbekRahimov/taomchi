@@ -83,7 +83,7 @@ class OrderListTable extends Table
                         ->modal('asyncGetProductsModal')
                         ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $model->user->phone)
                         ->asyncParameters([
-                            'order' => $model->id,
+                            'telegramOrder' => $model->id,
                         ]),
                     Link::make('Тўлов чеки')->icon('printer')
                         ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($accepted && ($superadmin || $call_center)),

@@ -11,9 +11,11 @@ use App\Models\SalesParty;
 use App\Orchid\Layouts\Order\discountModal;
 use App\Orchid\Layouts\Order\fullPaymentModal;
 use App\Orchid\Layouts\Order\OrderListTable;
+use App\Orchid\Layouts\Order\OrderProductsList;
 use App\Orchid\Layouts\Order\partPaymentModal;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Orchid\Screen\Layouts\Modal;
 use Orchid\Screen\Screen;
 use Orchid\Support\Facades\Alert;
 use Orchid\Support\Facades\Layout;
@@ -76,9 +78,19 @@ class OrderListScreen extends Screen
     {
         return [
             OrderListTable::class,
+            Layout::modal('asyncGetProductsModal', OrderProductsList::class)
+                ->async('asyncGetProducts')->size(Modal::SIZE_LG)
+                ->withoutApplyButton(true)->closeButton('Ёпиш'),
             Layout::modal('fullPaymentModal', [fullPaymentModal::class])->applyButton('Тўлаш')->closeButton('Ёпиш'),
             Layout::modal('partPaymentModal', [partPaymentModal::class])->applyButton('Тўлаш')->closeButton('Ёпиш'),
             Layout::modal('discountModal', [discountModal::class])->applyButton('Чегирма киритиш')->closeButton('Ёпиш'),
+        ];
+    }
+
+    public function asyncGetProducts(Order $order)
+    {
+        return [
+            'cards' => $order->cards,
         ];
     }
 

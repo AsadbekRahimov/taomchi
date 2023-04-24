@@ -10,7 +10,7 @@ use Orchid\Screen\Fields\Matrix;
 use Orchid\Screen\Fields\Select;
 use Orchid\Screen\Layouts\Rows;
 
-class PartyList extends Rows
+class OrderProductsList extends Rows
 {
     /**
      * Used to create the title of a group of form elements.
@@ -29,10 +29,10 @@ class PartyList extends Rows
         $products = CacheService::ProductsKeyValue();
 
         return [
-            Matrix::make('products')
+            Matrix::make('cards')
                 ->columns([
                     'Махсулот' => 'product_id',
-                    'Моқдори (дона)' => 'count',
+                    'Моқдори (дона)' => 'quantity',
                     'Дона нархи' => 'price',
                 ])->fields([
                     'product_id' => Select::make('product_id')->options($products),
