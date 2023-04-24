@@ -832,11 +832,11 @@ class TelegramController extends Controller
     private function checkWorkingTime(): bool
     {
         $currentTime = date('H:i:s');
-        $startTime = '00:30:00';
-        $endTime = '23:30:00';
+        $startTime = '07:30:00';
+        $endTime = '15:30:00';
         $dayWeek = date('N');
 
-        if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 2)
+        if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 1)
         {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
