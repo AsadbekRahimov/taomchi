@@ -836,7 +836,7 @@ class TelegramController extends Controller
         $endTime = '23:30:00';
         $dayWeek = date('N');
 
-        if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 1)
+        if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 2)
         {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,

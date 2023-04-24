@@ -78,6 +78,13 @@ class OrderListTable extends Table
                 $customer_name = $model->user->customer_id ? $model->user->customer->name : $model->user->phone;
                 $accepted = $model->state == 'accepted_order';
                 return $is_customer? DropDown::make('')->icon('list')->list([
+                    ModalToggle::make('Махсулотлар')
+                        ->icon('eye')
+                        ->modal('asyncGetProductsModal')
+                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $model->user->phone)
+                        ->asyncParameters([
+                            'order' => $model->id,
+                        ]),
                     Link::make('Тўлов чеки')->icon('printer')
                         ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($accepted && ($superadmin || $call_center)),
                     Button::make('Қарзга бериш')
@@ -116,6 +123,13 @@ class OrderListTable extends Table
                         ->asyncParameters([
                             'user' => $model->user_id,
                         ])->modalTitle('Янги мижозни базага қўшиш')->type(Color::SUCCESS()),
+                    ModalToggle::make('Махсулотлар')
+                        ->icon('eye')
+                        ->modal('asyncGetProductsModal')
+                        ->modalTitle('Буюртма: №' . $model->id . ' | Мижоз: ' . $model->user->phone)
+                        ->asyncParameters([
+                            'telegramOrder' => $model->id,
+                        ]),
                     Link::make('Тўлов чеки')->icon('printer')
                         ->route('print-tg-order', ['id' => $model->id])->target('blank')->canSee($accepted && ($superadmin || $call_center)),
                     ModalToggle::make('Тўлиқ тўлов қилиш')
