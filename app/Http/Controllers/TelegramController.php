@@ -833,14 +833,14 @@ class TelegramController extends Controller
     {
         $currentTime = date('H:i:s');
         $startTime = '07:30:00';
-        $endTime = '15:30:00';
+        $endTime = '16:00:00';
         $dayWeek = date('N');
 
         if (!($startTime <= $currentTime && $currentTime <= $endTime) || $dayWeek == 1)
         {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
-                'text' => 'Хизматларимиз сешанбадан - якшанбагача 7:30 дан 15:30 гача ишайди!'
+                'text' => 'Хизматларимиз сешанбадан - якшанбагача 7:30 дан 16:00 гача ишайди!'
             ]);
 
             return false;
