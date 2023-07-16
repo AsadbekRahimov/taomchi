@@ -91,6 +91,7 @@ class ProductListScreen extends Screen
             'name' => $product->name,
             'measure_id' => $product->measure_id,
             'prices' => $product->prices,
+            'telegram_message_id' => $product->telegram_message_id
         ];
     }
 
@@ -108,7 +109,11 @@ class ProductListScreen extends Screen
 
     public function saveProductInfo(Product $product, Request $request)
     {
-        $product->update(['name' => $request->name, 'measure_id' => $request->measure_id]);
+        $product->update([
+            'name' => $request->name,
+            'measure_id' => $request->measure_id,
+            'telegram_message_id' => $request->telegram_message_id
+        ]);
         $this->updateProductPrices($request->prices);
         Alert::success('Махсулот малумотлари янгиланди.');
     }

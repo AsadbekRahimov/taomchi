@@ -36,6 +36,7 @@ class ProductInfo extends Rows
                 Input::make('name')->title('Номи')->required(),
                 Select::make('measure_id')->title('Ўлчов бирлиги')
                     ->fromModel(\App\Models\Measure::class, 'name')->required(),
+                Input::make('telegram_message_id')->title('Telegram ID')->type('number')
             ]),
 
             Matrix::make('prices')

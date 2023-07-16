@@ -42,6 +42,7 @@ class ProductsTable extends Table
                     Button::make()->icon('cross')
                     ->type(Color::DANGER())->method('openTelegram')->parameters(['id' => $model->id]);
             }),
+            TD::make('telegram_message_id', 'Telegram ID'),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();

@@ -18,7 +18,8 @@ class Product extends Model
         'measure_id',
         'one_price',
         'discount_price',
-        'for_telegram'
+        'for_telegram',
+        'telegram_message_id'
     ];
 
     public  const TYPE = [
