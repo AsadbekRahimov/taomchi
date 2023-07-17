@@ -34,6 +34,11 @@ class ProductInfo extends Rows
 
             Group::make([
                 Input::make('name')->title('Номи')->required(),
+                Select::make('category_id')->title('Махсулот тури')
+                    ->options(CacheService::getProductCategories()),
+            ]),
+
+            Group::make([
                 Select::make('measure_id')->title('Ўлчов бирлиги')
                     ->fromModel(\App\Models\Measure::class, 'name')->required(),
                 Input::make('telegram_message_id')->title('Telegram ID')->type('number')

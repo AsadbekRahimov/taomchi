@@ -43,6 +43,9 @@ class ProductsTable extends Table
                     ->type(Color::DANGER())->method('openTelegram')->parameters(['id' => $model->id]);
             }),
             TD::make('telegram_message_id', 'Telegram ID'),
+            TD::make('category_id', 'Тури')->render(function ($model) {
+                return $model->category_id ? $model->category->name : '';
+            }),
             TD::make('created_at', 'Киритилган сана')
                 ->render(function ($model) {
                     return $model->created_at->toDateTimeString();
