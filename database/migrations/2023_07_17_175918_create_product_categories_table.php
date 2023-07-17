@@ -13,15 +13,9 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('products', function (Blueprint $table) {
+        Schema::create('product_categories', function (Blueprint $table) {
             $table->id();
             $table->string('name');
-            $table->integer('measure_id');
-            $table->integer('one_price')->default(0);
-            $table->integer('discount_price')->default(0);
-            $table->tinyInteger('for_telegram')->default(0);
-            $table->integer('telegram_message_id')->nullable();
-            $table->integer('category_id')->nullable();
             $table->timestamps();
         });
     }
@@ -33,6 +27,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('products');
+        Schema::dropIfExists('product_categories');
     }
 };

@@ -19,7 +19,8 @@ class Product extends Model
         'one_price',
         'discount_price',
         'for_telegram',
-        'telegram_message_id'
+        'telegram_message_id',
+        'category_id'
     ];
 
     public  const TYPE = [
@@ -30,6 +31,11 @@ class Product extends Model
     public function measure()
     {
         return $this->belongsTo(Measure::class, 'measure_id', 'id');
+    }
+
+    public function category()
+    {
+        return $this->belongsTo(ProductCategory::class, 'category_id', 'id');
     }
 
     public function cards()
