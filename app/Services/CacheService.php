@@ -57,4 +57,11 @@ class CacheService
             return \App\Models\Place::query()->pluck('name', 'id');
         });
     }
+
+    public static function getProductCategories()
+    {
+        return Cache::rememberForever('productCategories', function () {
+            return \App\Models\ProductCategory::query()->pluck('name', 'id');
+        });
+    }
 }
