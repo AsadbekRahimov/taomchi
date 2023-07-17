@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Place;
+use App\Models\ProductCategory;
 use App\Models\TelegramOrder;
 use App\Models\TelegramOrderItem;
 use App\Models\TelegramUser;
@@ -161,9 +162,11 @@ class TelegramController extends Controller
             $message_id = $this->telegram->getWebhookUpdate()->callbackQuery->message->message_id;
 
             if (str_starts_with($callBackData, 'product_'))
-                $this->selectProduct($callBackData);
-            elseif (str_starts_with($callBackData, 'add_'))
+                $this->selectProduct($callBackData, $message_id);
+            elseif (str_starts_with($callBackData, 'finish_card_'))
                 $this->addProductToCart($callBackData, $message_id);
+            elseif (str_starts_with($callBackData, 'decrement_') || str_starts_with($callBackData, 'increment_'))
+                $this->addCountToCart($callBackData, $message_id);
             elseif ($callBackData == 'checkout')
                 $this->checkoutCommand($message_id);
             elseif ($callBackData == 'show_cart')
@@ -171,7 +174,7 @@ class TelegramController extends Controller
             elseif ($callBackData == 'cart_clear')
                 $this->cartClear($message_id);
             elseif ($callBackData == 'delete_product')
-                $this->cartProductButtons();
+                $this->cartProductButtons($message_id);
             elseif (str_starts_with($callBackData, 'clear_'))
                 $this->deleteProductFromCard($callBackData, $message_id);
             elseif ($callBackData == 'cancel_orders')
@@ -185,7 +188,9 @@ class TelegramController extends Controller
             elseif (str_starts_with($callBackData, 'place_'))
                 $this->savePlace($callBackData, $message_id);
             elseif ($callBackData == 'continue')
-                $this->replyMenuList($message_id);
+                $this->replyMenuCategoryList($message_id);
+            elseif(str_starts_with($callBackData, 'category_'))
+                $this->replyMenuList($callBackData, $message_id);
             elseif ($callBackData == 'reset_address')
                 $this->resetUserAddress($message_id);
         }
@@ -315,8 +320,9 @@ class TelegramController extends Controller
         $this->replyUserQuestions();
     }
 
-    private function replyMenuList($message_id)
+    private function replyMenuList($callBackData, $message_id)
     {
+        $category = ProductCategory::query()->find(explode('_', $callBackData)[1]);
         $products = CacheService::getPlaceProducts($this->user->place_id);
         if ($products->isEmpty()) {
             $this->telegram->sendMessage([
@@ -328,17 +334,51 @@ class TelegramController extends Controller
             $keyboard = [];
 
             foreach ($products as $product) {
+                if ($category->id == $product->product->category_id)
+                {
+                    $keyboard[] = [
+                        [
+                            'text' => $product->product->name . ' - ' . number_format($product->price) . ' сўм',
+                            'callback_data' => 'product_' . $product->product_id,
+                        ],
+                    ];
+                }
+            }
+
+            $this->deleteMessage($message_id);
+
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => $text,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => $keyboard,
+                ]),
+            ]);
+        }
+    }
+    private function replyMenuCategoryList($message_id)
+    {
+        $categories = CacheService::getProductCategories();
+        if ($categories->isEmpty()) {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Махсулот турлари мавжуд эмас!',
+            ]);
+        } else {
+            $text = 'Махсулот турини танланг: ';
+            $keyboard = [];
+
+            foreach ($categories as $id => $category) {
                 $keyboard[] = [
                     [
-                        'text' => $product->product->name . ' - ' . number_format($product->price) . ' сўм',
-                        'callback_data' => 'product_' . $product->product_id,
+                        'text' => $category,
+                        'callback_data' => 'category_' . $id,
                     ],
                 ];
             }
 
             $this->deleteMessage($message_id);
 
-            $this->sendProductsImage($this->user->place_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => $text,
@@ -349,13 +389,47 @@ class TelegramController extends Controller
         }
     }
 
-    private function selectProduct($callBackData)
+    private function selectProduct($callBackData, $message_id)
     {
-        $countKeyboard = $this->getCountKeyboard($callBackData);
         $product = CacheService::getProducts()->find(explode('_', $callBackData)[1]);
+        $card = TelegramUserCard::query()->create([
+            'telegram_user_id' => $this->user->id,
+            'product_id' => $product->id,
+            'count' => 1
+        ]);
+        $countKeyboard = [
+            [
+                [
+                    'text' => '-',
+                    'callback_data' => 'decrement_' . $card->id
+                ],
+                [
+                    'text' => '1',
+                    'callback_data' => '1'
+                ],
+                [
+                    'text' => '+',
+                    'callback_data' => 'increment_' . $card->id
+                ],
+            ],
+            [
+                [
+                    'text' => "Саватга қўшиш ✅",
+                    'callback_data' => 'finish_card_' . $card->id
+                ]
+            ],
+            [
+                [
+                    'text' => "Махсулот танлаш 🍱🥗🥤",
+                    'callback_data' => 'continue'
+                ]
+            ]
+        ];
+
+        $this->deleteMessage($message_id);
         if ($product) {
             $product_name = "Махсулот: " . $product->name . "\nМиқдорини киритинг:";
-
+            $this->sendProductsImage($product->telegram_message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => $product_name,
@@ -373,26 +447,10 @@ class TelegramController extends Controller
 
     private function addProductToCart($callBackData, $message_id)
     {
-        $product = CacheService::getProducts()->find(explode('_', $callBackData)[3]);
-
-        if ($product) {
-            $product_count = explode('_', $callBackData)[1];
-            $cart = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)
-                ->where('product_id', $product->id)->first();
-
-            if (!$cart) {
-                TelegramUserCard::query()->create([
-                    'telegram_user_id' => $this->user->id,
-                    'product_id' => $product->id,
-                    'count' => $product_count
-                ]);
-                $text = $product_count . ' дона ' . $product->name . ' саватга қўшилди';
-            } else {
-                $cart->increment('count', $product_count);
-                $text = $product_count . ' дона ' . $product->name . " саватга қўшилди \n" .
-                    'Саватдаги миқдори: ' . $cart->count . ' дона ';
-            }
-
+        $card = TelegramUserCard::query()->find(explode('_', $callBackData)[2]);
+        if ($card) {
+            $card->update(['finished' => 1]);
+            $text = $card->count . ' дона ' . $card->product->name . ' саватга қўшилди';
             $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
@@ -410,6 +468,12 @@ class TelegramController extends Controller
                                 'text' => 'Саватни кўриш',
                                 'callback_data' => 'show_cart'
                             ]
+                        ],
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
                         ]
                     ]
                 ]),
@@ -421,11 +485,71 @@ class TelegramController extends Controller
             ]);
         }
     }
+    private function addCountToCart($callBackData, $message_id)
+    {
+        $card = TelegramUserCard::query()->find(explode('_', $callBackData)[1]);
+
+        if ($card) {
+            $type = explode('_', $callBackData)[0];
+            $send_reply = false;
+            if ($type == 'increment') {
+                $card->increment('count');
+                $send_reply = true;
+            } elseif($type == 'decrement' && $card->count > 1) {
+                $card->decrement('count');
+                $send_reply = true;
+            }
+
+            $countKeyboard = [
+                [
+                    [
+                        'text' => '-',
+                        'callback_data' => 'decrement_' . $card->id
+                    ],
+                    [
+                        'text' => $card->count,
+                        'callback_data' => '1'
+                    ],
+                    [
+                        'text' => '+',
+                        'callback_data' => 'increment_' . $card->id
+                    ],
+                ],
+                [
+                    [
+                        'text' => "Саватга қўшиш ✅",
+                        'callback_data' => 'finish_card_' . $card->id
+                    ]
+                ],
+                [
+                    [
+                        'text' => "Махсулот танлаш 🍱🥗🥤",
+                        'callback_data' => 'continue'
+                    ]
+                ]
+            ];
+            if ($send_reply)
+            {
+                $this->telegram->editMessageReplyMarkup([
+                    'chat_id' => $this->chat_id,
+                    'message_id' => $message_id,
+                    'reply_markup' => json_encode([
+                        'inline_keyboard' => $countKeyboard,
+                    ]),
+                ]);
+            }
+        } else {
+            $this->telegram->sendMessage([
+                'chat_id' => $this->chat_id,
+                'text' => 'Бундай махсулот топилмади!',
+            ]);
+        }
+    }
 
     private function showCartList()
     {
         $carts = TelegramUserCard::query()->with(['product'])
-            ->where('telegram_user_id', $this->user->id)->get();
+            ->where('telegram_user_id', $this->user->id)->where('finished', 1)->get();
 
         if ($carts->isEmpty()) {
             $this->telegram->sendMessage([
@@ -469,6 +593,12 @@ class TelegramController extends Controller
                                 'text' => 'Саватни тўлиқ тозалаш',
                                 'callback_data' => 'cart_clear'
                             ]
+                        ],
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
                         ]
                     ]
                 ]),
@@ -479,7 +609,7 @@ class TelegramController extends Controller
 
     private function cartClear($message_id)
     {
-        $carts = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->get();
+        $carts = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->where('finished', 1)->get();
 
         if ($carts->isEmpty()) {
             $this->telegram->sendMessage([
@@ -492,14 +622,25 @@ class TelegramController extends Controller
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Саватдаги махсулотлар ўчирилди.',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         }
     }
 
-    private function cartProductButtons()
+    private function cartProductButtons($message_id)
     {
-        $carts = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->get();
+        $carts = TelegramUserCard::query()->where('telegram_user_id', $this->user->id)->where('finished', 1)->get();
 
+        $this->deleteMessage($message_id);
         if ($carts->isEmpty()) {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
@@ -563,6 +704,12 @@ class TelegramController extends Controller
                                 'text' => 'Буюртма маълумотлари',
                                 'callback_data' => 'info_orders'
                             ]
+                        ],
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
                         ]
                     ]
                 ]),
@@ -591,6 +738,13 @@ class TelegramController extends Controller
                 ];
             }
 
+            $keyboard[] = [
+                [
+                    'text' => "Махсулот танлаш 🍱🥗🥤",
+                    'callback_data' => 'continue'
+                ]
+            ];
+
             $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
@@ -614,11 +768,31 @@ class TelegramController extends Controller
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => $product_name . ' саватдан ўчирилди.',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         } else {
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Саватда бундай махсулот топилмади!',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         }
     }
@@ -653,6 +827,12 @@ class TelegramController extends Controller
                                 'text' => 'Буюртмани қайтариш',
                                 'callback_data' => 'rollback_' . $order->id
                             ]
+                        ],
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
                         ]
                     ]
                 ]),
@@ -662,6 +842,16 @@ class TelegramController extends Controller
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Бундай буюртма топилмади!',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         }
     }
@@ -679,6 +869,16 @@ class TelegramController extends Controller
                 $this->telegram->sendMessage([
                     'chat_id' => $this->chat_id,
                     'text' => 'Сиз #' . $order_id . ' рақамли буюртмани бекор қилиндингиз.',
+                    'reply_markup' => json_encode([
+                        'inline_keyboard' => [
+                            [
+                                [
+                                    'text' => "Махсулот танлаш 🍱🥗🥤",
+                                    'callback_data' => 'continue'
+                                ]
+                            ]
+                        ]
+                    ]),
                 ]);
                 SendMessageService::deleteOrder($order_id);
             } else {
@@ -687,6 +887,16 @@ class TelegramController extends Controller
                     'chat_id' => $this->chat_id,
                     'text' => '#' . $order_id . " рақамли буюртма қабул қилинган ва тайёрлаш жараёнида бўлгани учун қайтариб бўлмайди. Мурожат учун телефон раками: \n" .
                         "+998917070907 +998770150907",
+                    'reply_markup' => json_encode([
+                        'inline_keyboard' => [
+                            [
+                                [
+                                    'text' => "Махсулот танлаш 🍱🥗🥤",
+                                    'callback_data' => 'continue'
+                                ]
+                            ]
+                        ]
+                    ]),
                 ]);
             }
         } else {
@@ -694,6 +904,16 @@ class TelegramController extends Controller
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Бундай буюртма топилмади!',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         }
     }
@@ -701,13 +921,23 @@ class TelegramController extends Controller
     private function finishOrder($message_id): void
     {
         $carts = TelegramUserCard::query()->with(['product'])
-            ->where('telegram_user_id', $this->user->id)->get();
+            ->where('telegram_user_id', $this->user->id)->where('finished', 1)->get();
 
         if ($carts->isEmpty()) {
             $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => 'Буюртмани якунлаш учун саватда махсулотлар мавжуд эмас!',
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ]
+                    ]
+                ]),
             ]);
         } else {
 
@@ -740,77 +970,46 @@ class TelegramController extends Controller
                     'count' => $cart->count,
                     'price' => $prices[$cart->product_id],
                 ]);
-                $cart->delete();
             }
+            TelegramUserCard::query()->with(['product'])
+                ->where('telegram_user_id', $this->user->id)->delete();
 
             $this->deleteMessage($message_id);
             $this->telegram->sendMessage([
                 'chat_id' => $this->chat_id,
                 'text' => "Буюртма юборилди. \nБуюртма рақами: #" . $order->id . "\n\n" . $message,
+                'reply_markup' => json_encode([
+                    'inline_keyboard' => [
+                        [
+                            [
+                                'text' => "Махсулот танлаш 🍱🥗🥤",
+                                'callback_data' => 'continue'
+                            ]
+                        ],
+                        [
+                            [
+                                'text' => 'Буюртмани қайтариш',
+                                'callback_data' => 'rollback_' . $order->id
+                            ]
+                        ],
+                    ]
+                ]),
             ]);
 
             SendMessageService::sendTelegramOrder($order->id);
         }
     }
 
-    private function getCountKeyboard($callBackData): array
-    {
-        return  [
-            [
-                [
-                    'text' => '1',
-                    'callback_data' => 'add_1_' . $callBackData
-                ],
-                [
-                    'text' => '2',
-                    'callback_data' => 'add_2_' . $callBackData
-                ],
-                [
-                    'text' => '3',
-                    'callback_data' => 'add_3_' . $callBackData
-                ],
-            ],
-            [
-                [
-                    'text' => '4',
-                    'callback_data' => 'add_4_' . $callBackData
-                ],
-                [
-                    'text' => '5',
-                    'callback_data' => 'add_5_'. $callBackData
-                ],
-                [
-                    'text' => '6',
-                    'callback_data' => 'add_6_' . $callBackData
-                ],
-            ],
-            [
-                [
-                    'text' => '7',
-                    'callback_data' => 'add_7_' . $callBackData
-                ],
-                [
-                    'text' => '8',
-                    'callback_data' => 'add_8_'. $callBackData
-                ],
-                [
-                    'text' => '9',
-                    'callback_data' => 'add_9_' . $callBackData
-                ],
-            ]
-        ];
-    }
-
-    private function sendProductsImage($place_id)
+    private function sendProductsImage($message_id)
     {
         $channel = -1001361413476;
-        $place = Place::query()->find($place_id);
+
         try {
-            if (!is_null($place_id)) {
+            if (!is_null($message_id)) {
                 $this->telegram->forwardMessage([
                     'chat_id' => $this->chat_id,
                     'from_chat_id' => $channel,
-                    'message_id' => $place->telegram_message_id
+                    'message_id' => $message_id
                 ]);
             }
         } catch (\Exception $e) {}

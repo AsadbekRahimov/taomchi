@@ -11,7 +11,8 @@ class TelegramUserCard extends Model
     protected $fillable = [
        'telegram_user_id',
        'product_id',
-       'count'
+       'count',
+       'finished'
     ];
 
     public function product()

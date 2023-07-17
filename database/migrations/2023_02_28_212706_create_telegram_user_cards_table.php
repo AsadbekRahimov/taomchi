@@ -18,6 +18,7 @@ return new class extends Migration
             $table->integer('telegram_user_id');
             $table->integer('product_id');
             $table->integer('count');
+            $table->tinyInteger('finished')->default(0);
             $table->timestamps();
         });
     }
